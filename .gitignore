@@ -1,6 +1,4 @@
-# output
-out/
-
-# intellij files
 .idea/
+target/
+out/
 *.iml

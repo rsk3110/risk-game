@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<world>
+	<continents>
+		<continent>
+			<name>North America</name>
+			<armies>5</armies>
+			<color>0xFF0000</color>
+		</continent>
+		<continent>
+			<name>South America</name>
+			<armies>2</armies>
+			<color>0x000000</color>
+		</continent>
+		<continent>
+			<name>Asia</name>
+			<armies>7</armies>
+			<color>0xFF69B4</color>
+		</continent>
+		<continent>
+			<name>Europe</name>
+			<armies>5</armies>
+			<color>0x0000FF</color>
+		</continent>
+		<continent>
+			<name>Africa</name>
+			<armies>3</armies>
+			<color>0xFFFF00</color>
+		</continent>
+		<continent>
+			<name>Australia</name>
+			<armies>2</armies>
+			<color>0x00FF00</color>
+		</continent>
+	</continents>
+	<layout>
+		<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+			<key id="continent" for="node" attr.name="continent" attr.type="string"/>
+			<graph edgedefault="undirected">
+				<node id="na0">
+					<data key="continent">North America</data>
+				</node>
+				<node id="na1">
+					<data key="continent">North America</data>
+				</node>
+				<node id="na2">
+					<data key="continent">North America</data>
+				</node>
+				<node id="na3">
+					<data key="continent">North America</data>
+				</node>
+				<node id="na4">
+					<data key="continent">North America</data>
+				</node>
+				<node id="na5">
+					<data key="continent">North America</data>
+				</node>
+				<node id="na6">
+					<data key="continent">North America</data>
+				</node>
+				<node id="na7">
+					<data key="continent">North America</data>
+				</node>
+				<node id="na8">
+					<data key="continent">North America</data>
+				</node>
+
+				<node id="sa0">
+					<data key="continent">South America</data>
+				</node>
+				<node id="sa1">
+					<data key="continent">South America</data>
+				</node>
+				<node id="sa2">
+					<data key="continent">South America</data>
+				</node>
+				<node id="sa3">
+					<data key="continent">South America</data>
+				</node>
+
+				<node id="as0">
+					<data key="continent">Asia</data>
+				</node>
+				<node id="as1">
+					<data key="continent">Asia</data>
+				</node>
+				<node id="as2">
+					<data key="continent">Asia</data>
+				</node>
+				<node id="as3">
+					<data key="continent">Asia</data>
+				</node>
+				<node id="as4">
+					<data key="continent">Asia</data>
+				</node>
+				<node id="as5">
+					<data key="continent">Asia</data>
+				</node>
+				<node id="as6">
+					<data key="continent">Asia</data>
+				</node>
+				<node id="as7">
+					<data key="continent">Asia</data>
+				</node>
+				<node id="as8">
+					<data key="continent">Asia</data>
+				</node>
+				<node id="as9">
+					<data key="continent">Asia</data>
+				</node>
+				<node id="as10">
+					<data key="continent">Asia</data>
+				</node>
+				<node id="as11">
+					<data key="continent">Asia</data>
+				</node>
+
+				<node id="eu0">
+					<data key="continent">Europe</data>
+				</node>
+				<node id="eu1">
+					<data key="continent">Europe</data>
+				</node>
+				<node id="eu2">
+					<data key="continent">Europe</data>
+				</node>
+				<node id="eu3">
+					<data key="continent">Europe</data>
+				</node>
+				<node id="eu4">
+					<data key="continent">Europe</data>
+				</node>
+				<node id="eu5">
+					<data key="continent">Europe</data>
+				</node>
+				<node id="eu6">
+					<data key="continent">Europe</data>
+				</node>
+
+				<node id="af0">
+					<data key="continent">Africa</data>
+				</node>
+				<node id="af1">
+					<data key="continent">Africa</data>
+				</node>
+				<node id="af2">
+					<data key="continent">Africa</data>
+				</node>
+				<node id="af3">
+					<data key="continent">Africa</data>
+				</node>
+				<node id="af4">
+					<data key="continent">Africa</data>
+				</node>
+				<node id="af5">
+					<data key="continent">Africa</data>
+				</node>
+
+				<node id="au0">
+					<data key="continent">Australia</data>
+				</node>
+				<node id="au1">
+					<data key="continent">Australia</data>
+				</node>
+				<node id="au2">
+					<data key="continent">Australia</data>
+				</node>
+				<node id="au3">
+					<data key="continent">Australia</data>
+				</node>
+
+				<edge source="na0" target="na1"/>
+				<edge source="na0" target="na2"/>
+				<edge source="na0" target="sa0"/>
+				<edge source="na1" target="na2"/>
+				<edge source="na1" target="na3"/>
+				<edge source="na1" target="na4"/>
+				<edge source="na2" target="na3"/>
+				<edge source="na2" target="na5"/>
+				<edge source="na3" target="na5"/>
+				<edge source="na3" target="na6"/>
+				<edge source="na3" target="na7"/>
+				<edge source="na4" target="na7"/>
+				<edge source="na4" target="na8"/>
+				<edge source="na5" target="na6"/>
+				<edge source="na6" target="na7"/>
+				<edge source="na6" target="eu0"/>
+				<edge source="na7" target="na8"/>
+				<edge source="na8" target="as0"/>
+
+				<edge source="sa0" target="sa1"/>
+				<edge source="sa0" target="sa2"/>
+				<edge source="sa1" target="sa2"/>
+				<edge source="sa1" target="sa3"/>
+				<edge source="sa2" target="sa3"/>
+				<edge source="sa2" target="af0"/>
+
+				<edge source="af0" target="af1"/>
+				<edge source="af0" target="af2"/>
+				<edge source="af0" target="af3"/>
+				<edge source="af0" target="eu4"/>
+				<edge source="af0" target="eu6"/>
+				<edge source="af1" target="af3"/>
+				<edge source="af1" target="eu6"/>
+				<edge source="af1" target="as11"/>
+				<edge source="af2" target="af3"/>
+				<edge source="af2" target="af4"/>
+				<edge source="af3" target="af4"/>
+				<edge source="af3" target="af5"/>
+				<edge source="af3" target="as11"/>
+				<edge source="af4" target="af5"/>
+
+				<edge source="eu0" target="eu1"/>
+				<edge source="eu0" target="eu2"/>
+				<edge source="eu1" target="eu2"/>
+				<edge source="eu1" target="eu3"/>
+				<edge source="eu1" target="eu4"/>
+				<edge source="eu2" target="eu3"/>
+				<edge source="eu2" target="eu5"/>
+				<edge source="eu3" target="eu4"/>
+				<edge source="eu3" target="eu5"/>
+				<edge source="eu3" target="eu6"/>
+				<edge source="eu4" target="eu6"/>
+				<edge source="eu5" target="eu6"/>
+				<edge source="eu5" target="as6"/>
+				<edge source="eu5" target="as8"/>
+				<edge source="eu5" target="as11"/>
+				<edge source="eu6" target="as11"/>
+
+				<edge source="as0" target="as1"/>
+				<edge source="as0" target="as2"/>
+				<edge source="as0" target="as3"/>
+				<edge source="as0" target="as4"/>
+				<edge source="as1" target="as4"/>
+				<edge source="as2" target="as3"/>
+				<edge source="as2" target="as5"/>
+				<edge source="as3" target="as4"/>
+				<edge source="as3" target="as5"/>
+				<edge source="as4" target="as5"/>
+				<edge source="as4" target="as7"/>
+				<edge source="as5" target="as6"/>
+				<edge source="as5" target="as7"/>
+				<edge source="as6" target="as7"/>
+				<edge source="as6" target="as8"/>
+				<edge source="as7" target="as8"/>
+				<edge source="as7" target="as9"/>
+				<edge source="as7" target="as10"/>
+				<edge source="as8" target="as10"/>
+				<edge source="as8" target="as11"/>
+				<edge source="as9" target="as10"/>
+				<edge source="as9" target="au0"/>
+				<edge source="as10" target="as11"/>
+
+				<edge source="au0" target="au1"/>
+				<edge source="au0" target="au2"/>
+				<edge source="au1" target="au3"/>
+				<edge source="au1" target="au2"/>
+				<edge source="au2" target="au3"/>
+			</graph>
+		</graphml>
+	</layout>
+</world>
