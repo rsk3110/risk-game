@@ -8,7 +8,7 @@
     <artifactId>riskgame</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>riskybusiness</name>
+    <name>riskgame</name>
     <url>https://github.com/rsk3110/risk-game</url>
 
     <properties>
@@ -38,6 +38,12 @@
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-ext</artifactId>
             <version>1.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.squirrelframework</groupId>
+            <artifactId>squirrel-foundation</artifactId>
+            <version>0.3.8</version>
         </dependency>
 
         <dependency>
