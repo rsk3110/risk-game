@@ -3,12 +3,12 @@ package io.github.rsk3110.riskgame.model.world;
 import java.io.Serializable;
 import java.util.Objects;
 
-public final class TerritoryVertex implements Serializable {
+public final class Territory implements Serializable {
     private final int id;
     private String name;
     private Continent continent;
 
-    public TerritoryVertex(final int id) {
+    public Territory(final int id) {
         this.id = id;
     }
 
@@ -32,7 +32,7 @@ public final class TerritoryVertex implements Serializable {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TerritoryVertex that = (TerritoryVertex) o;
+        Territory that = (Territory) o;
         return id == that.id;
     }
 
@@ -43,7 +43,7 @@ public final class TerritoryVertex implements Serializable {
 
     @Override
     public String toString() {
-        return "TerritoryVertex{" +
+        return "Territory{" +
                 "name='" + name + '\'' +
                 ", continent=" + continent +
                 '}';

@@ -2,9 +2,10 @@ package io.github.rsk3110.riskgame.model.world.state;
 
 import io.github.rsk3110.riskgame.model.Player;
 
+import java.io.Serializable;
 import java.util.Optional;
 
-public final class TerritoryState {
+public final class TerritoryState implements Serializable {
     private int occupyingArmies;
     private Player occupyingPlayer;
 
