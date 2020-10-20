@@ -1,9 +1,9 @@
 package io.github.rsk3110.riskgame.controller.world.loader;
 
 import io.github.rsk3110.riskgame.model.world.Continent;
+import io.github.rsk3110.riskgame.model.world.Territory;
 import io.github.rsk3110.riskgame.model.world.World;
 import io.github.rsk3110.riskgame.model.world.TerritoryEdge;
-import io.github.rsk3110.riskgame.model.world.TerritoryVertex;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.builder.GraphTypeBuilder;
 import org.jgrapht.nio.GraphImporter;
@@ -56,14 +56,14 @@ public final class WorldFileLoader implements WorldLoader {
         this.xPathFactory = XPathFactory.newInstance();
     }
 
-    private static GraphImporter<TerritoryVertex, TerritoryEdge> createGraphMLImporter(final List<Continent> continents) {
-        final GraphMLImporter<TerritoryVertex, TerritoryEdge> importer = new GraphMLImporter<>();
+    private static GraphImporter<Territory, TerritoryEdge> createGraphMLImporter(final List<Continent> continents) {
+        final GraphMLImporter<Territory, TerritoryEdge> importer = new GraphMLImporter<>();
 
         final Map<String, Continent> continentNameMap = continents.stream()
                 .collect(Collectors.toMap(Continent::getName, Function.identity()));
 
         importer.addVertexAttributeConsumer((p, attrValue) -> {
-            final TerritoryVertex v = p.getFirst();
+            final Territory v = p.getFirst();
             final String attrName = p.getSecond();
 
             switch (attrName) {
@@ -164,18 +164,18 @@ public final class WorldFileLoader implements WorldLoader {
         return new ByteArrayInputStream(outputStream.toByteArray());
     }
 
-    private Graph<TerritoryVertex, TerritoryEdge> parseLevelLayout(
+    private Graph<Territory, TerritoryEdge> parseLevelLayout(
             final Document levelDoc,
-            final GraphImporter<TerritoryVertex, TerritoryEdge> graphmlImporter) {
-        final Graph<TerritoryVertex, TerritoryEdge> levelGraph = GraphTypeBuilder
+            final GraphImporter<Territory, TerritoryEdge> graphmlImporter) {
+        final Graph<Territory, TerritoryEdge> levelGraph = GraphTypeBuilder
                 .undirected()
                 .allowingMultipleEdges(false).allowingSelfLoops(false)
-                .vertexSupplier(new Supplier<TerritoryVertex>() {
+                .vertexSupplier(new Supplier<Territory>() {
                     private int id = 0;
 
                     @Override
-                    public TerritoryVertex get() {
-                        return new TerritoryVertex(this.id++);
+                    public Territory get() {
+                        return new Territory(this.id++);
                     }
                 })
                 .edgeSupplier(TerritoryEdge::new)
@@ -191,7 +191,7 @@ public final class WorldFileLoader implements WorldLoader {
         final Document levelDoc = this.parseLevelData(this.readLevelFile(name));
 
         final List<Continent> levelContinents = this.parseLevelContinents(levelDoc);
-        final Graph<TerritoryVertex, TerritoryEdge> levelGraph = this.parseLevelLayout(levelDoc, createGraphMLImporter(levelContinents));
+        final Graph<Territory, TerritoryEdge> levelGraph = this.parseLevelLayout(levelDoc, createGraphMLImporter(levelContinents));
 
         return new World(levelGraph, levelContinents);
     }
