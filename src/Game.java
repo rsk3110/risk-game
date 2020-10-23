@@ -3,7 +3,8 @@ import java.util.*;
 public class Game {
 
     private CommandManager cmdMgr;
-    private Player player;
+    private LinkedList<Player> players;
+    private Player currPlayer;
 
     public static void main(String[] args) {
         Game game = new Game();
@@ -16,6 +17,26 @@ public class Game {
         this.cmdMgr.register("attack", new AttackCommand());
         this.cmdMgr.register("skip", new SkipCommand());
 
-        this.player = new Player("", new ArrayList<Territory>());
+        this.players = new LinkedList<>();
+    }
+
+    /**
+     *  Main play routine.  Loops until end of play.
+     */
+    public void play()
+    {
+        // Enter the main command loop.  Here we repeatedly read commands and
+        // execute them until the game is over.
+
+        boolean finished = false;
+        //while (! finished) {
+            //Command command = parser.getCommand();
+            //finished = execute(command);
+        //}
+        System.out.println("Thank you for playing.  Good bye.");
+    }
+
+    private void getcurrPlayer(){
+
     }
 }
