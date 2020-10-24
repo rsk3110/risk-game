@@ -1,9 +1,9 @@
 package io.github.rsk3110.riskgame.controller.world.loader;
 
-import io.github.rsk3110.riskgame.model.world.Continent;
+import io.github.rsk3110.riskgame.Continent;
 import io.github.rsk3110.riskgame.Territory;
 import io.github.rsk3110.riskgame.World;
-import io.github.rsk3110.riskgame.model.world.TerritoryEdge;
+import io.github.rsk3110.riskgame.TerritoryEdge;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.builder.GraphTypeBuilder;
 import org.jgrapht.nio.GraphImporter;

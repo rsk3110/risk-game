@@ -1,4 +1,4 @@
-package io.github.rsk3110.riskgame.model.world;
+package io.github.rsk3110.riskgame;
 
 import org.jgrapht.graph.DefaultEdge;
 
