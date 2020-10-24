@@ -54,12 +54,28 @@ public class Game {
     }
 
     public void play() {
+        this.commandManager.handleInput(null, "help");//prints intro: all the rules and commands found in help
+
+        boolean win;
+
         for(;;) {
             for(Player player : this.players) {
                 boolean end = false;
-                while(!end)
+                while(!end){
                     end = this.commandManager.handleInput(player, this.scanner.nextLine());
+                    if(win() == true){this.commandManager.handleInput(null, "quit");}
+                }
             }
         }
+    }
+
+    private boolean win(){
+        for (Player p: players){
+            if ((p.getTerritories()).size() == 42){
+                System.out.println(p.getName() + " wins.");
+                return true;
+            }
+        }
+        return false;
     }
 }
