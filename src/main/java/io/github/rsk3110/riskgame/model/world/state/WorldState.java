@@ -1,7 +1,7 @@
 package io.github.rsk3110.riskgame.model.world.state;
 
-import io.github.rsk3110.riskgame.model.world.Territory;
-import io.github.rsk3110.riskgame.model.world.World;
+import io.github.rsk3110.riskgame.Territory;
+import io.github.rsk3110.riskgame.World;
 
 import java.io.Serializable;
 import java.util.HashMap;

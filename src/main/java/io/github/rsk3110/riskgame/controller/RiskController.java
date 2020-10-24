@@ -1,7 +1,7 @@
 package io.github.rsk3110.riskgame.controller;
 
 import io.github.rsk3110.riskgame.model.world.state.WorldState;
-import io.github.rsk3110.riskgame.model.world.World;
+import io.github.rsk3110.riskgame.World;
 import io.github.rsk3110.riskgame.controller.world.loader.WorldLoader;
 
 public class RiskController {

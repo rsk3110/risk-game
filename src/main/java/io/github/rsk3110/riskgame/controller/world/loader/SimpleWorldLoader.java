@@ -1,6 +1,6 @@
 package io.github.rsk3110.riskgame.controller.world.loader;
 
-import io.github.rsk3110.riskgame.model.world.World;
+import io.github.rsk3110.riskgame.World;
 
 import java.util.HashMap;
 import java.util.Map;
