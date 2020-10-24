@@ -20,5 +20,15 @@ public class Player {
     public void removeTerritory(Territory aTerritory) {
         this.territories.remove(aTerritory);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder(this.name + ":\n");
+        for(Territory territory : territories) {
+            stringBuilder.append(territory.toString() + '\n');
+        }
+
+        return stringBuilder.toString();
+    };
 }
 

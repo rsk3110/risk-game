@@ -1,6 +1,5 @@
 package io.github.rsk3110.riskgame;
 
-import io.github.rsk3110.riskgame.model.world.Continent;
 import org.jgrapht.Graph;
 
 import java.io.Serializable;
