@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package io.github.rsk3110.riskgame;
 
 import java.util.List;
@@ -85,7 +86,7 @@ public class AttackCommand implements Command {
                 return true;
             }
         }
-         return false;
+        return false;
     }
 
     private boolean attack(Player player, Territory myTerritory, Territory enemyTerritory){
