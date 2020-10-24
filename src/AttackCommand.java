@@ -36,7 +36,7 @@ public class AttackCommand implements Command {
         Territory myTerritory;
         Territory otherTerritory;
 
-        //handleInput(currPlayer, "map"); need to print state of map
+        MapCommand.map(); //need to print state of map
 
         //Get user input and recursively check if user entered an valid Territory
          myTerritory = playerTerritoryInput(currPlayer);
