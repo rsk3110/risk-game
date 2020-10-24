@@ -67,9 +67,9 @@ public final class WorldFileLoader implements WorldLoader {
             final String attrName = p.getSecond();
 
             switch (attrName) {
-                case "ID":
-                    final String id = attrValue.getValue();
-                    v.setName(id);
+                case "name":
+                    final String name = attrValue.getValue();
+                    v.setName(name);
                     break;
                 case "continent":
                     final String continentName = attrValue.getValue();

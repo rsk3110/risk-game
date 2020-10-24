@@ -35,137 +35,180 @@
 	<layout>
 		<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
 			<key id="continent" for="node" attr.name="continent" attr.type="string"/>
+			<key id="name" for="node" attr.name="name" attr.type="string"/>
 			<graph edgedefault="undirected">
 				<node id="na0">
 					<data key="continent">North America</data>
+					<data key="name">Alaska</data>
 				</node>
 				<node id="na1">
 					<data key="continent">North America</data>
+					<data key="name">Alberta</data>
 				</node>
 				<node id="na2">
 					<data key="continent">North America</data>
+					<data key="name">Central America</data>
 				</node>
 				<node id="na3">
 					<data key="continent">North America</data>
+					<data key="name">Eastern United States</data>
 				</node>
 				<node id="na4">
 					<data key="continent">North America</data>
+					<data key="name">Greenland</data>
 				</node>
 				<node id="na5">
 					<data key="continent">North America</data>
+					<data key="name">Northwest Territory</data>
 				</node>
 				<node id="na6">
 					<data key="continent">North America</data>
+					<data key="name">Ontario</data>
 				</node>
 				<node id="na7">
 					<data key="continent">North America</data>
+					<data key="name">Quebec</data>
 				</node>
 				<node id="na8">
 					<data key="continent">North America</data>
+					<data key="name">Western United States</data>
 				</node>
 
 				<node id="sa0">
 					<data key="continent">South America</data>
+					<data key="name">Argentina</data>
 				</node>
 				<node id="sa1">
 					<data key="continent">South America</data>
+					<data key="name">Brazil</data>
 				</node>
 				<node id="sa2">
 					<data key="continent">South America</data>
+					<data key="name">Peru</data>
 				</node>
 				<node id="sa3">
 					<data key="continent">South America</data>
+					<data key="name">Venezuela</data>
 				</node>
 
 				<node id="as0">
 					<data key="continent">Asia</data>
+					<data key="name">Afghanistan</data>
 				</node>
 				<node id="as1">
 					<data key="continent">Asia</data>
+					<data key="name">China</data>
 				</node>
 				<node id="as2">
 					<data key="continent">Asia</data>
+					<data key="name">India</data>
 				</node>
 				<node id="as3">
 					<data key="continent">Asia</data>
+					<data key="name">Irkutsk</data>
 				</node>
 				<node id="as4">
 					<data key="continent">Asia</data>
+					<data key="name">Japan</data>
 				</node>
 				<node id="as5">
 					<data key="continent">Asia</data>
+					<data key="name">Kamchatka</data>
 				</node>
 				<node id="as6">
 					<data key="continent">Asia</data>
+					<data key="name">Middle East</data>
 				</node>
 				<node id="as7">
 					<data key="continent">Asia</data>
+					<data key="name">Mongolia</data>
 				</node>
 				<node id="as8">
 					<data key="continent">Asia</data>
+					<data key="name">Siam</data>
 				</node>
 				<node id="as9">
 					<data key="continent">Asia</data>
+					<data key="name">Siberia</data>
 				</node>
 				<node id="as10">
 					<data key="continent">Asia</data>
+					<data key="name">Ural</data>
 				</node>
 				<node id="as11">
 					<data key="continent">Asia</data>
+					<data key="name">Yakutsk</data>
 				</node>
 
 				<node id="eu0">
 					<data key="continent">Europe</data>
+					<data key="name">Great Britain</data>
 				</node>
 				<node id="eu1">
 					<data key="continent">Europe</data>
+					<data key="name">Iceland</data>
 				</node>
 				<node id="eu2">
 					<data key="continent">Europe</data>
+					<data key="name">Northern Europe</data>
 				</node>
 				<node id="eu3">
 					<data key="continent">Europe</data>
+					<data key="name">Scandinavia</data>
 				</node>
 				<node id="eu4">
 					<data key="continent">Europe</data>
+					<data key="name">Southern Europe</data>
 				</node>
 				<node id="eu5">
 					<data key="continent">Europe</data>
+					<data key="name">Ukraine</data>
 				</node>
 				<node id="eu6">
 					<data key="continent">Europe</data>
+					<data key="name">Western Europe</data>
 				</node>
 
 				<node id="af0">
 					<data key="continent">Africa</data>
+					<data key="name">Congo</data>
 				</node>
 				<node id="af1">
 					<data key="continent">Africa</data>
+					<data key="name">East Africa</data>
 				</node>
 				<node id="af2">
 					<data key="continent">Africa</data>
+					<data key="name">Egypt</data>
 				</node>
 				<node id="af3">
 					<data key="continent">Africa</data>
+					<data key="name">Madagascar</data>
 				</node>
 				<node id="af4">
 					<data key="continent">Africa</data>
+					<data key="name">North Africa</data>
 				</node>
 				<node id="af5">
 					<data key="continent">Africa</data>
+					<data key="name">South Africa</data>
 				</node>
 
 				<node id="au0">
 					<data key="continent">Australia</data>
+					<data key="name">Eastern Australia</data>
 				</node>
 				<node id="au1">
 					<data key="continent">Australia</data>
+					<data key="name">Indonesia</data>
 				</node>
 				<node id="au2">
 					<data key="continent">Australia</data>
+					<data key="name">New Guinea</data>
 				</node>
 				<node id="au3">
 					<data key="continent">Australia</data>
+					<data key="name">Western Australia</data>
 				</node>
 
 				<edge source="na0" target="na1"/>
