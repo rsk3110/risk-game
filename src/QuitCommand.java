@@ -8,7 +8,7 @@ public class QuitCommand implements Command {
     public QuitCommand() throws InterruptedException {
         System.out.println("The game is over. Here is your current game status: ");
         MapCommand.map();
-        System. exit(0);
+        System. exit(0); //need to test if it closes the program or can still let user see the map stats
     }
 
     public boolean execute(Player player) {

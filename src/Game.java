@@ -56,25 +56,37 @@ public class Game {
     public void play() {
         this.commandManager.handleInput(null, "help");//prints intro: all the rules and commands found in help
 
-        boolean win;
-
         for(;;) {
             for(Player player : this.players) {
                 boolean end = false;
                 while(!end){
                     end = this.commandManager.handleInput(player, this.scanner.nextLine());
-                    if(win() == true){this.commandManager.handleInput(null, "quit");}
+                    if(win() == true){
+                        this.commandManager.handleInput(null, "quit");
+                    }
                 }
             }
         }
     }
 
     private boolean win(){
+        //checks if any player owns the whole continent
         for (Player p: players){
             if ((p.getTerritories()).size() == 42){
                 System.out.println(p.getName() + " wins.");
                 return true;
             }
+        }
+        int sumOfArmies = 0;
+        //checks if all the armies on each territory equals 1 (because users can't move armies when there is only 1 army on each territory)
+        for(Territory t: territories){
+            sumOfArmies += t.getArmies();
+        }
+        if(sumOfArmies == 42){
+            //this assumes that none of the territories are neutral
+            //This still needs work to properly cover all edge cases
+            System.out.println("The match is a draw.");
+            return true;
         }
         return false;
     }

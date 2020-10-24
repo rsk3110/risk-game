@@ -201,7 +201,7 @@ public class AttackCommand implements Command {
         if ((num >= 1) && (num <= 2)){
                 return num;
         }
-        //if number od dice is invalid
+        //if number of dice is invalid
         System.out.println("Invalid number");
         num = playerDiceInput();
 
