@@ -53,6 +53,7 @@ public class Game {
         }
     }
 
+    //Added an intro text which is basically the help section and win check after each play
     public void play() {
         this.commandManager.handleInput(null, "help");//prints intro: all the rules and commands found in help
 
@@ -69,6 +70,7 @@ public class Game {
         }
     }
 
+    //checking if players won or don't have enough armies to play
     private boolean win(){
         //checks if any player owns the whole continent
         for (Player p: players){
