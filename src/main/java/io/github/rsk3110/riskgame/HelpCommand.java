@@ -2,7 +2,12 @@
 package io.github.rsk3110.riskgame;
 
 import java.util.List;
-
+/*
+* Tells player how to play the game
+* All commands and their descriptions
+* Rules for attack
+*
+* */
 public class HelpCommand implements Command {
 
     public HelpCommand(){
@@ -10,6 +15,8 @@ public class HelpCommand implements Command {
     }
 
     public boolean execute(Player player) {
+
+
         return false;
     }
 
