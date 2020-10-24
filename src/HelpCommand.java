@@ -6,11 +6,11 @@ public class HelpCommand implements Command {
 
     }
 
-    public void execute() {
-
+    public boolean execute(Player player) {
+        return false;
     }
 
-    public void execute(List<String> args) {
-
+    public boolean execute(Player player, List<String> args) {
+        return false;
     }
 }

@@ -1,42 +1,65 @@
-import java.util.*;
+import io.github.rsk3110.riskgame.loader.WorldFileLoader;
+
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
 
 public class Game {
 
-    private CommandManager cmdMgr;
-    private LinkedList<Player> players;
-    private Player currPlayer;
+    private CommandManager commandManager;
+    private World world;
+    private List<Continent> continents;
+    private List<Territory> territories;
+    private List<Player> players;
+    private Scanner scanner;
+
+    static final private int  NUM_PLAYERS = 2;
+    static final private int  STARTING_ARMIES = 50;
 
     public static void main(String[] args) {
         Game game = new Game();
+        game.play();
     }
 
     public Game() {
-        this.cmdMgr = new CommandManager();
-        this.cmdMgr.register("help", new HelpCommand());
-        this.cmdMgr.register("map", new MapCommand());
-        this.cmdMgr.register("attack", new AttackCommand());
-        this.cmdMgr.register("skip", new SkipCommand());
+        this.scanner = new Scanner(System.in);
 
-        this.players = new LinkedList<>();
+        this.commandManager = new CommandManager();
+        this.commandManager.register("help", new HelpCommand());
+        this.commandManager.register("map", new MapCommand());
+        this.commandManager.register("attack", new AttackCommand());
+        this.commandManager.register("skip", new SkipCommand());
+        //this.commandManager.register("skip", new quitCommand());
+
+        this.world = (new WorldFileLoader(Paths.get("").toAbsolutePath().resolve("worlds"))).load("default");
+        this.continents = this.world.getContinents();
+        this.territories = new ArrayList<Territory>(this.world.getGraph().vertexSet());
+        Collections.shuffle(territories);
+
+        this.players = new ArrayList<Player>(){{
+            for(int i = 0; i < NUM_PLAYERS; i++) {
+                add(new Player("player" + i));
+            }
+        }};
+
+        int index = 0;
+        for(Territory territory : this.territories) {
+            this.players.get(index).addTerritory(territory);
+
+            if(index == this.players.size() - 1) index = 0;
+            else index++;
+        }
     }
 
-    /**
-     *  Main play routine.  Loops until end of play.
-     */
-    public void play()
-    {
-        // Enter the main command loop.  Here we repeatedly read commands and
-        // execute them until the game is over.
-
-        boolean finished = false;
-        //while (! finished) {
-            //Command command = parser.getCommand();
-            //finished = execute(command);
-        //}
-        System.out.println("Thank you for playing.  Good bye.");
-    }
-
-    private void getcurrPlayer(){
-
+    public void play() {
+        for(;;) {
+            for(Player player : this.players) {
+                boolean end = false;
+                while(!end)
+                    end = this.commandManager.handleInput(player, this.scanner.nextLine());
+            }
+        }
     }
 }

@@ -1,16 +1,18 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class SkipCommand implements Command {
 
+    Player player;
+
     public SkipCommand(){
-
     }
 
-    public void execute() {
-
+    public boolean execute(Player player) {
+        return true;
     }
 
-    public void execute(List<String> args) {
-
+    public boolean execute(Player player, List<String> args) {
+        return false;
     }
 }

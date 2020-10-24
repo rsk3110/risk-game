@@ -1,36 +1,53 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Territory {
 
     private String name;
     private Continent continent;
-    private Player owner;
 
-    private int armies;
+    private int armies; // holds how many armies each team has
 
-    //stores different borders to the currTerritory
-    private HashMap<String, Territory> borderTerritories;
+    /*
+    * stores surrounding territory borders to the currTerritory
+    *  - String is the direction at which the territory is
+    *  - Territory is the territory that is in the direction specified by string
+    * */
+    private ArrayList<Territory> borderTerritories;
 
-    public Territory(String territoryName, Player owner, Continent aContinent) {
+    public Territory(String territoryName, Continent aContinent) {
         this.name = territoryName;
         this.continent = aContinent;
-        this.owner = owner;
 
         this.armies = 0;
 
-        borderTerritories = new HashMap<>();
+        borderTerritories = new ArrayList<>();
     }
 
+    //get name of territory
+    public String getName() {
+        return name;
+    }
+
+    //set the number of armies
     public void setArmies(int armies){
         this.armies = armies;
     }
 
+    //get the number of armies
     public int getArmies(){
         return this.armies;
     }
 
-    public Territory getBorderTerritory(String direction)
+    //Set border territories
+    public void setBorderTerritory(Territory territory)
     {
-        return borderTerritories.get(direction);
+        borderTerritories.add(territory);
+    }
+
+    //get border territories
+    public ArrayList<Territory> getBorderTerritories()
+    {
+        return borderTerritories;
     }
 }

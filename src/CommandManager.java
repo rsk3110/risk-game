@@ -11,11 +11,22 @@ public class CommandManager {
         this.commandMap.put(aName, aCommand);
     }
 
-    public void execute(String aName) {
-        commandMap.get(aName).execute();
+    public boolean execute(Player player, String aName) {
+        return commandMap.get(aName).execute(player);
     }
 
-    public void execute(String aName, List<String> args) {
-        commandMap.get(aName).execute(args);
+    public boolean execute(Player player, String aName, List<String> args) {
+        return commandMap.get(aName).execute(player, args);
+    }
+
+    public boolean handleInput(Player player, String input) {
+        List<String> inputList = new ArrayList<String>(Arrays.asList(input.toLowerCase().split(" ")));
+        String cmd = inputList.get(0);
+
+        if(!commandMap.containsKey(cmd)) System.out.println("Invalid command!");
+        else if(inputList.size() == 1) return this.execute(player, cmd);
+        else return this.execute(player, cmd, inputList.subList(1, inputList.size() - 1));
+
+        return false;
     }
 }
