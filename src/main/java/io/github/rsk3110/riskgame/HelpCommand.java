@@ -4,8 +4,9 @@ package io.github.rsk3110.riskgame;
 import java.util.List;
 /*
 * Tells player how to play the game
+* Explains game set up.
 * All commands and their descriptions
-* Rules for attack
+* Rules for attacking and winning.
 *
 * */
 public class HelpCommand implements Command {
