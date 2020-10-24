@@ -1,4 +1,4 @@
-import io.github.rsk3110.riskgame.loader.WorldFileLoader;
+package io.github.rsk3110.riskgame;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;

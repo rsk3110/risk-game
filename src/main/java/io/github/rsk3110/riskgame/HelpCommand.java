@@ -1,15 +1,15 @@
-import java.util.ArrayList;
+package io.github.rsk3110.riskgame;
+
 import java.util.List;
 
-public class SkipCommand implements Command {
+public class HelpCommand implements Command {
 
-    Player player;
+    public HelpCommand(){
 
-    public SkipCommand(){
     }
 
     public boolean execute(Player player) {
-        return true;
+        return false;
     }
 
     public boolean execute(Player player, List<String> args) {
