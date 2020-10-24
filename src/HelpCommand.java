@@ -12,13 +12,13 @@ public class HelpCommand implements Command {
 
     }
 
-    public boolean execute(Player player) {
+    public static void help(){
         //Game intro
         System.out.println("You are playing Risk.");
         System.out.println(
                 "There are 6 continents (no Antarctica) and 42 territories divided among them./n " +
-                "There are two players (in this version) each with 21 territories./n" +
-                "Each of the territories have 2 - 3 armies that add up to  a total of 50 armies per player./n");
+                        "There are two players (in this version) each with 21 territories./n" +
+                        "Each of the territories have 2 - 3 armies that add up to  a total of 50 armies per player./n");
 
         //Game commands
         System.out.println("There 5 commands that you can use: ");
@@ -34,7 +34,9 @@ public class HelpCommand implements Command {
         //Win conditions
         System.out.println("The that takes over the world is the winner.");
         System.out.println("Otherwise its a draw.");
-
+    }
+    public boolean execute(Player player) {
+        help();
         return false;
     }
 
