@@ -2,6 +2,11 @@ package io.github.rsk3110.riskgame;
 
 import java.util.*;
 
+/**
+ * Creates and handles commands
+ *
+ * @author Kaue Gomes e Sousa de Oliveira
+ **/
 public class CommandManager {
     private Map<String, Command> commandMap;
 

@@ -5,6 +5,12 @@ import org.jgrapht.Graph;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ *
+ *
+ * @author Kaue Gomes e Sousa de Oliveira
+ * @author Mark Johnson
+ **/
 public final class World implements Serializable {
     private final Graph<Territory, TerritoryEdge> graph;
     private final List<Continent> continents;

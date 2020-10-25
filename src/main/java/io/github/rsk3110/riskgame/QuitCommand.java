@@ -5,6 +5,7 @@ import java.util.List;
 /**
  * Quits game. Takes in no arguments.
  *
+ * @author Tooba Sheikh
  * @author Kaue Gomes e Sousa de Oliveira
  */
 public class QuitCommand implements Command {

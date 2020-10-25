@@ -10,7 +10,6 @@ import java.util.List;
 public class SkipCommand implements Command {
 
     public SkipCommand(){
-
     }
 
     /**
