@@ -157,6 +157,8 @@ public final class Territory implements Serializable {
     /**
      * Check if target territory is a neighbor of origin territory
      *
+     * @param world game world
+     * @param territory target territory
      * @return whether target territory is neighbor of origin territory
      */
     public boolean isNeighbor(World world, Territory territory) {
@@ -189,7 +191,7 @@ public final class Territory implements Serializable {
      *
      * @param player player executing the command
      * @param id id of the territory
-     * @return
+     * @return territory with given id
      */
     static public Territory idToTerritory(Player player, String id) {
         List<Object> territory = Arrays.asList(player.getWorld().getTerritoryMap().keySet().stream()

@@ -7,8 +7,8 @@ import java.util.*;
 
 /**
  * Represents a game World.
- * Stores the graph (Territories & Relationships),
- * continents, and a map of territories to territory edge sets.
+ * Stores the graph, continents,
+ * and a map of territories to territory edge sets.
  *
  * @author Mark Johnson
  * @author Kaue Gomes e Sousa de Oliveira

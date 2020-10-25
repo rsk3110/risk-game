@@ -19,7 +19,7 @@ public class AttackCommand implements Command {
 
     /**
      * Executes the attack command.
-     * Checks for valid number of arguments entered {attack <origin> <target>}
+     * Checks for valid number of arguments entered {attack origin target}
      * Checks if valid territories were selected, if not end turn
      * If valid territories are entered, move on to (call method) attack.
      *

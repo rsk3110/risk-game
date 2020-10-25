@@ -53,9 +53,9 @@ public class Player {
     }
 
     /**
-     * Get name of continent
+     * Remove territory
      *
-     * @return the name of the continent
+     * @param aTerritory territory to remove
      */
     public void removeTerritory(Territory aTerritory) {
         this.territories.remove(aTerritory);
