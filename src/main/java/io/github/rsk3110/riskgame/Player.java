@@ -8,11 +8,13 @@ public class Player {
     private String name;
     private List<Territory> territories;
     private World world;
+    private int maxArmies;
 
-    public Player(World world, String aName) {
+    public Player(World world, String aName, int maxArmies) {
         this.name = aName;
         this.territories = new ArrayList<Territory>();
         this.world = world;
+        this.maxArmies = maxArmies;
     }
 
     public String getName() { return this.name; }

@@ -3,10 +3,7 @@ package io.github.rsk3110.riskgame;
 import io.github.rsk3110.riskgame.loader.WorldFileLoader;
 
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public class Game {
 
@@ -17,8 +14,13 @@ public class Game {
     private List<Player> players;
     private Scanner scanner;
 
-    static final private int  NUM_PLAYERS = 2;
-    static final private int  STARTING_ARMIES = 50;
+    static final private TreeMap<Integer, Integer> maxArmies = new TreeMap<Integer, Integer>(){{
+        put(2, 50);
+        put(3, 35);
+        put(4, 30);
+        put(5, 25);
+        put(6, 20);
+    }};
 
     public static void main(String[] args) {
         Game game = new Game();
@@ -33,14 +35,17 @@ public class Game {
         this.commandManager.register("map", new MapCommand());
         this.commandManager.register("attack", new AttackCommand());
         this.commandManager.register("skip", new SkipCommand());
-        this.commandManager.register("skip", new QuitCommand());
+        this.commandManager.register("quit", new QuitCommand());
 
         this.world = (new WorldFileLoader(Paths.get("").toAbsolutePath().resolve("worlds"))).load("default");
         this.territories = world.getTerritoryMap().keySet();
 
+
+        System.out.println("Welcome to RISK! How many players will be playing? (2-6)");
+        int numPlayers = getNumPlayers();
         this.players = new ArrayList<Player>(){{
-            for(int i = 0; i < NUM_PLAYERS; i++) {
-                add(new Player(world, "player" + i));
+            for(int i = 0; i < numPlayers; i++) {
+                add(new Player(world, "player" + i, maxArmies.get(numPlayers)));
             }
         }};
 
@@ -53,18 +58,35 @@ public class Game {
 
     //Added an intro text which is basically the help section and win check after each play
     public void play() {
-        this.commandManager.handleInput(null, "help");//prints intro: all the rules and commands found in help
-
-        for(;;) {
+        for(;;) { //loop forever
             for(Player player : this.players) {
                 boolean end = false;
-                while(!end){
+
+                System.out.println("It is now " + player.getName() + "'s turn.");
+                while(!end){ //while no command terminates turn
+                    System.out.print("> ");
                     end = this.commandManager.handleInput(player, this.scanner.nextLine());
-                    if(win() == true){
-                        this.commandManager.handleInput(null, "quit");
-                    }
+//                    if(win() == true){
+//                        this.commandManager.handleInput(null, "quit");
+//                    }
                 }
             }
+        }
+    }
+
+    private int getNumPlayers() {
+        try {
+            Scanner scanner = new Scanner(System.in);
+            int num;
+            do {
+                System.out.println("> ");
+                num = scanner.nextInt();
+                if(!(num >= 2 && num <= 6)) System.out.println("Invalid number. Must be from 2 to 6.");
+            } while(!(num >= 2 && num <= 6));
+            return num;
+        } catch (Exception e) {
+            System.out.println("Invalid Input. Try a number from 2 to 6.");
+            return getNumPlayers();
         }
     }
 
