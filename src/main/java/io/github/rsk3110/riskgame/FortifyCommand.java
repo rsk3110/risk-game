@@ -38,11 +38,11 @@ public class FortifyCommand implements Command {
             return false;
         }
 
-        Territory origin = Territory.stringToTerritory(player, args.get(0));
-        Territory target = Territory.stringToTerritory(player, args.get(1));
+        Territory origin = Territory.idToTerritory(player, args.get(0));
+        Territory target = Territory.idToTerritory(player, args.get(1));
         int numArmies;
         try {
-            numArmies = Integer.parseInt(args.get(0));
+            numArmies = Integer.parseInt(args.get(2));
         } catch (NumberFormatException e) {
             System.out.println("Invalid number of armies, not a number. {fortify <origin> <target> <#armies>}");
             return false;

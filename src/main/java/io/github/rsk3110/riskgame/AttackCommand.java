@@ -23,8 +23,8 @@ public class AttackCommand implements Command {
             System.out.println("Invalid number of arguments. {attack <origin> <target>}");
             return false;
         }
-        Territory origin = Territory.stringToTerritory(player, args.get(0));
-        Territory target = Territory.stringToTerritory(player, args.get(1));
+        Territory origin = Territory.idToTerritory(player, args.get(0));
+        Territory target = Territory.idToTerritory(player, args.get(1));
 
         if (origin == null || !origin.isOccupiedBy(player)) {
             System.out.println("origin not owned by player or does not exist. {attack <origin> <target>}");

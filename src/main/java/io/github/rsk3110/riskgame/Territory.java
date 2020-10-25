@@ -19,6 +19,10 @@ public final class Territory implements Serializable {
         this.occupant = null;
     }
 
+    private int getId() {
+        return this.id;
+    }
+
     public void setName(final String name) {
         this.name = name;
     }
@@ -96,12 +100,12 @@ public final class Territory implements Serializable {
 
     @Override
     public String toString() {
-        return getName() + ": Occupied by '" + occupant.getName() + "' with '" + armies + "' armies.\n";
+        return "[" + id + "] " + getName() + ": Occupied by '" + occupant.getName() + "' with '" + armies + "' armies.\n";
     }
 
-    static public Territory stringToTerritory(Player player, String str) {
+    static public Territory idToTerritory(Player player, String str) {
         List<Object> territory = Arrays.asList(player.getWorld().getTerritoryMap().keySet().stream()
-                .filter(t -> t.getName().equals(str)).toArray());
+                .filter(t -> String.valueOf(t.getId()).equals(str)).toArray());
         return (territory.size() == 1) ? (Territory)territory.get(0) : null;
     }
 }
