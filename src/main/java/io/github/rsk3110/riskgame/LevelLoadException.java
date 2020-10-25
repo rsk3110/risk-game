@@ -1,4 +1,4 @@
-package io.github.rsk3110.riskgame.loader;
+package io.github.rsk3110.riskgame;
 
 public class LevelLoadException extends RuntimeException {
 

@@ -1,9 +1,5 @@
-package io.github.rsk3110.riskgame.loader;
+package io.github.rsk3110.riskgame;
 
-import io.github.rsk3110.riskgame.Continent;
-import io.github.rsk3110.riskgame.Territory;
-import io.github.rsk3110.riskgame.World;
-import io.github.rsk3110.riskgame.TerritoryEdge;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.builder.GraphTypeBuilder;
 import org.jgrapht.nio.GraphImporter;
