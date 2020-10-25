@@ -4,16 +4,16 @@ import io.github.rsk3110.riskgame.loader.WorldFileLoader;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Game {
 
     private CommandManager commandManager;
     private World world;
     private List<Continent> continents;
-    private List<Territory> territories;
+    private Set<Territory> territories;
     private List<Player> players;
     private Scanner scanner;
 
@@ -33,25 +33,21 @@ public class Game {
         this.commandManager.register("map", new MapCommand());
         this.commandManager.register("attack", new AttackCommand());
         this.commandManager.register("skip", new SkipCommand());
-        //this.commandManager.register("skip", new quitCommand());
+        this.commandManager.register("skip", new QuitCommand());
 
         this.world = (new WorldFileLoader(Paths.get("").toAbsolutePath().resolve("worlds"))).load("default");
-        this.continents = this.world.getContinents();
-        this.territories = new ArrayList<Territory>(this.world.getGraph().vertexSet());
-        Collections.shuffle(territories);
+        this.territories = world.getTerritoryMap().keySet();
 
         this.players = new ArrayList<Player>(){{
             for(int i = 0; i < NUM_PLAYERS; i++) {
-                add(new Player("player" + i));
+                add(new Player(world, "player" + i));
             }
         }};
 
         int index = 0;
-        for(Territory territory : this.territories) {
-            this.players.get(index).addTerritory(territory);
-
-            if(index == this.players.size() - 1) index = 0;
-            else index++;
+        for(Territory territory : territories) {
+            territory.setOccupant(players.get(index));
+            index = (index + 1) % players.size();
         }
     }
 
