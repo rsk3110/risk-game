@@ -15,9 +15,8 @@ public class Game {
     private CommandManager commandManager;
     private World world;
     private List<Player> players;
-    private Scanner scanner;
 
-    static final private TreeMap<Integer, Integer> maxArmies = new TreeMap<Integer, Integer>(){{
+    static final private TreeMap<Integer, Integer> maxArmies = new TreeMap<Integer, Integer>(){{ // defines default army sizes per player sizes
         put(2, 50);
         put(3, 35);
         put(4, 30);
@@ -31,13 +30,11 @@ public class Game {
     }
 
     /**
-     * Creates Game. Creates all the commands, loads the world.
-     * Asks for the number of players, and depending on player input splits
-     * territories between number of player and distributes number of armies on each territory
+     * Creates Game. Creates all the commands and loads the world.
+     * Asks for the number of players, splits territories between players,
+     * and randomizes army allocation to each territory
      */
     public Game() {
-        this.scanner = new Scanner(System.in);
-
         this.commandManager = new CommandManager();
         this.commandManager.register("help", new HelpCommand());
         this.commandManager.register("map", new MapCommand());
@@ -47,7 +44,7 @@ public class Game {
         this.commandManager.register("quit", new QuitCommand());
 
         WorldFileLoader loader = new WorldFileLoader(Paths.get("").toAbsolutePath().resolve("worlds"));
-        this.world = loader.load("default");
+        this.world = loader.load("default"); // load in level data
 
         System.out.println("Welcome to RISK! How many players will be playing? (2-6)");
         System.out.print("> ");
@@ -58,7 +55,7 @@ public class Game {
             }
         }};
 
-        List<Territory> territories = new ArrayList<Territory>(world.getTerritoryMap().keySet());
+        List<Territory> territories = new ArrayList<>(world.getTerritoryMap().keySet());
         Collections.shuffle(territories);
 
         int index = 0;
@@ -82,19 +79,19 @@ public class Game {
     }
 
     /**
-     * Runs loop till user enters command quit or game ends by checking if player won after each turn
+     * Runs loop till game ends or player quits game.
      */
     public void play() {
         for(;;) { //loop forever
             for(Player player : this.players) {
                 if(player.getTerritories().size() == 0) continue; //skip turn if player eliminated.
                 boolean end = false;
-                player.updateArmies();
+                player.updateArmies(); // Add rewarded armies
                 System.out.println("It is now " + player.getName() + "'s turn.");
-                doArmyAllocation(player);
+                runArmyAllocation(player); // Allow player to allocate free armies
                 while(!end){ //while no command terminates turn
                     System.out.print("{" + player.getName() + "} > ");
-                    end = this.commandManager.handleInput(player, this.scanner.nextLine());
+                    end = this.commandManager.handleInput(player, (new Scanner(System.in)).nextLine()); // get next command
                     if(checkIfOver())
                         commandManager.execute(player, "quit");
                 }
@@ -102,6 +99,13 @@ public class Game {
         }
     }
 
+    /**
+     * Parses out player army allocation string and allocates armies to territory
+     * if valid.
+     *
+     * @param player player executing the command
+     * @param args input to parse
+     */
     private void parseAndAllocate(Player player, List<String> args) {
         if(args.size() != 2) {
             System.out.println("Invalid number of arguments. {<target> <#armies>}");
@@ -110,7 +114,7 @@ public class Game {
 
         Territory target = Territory.idToTerritory(player, args.get(0));
         int numArmies;
-        try {
+        try { // try-catch for if player does not input number
             numArmies = Integer.parseInt(args.get(1));
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid input. Try a new number of armies. {<target> <#armies>}");
@@ -128,7 +132,12 @@ public class Game {
         player.allocateArmies(numArmies, target);
     }
 
-    private void doArmyAllocation(Player player) {
+    /**
+     * Lists player territories and prompts user to allocate player armies
+     *
+     * @param player player executing the command
+     */
+    private void runArmyAllocation(Player player) {
         player.getTerritories().forEach(System.out::print);
 
         do {
@@ -138,6 +147,13 @@ public class Game {
         } while(player.getArmies() > 0);
     }
 
+    /**
+     * Prompt for input within specified range.
+     *
+     * @param min minimum value
+     * @param max maximum value
+     * @return resulting number
+     */
     private int getNumInRange(int min, int max) {
         try {
             Scanner scanner = new Scanner(System.in);
@@ -156,20 +172,18 @@ public class Game {
     /**
      * Checks if game draws or player won
      *
-     * @return true if player won or game draws
+     * @return whether game has ended
      */
     private boolean checkIfOver(){
-        //checks if any player owns the whole world
         for (Player p: players){
-            if ((p.getTerritories()).size() == 42){
+            if ((p.getTerritories()).size() == world.getTerritoryMap().keySet().size()){ // player owns all territories
                 System.out.println(p.getName() + " wins.");
                 return true;
             }
         }
 
-        //checks if all the armies on each territory equals 1 (because users can't move armies when there is only 1 army on each territory)
         for(Territory t: world.getTerritoryMap().keySet()){
-            if(t.getArmies() != 1) return false;
+            if(t.getArmies() != 1) return false; // At least 1 territory can be played
         }
         System.out.println("Nobody can move, it's a draw.");
         return true;
