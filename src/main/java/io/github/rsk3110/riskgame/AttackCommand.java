@@ -45,26 +45,26 @@ public class AttackCommand implements Command {
             return attack(player, origin, target);
     }
 
-    private int getNumDice(int max) {
+    private int getNumDice(Player player, int max) {
         try {
             Scanner scanner = new Scanner(System.in);
-            System.out.println("Attack with how many dice?");
+            System.out.println("Roll how many dice? (" + player.getName() + ")");
             int num;
             do {
                 num = scanner.nextInt();
-                if(!(num > 0 && num <= max)) System.out.println("Invalid number. Must be 1 to " + max + ".");
+                if(!(num > 0 && num <= max)) System.out.println("Invalid number. Must be " + ((max == 1) ? "1" : "1 to " + max + "."));
             } while(!(num > 0 && num <= max));
             return num;
         } catch (Exception e) {
             System.out.println("Invalid Input. Try a new number of die.");
-            return getNumDice(max);
+            return getNumDice(player, max);
         }
     }
 
-    private List<Integer> getDiceValues(int max) {
+    private List<Integer> getDiceValues(Player player, int max) {
         return new ArrayList<Integer>(){{
             Random random = new Random();
-            for(int i = getNumDice(max); i > 0; i--) {
+            for(int i = getNumDice(player, max); i > 0; i--) {
                 int num = random.nextInt(6) + 1;
                 add(num);
                 System.out.println("You rolled: " + num);
@@ -73,8 +73,8 @@ public class AttackCommand implements Command {
     }
 
     private boolean attack(Player player, Territory origin, Territory target){
-        List<Integer> playerValues = getDiceValues(Math.min(3, origin.getArmies() - 1));
-        List<Integer> targetValues = getDiceValues(Math.min(2, target.getArmies() - 1));
+        List<Integer> playerValues = getDiceValues(player, Math.min(3, origin.getArmies() - 1));
+        List<Integer> targetValues = getDiceValues(target.getOccupant(), Math.min(2, target.getArmies()));
         int minDie = Math.min(playerValues.size(), targetValues.size());
         for(int i = minDie; i > 0; i--) {
             Integer playerValue = Collections.max(playerValues);
@@ -84,12 +84,13 @@ public class AttackCommand implements Command {
 
             if(playerValue < targetValue || playerValue.equals(targetValue)) {
                 origin.decrementArmies();
+                System.out.println("Failure! You lost an army. " + "{" + playerValue + " vs " + targetValue + "}");
             } else {
                 target.decrementArmies();
                 if(target.getArmies() == 0) { //if defeated
                     target.setOccupant(player);
                     origin.moveArmy(playerValues.size(), target);
-                    System.out.println("Success! You captured " + target.getName() + " and it now holds " + playerValues.size() + " armies.");
+                    System.out.println("Success! You captured " + target.getName() + " and it now holds " + target.getArmies() + " armies. " + "{" + playerValue + " vs " + targetValue + "}");
                     return false;
                 }
             }
