@@ -48,7 +48,7 @@ public class AttackCommand implements Command {
     private int getNumDice(Player player, int max) {
         try {
             Scanner scanner = new Scanner(System.in);
-            System.out.println("Roll how many dice? (" + player.getName() + ")");
+            System.out.println("Roll how many dice? (" + player.getName() + ") Must be " + ((max == 1) ? "1" : "1 to " + max + "."));
             int num;
             do {
                 num = scanner.nextInt();
@@ -72,10 +72,28 @@ public class AttackCommand implements Command {
         }};
     }
 
+    private int getNumArmyToMove(int min, int max) {
+        try {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Move how many armies? (" + min + " to " + max + ")");
+            int num;
+            do {
+                num = scanner.nextInt();
+                if(!(num >= min && num <= max)) System.out.println("Invalid number. Must be " + ((max == min) ? min : min + " to " + max + "."));
+            } while(!(num >= min && num <= max));
+            return num;
+        } catch (Exception e) {
+            System.out.println("Invalid Input. Try a new number of armies.");
+            return getNumArmyToMove(min, max);
+        }
+    }
+
     private boolean attack(Player player, Territory origin, Territory target){
         List<Integer> playerValues = getDiceValues(player, Math.min(3, origin.getArmies() - 1));
         List<Integer> targetValues = getDiceValues(target.getOccupant(), Math.min(2, target.getArmies()));
         int minDie = Math.min(playerValues.size(), targetValues.size());
+        int attackerDieCount = playerValues.size();
+        int lostCount = 0;
         for(int i = minDie; i > 0; i--) {
             Integer playerValue = Collections.max(playerValues);
             playerValues.remove(playerValue);
@@ -84,13 +102,16 @@ public class AttackCommand implements Command {
 
             if(playerValue < targetValue || playerValue.equals(targetValue)) {
                 origin.decrementArmies();
+                lostCount++;
                 System.out.println("Failure! You lost an army. " + "{" + playerValue + " vs " + targetValue + "}");
             } else {
                 target.decrementArmies();
+                System.out.println("Success! Enemy lost an army. " + "{" + playerValue + " vs " + targetValue + "}");
                 if(target.getArmies() == 0) { //if defeated
                     target.setOccupant(player);
-                    origin.moveArmy(playerValues.size(), target);
-                    System.out.println("Success! You captured " + target.getName() + " and it now holds " + target.getArmies() + " armies. " + "{" + playerValue + " vs " + targetValue + "}");
+                    System.out.println("Success! You won the battle.");
+                    origin.moveArmy(getNumArmyToMove(attackerDieCount - lostCount, origin.getArmies() - 1), target);
+                    System.out.println(player.getName() + " captured " + target.getName() + " and it now holds " + target.getArmies() + " armies.");
                     return false;
                 }
             }
