@@ -27,7 +27,7 @@ public class AttackCommand implements Command {
         Territory target = Territory.idToTerritory(player, args.get(1));
 
         if (origin == null || !origin.isOccupiedBy(player)) {
-            System.out.println("origin not owned by player or does not exist. {attack <origin> <target>}");
+            System.out.println("origin not occupied by player or does not exist. {attack <origin> <target>}");
             return false;
         } else if (target == null || !origin.isNeighbor(player.getWorld(), target)) {
             System.out.println("target is not bordering origin or does not exist. {attack <origin> <target>}");
@@ -78,6 +78,7 @@ public class AttackCommand implements Command {
             System.out.println("Move how many armies? (" + min + " to " + max + ")");
             int num;
             do {
+                System.out.print("> ");
                 num = scanner.nextInt();
                 if(!(num >= min && num <= max)) System.out.println("Invalid number. Must be " + ((max == min) ? min : min + " to " + max + "."));
             } while(!(num >= min && num <= max));
@@ -108,10 +109,12 @@ public class AttackCommand implements Command {
                 target.decrementArmies();
                 System.out.println("Success! Enemy lost an army. " + "{" + playerValue + " vs " + targetValue + "}");
                 if(target.getArmies() == 0) { //if defeated
+                    Player tOccupant = target.getOccupant();
                     target.setOccupant(player);
                     System.out.println("Success! You won the battle.");
                     origin.moveArmy(getNumArmyToMove(attackerDieCount - lostCount, origin.getArmies() - 1), target);
                     System.out.println(player.getName() + " captured " + target.getName() + " and it now holds " + target.getArmies() + " armies.");
+                    if(tOccupant.getTerritories().size() == 0) System.out.println(tOccupant.getName() + " was eliminated.");
                     return false;
                 }
             }
