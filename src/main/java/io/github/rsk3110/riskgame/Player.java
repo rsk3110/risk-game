@@ -1,7 +1,9 @@
 package io.github.rsk3110.riskgame;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Player {
 
@@ -43,11 +45,36 @@ public class Player {
         this.unallocatedArmies = num;
     }
 
-    public void decrementArmies() {
-        this.unallocatedArmies--;
+    public void allocateArmies(int num, Territory territory) {
+        setArmies(getArmies() - num);
+        territory.setArmies(territory.getArmies() + num);
     }
 
     public World getWorld() { return this.world; };
+
+    public void updateArmies() {
+        this.unallocatedArmies += (territories.size() >= 9) ? territories.size() / 3 : 3; // Always at least 3.
+        for(Continent continent : getOccupiedContinents()) {
+            this.unallocatedArmies += continent.getBonusArmies();
+        }
+    }
+
+    public Set<Continent> getOccupiedContinents() {
+        Set<Continent> continentSet = new HashSet<Continent>();
+        for(Continent continent : world.getContinents()) {
+            boolean add = true;
+            for(Territory territory : continent.getTerritories()) {
+                if (!territory.getOccupant().equals(this)) {
+                    add = false;
+                    break;
+                }
+            }
+
+            if(add) continentSet.add(continent);
+        }
+
+        return continentSet;
+    }
 
     @Override
     public String toString() {
