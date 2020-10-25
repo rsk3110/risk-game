@@ -1,7 +1,5 @@
 package io.github.rsk3110.riskgame;
 
-import io.github.rsk3110.riskgame.loader.WorldFileLoader;
-
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -9,8 +7,6 @@ public class Game {
 
     private CommandManager commandManager;
     private World world;
-    private List<Continent> continents;
-    private Set<Territory> territories;
     private List<Player> players;
     private Scanner scanner;
 
@@ -38,23 +34,25 @@ public class Game {
         this.commandManager.register("skip", new SkipCommand());
         this.commandManager.register("quit", new QuitCommand());
 
-        this.world = (new WorldFileLoader(Paths.get("").toAbsolutePath().resolve("worlds"))).load("default");
-        this.territories = world.getTerritoryMap().keySet();
-
+        WorldFileLoader loader = new WorldFileLoader(Paths.get("").toAbsolutePath().resolve("worlds"));
+        this.world = loader.load("default");
 
         System.out.println("Welcome to RISK! How many players will be playing? (2-6)");
-        int numPlayers = getNumPlayers();
+        System.out.print("> ");
+        int numPlayers = getNumInRange(2, 6);
         this.players = new ArrayList<Player>(){{ //init players
             for(int i = 0; i < numPlayers; i++) {
                 add(new Player(world, "player" + i, maxArmies.get(numPlayers)));
             }
         }};
 
+        List<Territory> territories = new ArrayList<Territory>(world.getTerritoryMap().keySet());
+        Collections.shuffle(territories);
+
         int index = 0;
         for(Territory territory : territories) { //assign territories
             territory.setOccupant(players.get(index));
-            territory.setArmies(1);
-            players.get(index).decrementArmies();
+            players.get(index).allocateArmies(1, territory);
             index = (index + 1) % players.size();
         }
 
@@ -75,56 +73,87 @@ public class Game {
     public void play() {
         for(;;) { //loop forever
             for(Player player : this.players) {
+                if(player.getTerritories().size() == 0) continue; //skip turn if player eliminated.
                 boolean end = false;
-
+                player.updateArmies();
                 System.out.println("It is now " + player.getName() + "'s turn.");
+                doArmyAllocation(player);
                 while(!end){ //while no command terminates turn
                     System.out.print("{" + player.getName() + "} > ");
                     end = this.commandManager.handleInput(player, this.scanner.nextLine());
-//                    if(win() == true){
-//                        this.commandManager.handleInput(null, "quit");
-//                    }
+                    if(checkIfOver())
+                        commandManager.execute(player, "quit");
                 }
             }
         }
     }
 
-    private int getNumPlayers() {
+    private void parseAndAllocate(Player player, List<String> args) {
+        if(args.size() != 2) {
+            System.out.println("Invalid number of arguments. {<target> <#armies>}");
+            return;
+        }
+
+        Territory target = Territory.idToTerritory(player, args.get(0));
+        int numArmies;
+        try {
+            numArmies = Integer.parseInt(args.get(1));
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid input. Try a new number of armies. {<target> <#armies>}");
+            return;
+        }
+
+        if(target == null || !target.isOccupiedBy(player)) {
+            System.out.println("target is not occupied by player or does not exist. {<target> <#armies>}");
+            return;
+        } else if(numArmies < 1 || numArmies > player.getArmies()) {
+            System.out.println("Not enough armies to move. (1 to " + player.getArmies() + ") {<target> <#armies>}");
+            return;
+        }
+
+        player.allocateArmies(numArmies, target);
+    }
+
+    private void doArmyAllocation(Player player) {
+        player.getTerritories().forEach(System.out::print);
+
+        do {
+            System.out.println("You have " + player.getArmies() + " armies to allocate. {<target> <#armies>}");
+            System.out.print("{" + player.getName() + " allocating} > ");
+            parseAndAllocate(player, Arrays.asList((new Scanner(System.in)).nextLine().split(" ")));
+        } while(player.getArmies() > 0);
+    }
+
+    private int getNumInRange(int min, int max) {
         try {
             Scanner scanner = new Scanner(System.in);
             int num;
             do {
-                System.out.print("> ");
                 num = scanner.nextInt();
-                if(!(num >= 2 && num <= 6)) System.out.println("Invalid number. Must be from 2 to 6.");
-            } while(!(num >= 2 && num <= 6));
+                if(!(num >= min && num <= max)) System.out.println("Invalid number. Must be " + ((max == min) ? min : min + " to " + max + "."));
+            } while(!(num >= min && num <= max));
             return num;
         } catch (Exception e) {
-            System.out.println("Invalid Input. Try a number from 2 to 6.");
-            return getNumPlayers();
+            System.out.println("Invalid Input. Try a new number.");
+            return getNumInRange(min, max);
         }
     }
 
     //checking if players won or don't have enough armies to play
-    private boolean win(){
-        //checks if any player owns the whole continent
+    private boolean checkIfOver(){
+        //checks if any player owns the whole world
         for (Player p: players){
             if ((p.getTerritories()).size() == 42){
                 System.out.println(p.getName() + " wins.");
                 return true;
             }
         }
-        int sumOfArmies = 0;
+
         //checks if all the armies on each territory equals 1 (because users can't move armies when there is only 1 army on each territory)
-        for(Territory t: territories){
-            sumOfArmies += t.getArmies();
+        for(Territory t: world.getTerritoryMap().keySet()){
+            if(t.getArmies() != 1) return false;
         }
-        if(sumOfArmies == 42){
-            //this assumes that none of the territories are neutral
-            //This still needs work to properly cover all edge cases
-            System.out.println("The match is a draw.");
-            return true;
-        }
-        return false;
+        System.out.println("Nobody can move, it's a draw.");
+        return true;
     }
 }
