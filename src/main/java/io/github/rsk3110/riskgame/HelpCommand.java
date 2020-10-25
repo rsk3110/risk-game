@@ -5,10 +5,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Tells player how to play the game
- * Explains game set up.
- * All commands and their descriptions
- * Rules for attacking and winning.
+ * Displays information on commands and how to execute them.
  *
  * @author Tooba Sheikh
  * @author Kaue Gomes e Sousa de Oliveira
@@ -46,7 +43,7 @@ public class HelpCommand implements Command {
     }
 
     /**
-     * If help enetered with no arguments, then print basic rules
+     * Print all shortMessages
      *
      * @param player player executing the command
      * @return whether to hand control to next player
@@ -59,8 +56,7 @@ public class HelpCommand implements Command {
     }
 
     /**
-     * Checks what command player needs help with.
-     * Prints information of the chosen command
+     * Prints longMessage of specified command, if valid.
      *
      * @param player player executing the command
      * @param args arguments of execution
