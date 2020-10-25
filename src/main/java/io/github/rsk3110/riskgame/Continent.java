@@ -8,6 +8,8 @@ import java.util.Set;
 
 /**
  * Represents a Continent.
+ * Tracks name, color, bonus armies,
+ * and contained territories.
  *
  * @author Kaue Gomes e Sousa de Oliveira
  * @author Mark Johnson
