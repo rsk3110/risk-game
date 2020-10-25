@@ -1,6 +1,8 @@
 package io.github.rsk3110.riskgame;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public final class Territory implements Serializable {
@@ -95,5 +97,11 @@ public final class Territory implements Serializable {
     @Override
     public String toString() {
         return getName() + ": Occupied by '" + occupant.getName() + "' with '" + armies + "' armies.\n";
+    }
+
+    static public Territory stringToTerritory(Player player, String str) {
+        List<Object> territory = Arrays.asList(player.getWorld().getTerritoryMap().keySet().stream()
+                .filter(t -> t.getName().equals(str)).toArray());
+        return (territory.size() == 1) ? (Territory)territory.get(0) : null;
     }
 }

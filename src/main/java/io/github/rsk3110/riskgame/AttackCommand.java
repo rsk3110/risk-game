@@ -15,15 +15,7 @@ import java.util.*;
  **/
 public class AttackCommand implements Command {
 
-    Player player;
-
     public AttackCommand(){
-    }
-
-    private Territory stringToTerritory(String str) {
-        List<Object> territory = Arrays.asList(player.getWorld().getTerritoryMap().keySet().stream()
-                .filter(t -> t.getName().equals(str)).toArray());
-        return (territory.size() == 1) ? (Territory)territory.get(0) : null;
     }
 
     public boolean execute(Player player, List<String> args) {
@@ -31,10 +23,8 @@ public class AttackCommand implements Command {
             System.out.println("Invalid number of arguments. {attack <origin> <target>}");
             return false;
         }
-
-        this.player = player;
-        Territory origin = stringToTerritory(args.get(0));
-        Territory target = stringToTerritory(args.get(1));
+        Territory origin = Territory.stringToTerritory(player, args.get(0));
+        Territory target = Territory.stringToTerritory(player, args.get(1));
 
         if (origin == null || !origin.isOccupiedBy(player)) {
             System.out.println("origin not owned by player or does not exist. {attack <origin> <target>}");
@@ -52,7 +42,7 @@ public class AttackCommand implements Command {
             return false;
         }
         else
-            return attack(origin, target);
+            return attack(player, origin, target);
     }
 
     private int getNumDice(int max) {
@@ -82,7 +72,7 @@ public class AttackCommand implements Command {
         }};
     }
 
-    private boolean attack(Territory origin, Territory target){
+    private boolean attack(Player player, Territory origin, Territory target){
         List<Integer> playerValues = getDiceValues(Math.min(3, origin.getArmies() - 1));
         List<Integer> targetValues = getDiceValues(Math.min(2, target.getArmies() - 1));
         int minDie = Math.min(playerValues.size(), targetValues.size());
