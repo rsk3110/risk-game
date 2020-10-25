@@ -20,7 +20,7 @@ public class HelpCommand implements Command {
     public HelpCommand(){
         this.shortMessages = new TreeMap<String, String>(){{
             put("help", "help | help <command> - tells you how to play the game. Optionally explains command if specified.");
-            put("map", "map | map <continent> - Shows all continents and territories statuses. Optionally only shows territories of specified continent.");
+            put("map", "map - Shows all continents' and territories' statuses.");
             put("attack", "attack <origin> <target> - Attacks target territory from origin territory. See 'help attack' for more.");
             put("skip", "skip - skips your turn and goes to the next player.");
             put("quit", "quit - quits the program.");
