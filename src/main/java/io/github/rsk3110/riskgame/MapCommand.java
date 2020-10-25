@@ -5,10 +5,12 @@ import java.util.List;
 public class MapCommand implements Command {
 
     public MapCommand(){
-
     }
 
     public boolean execute(Player player) {
+        for(Continent continent : player.getWorld().getContinents()) {
+            System.out.println(continent);
+        }
         return false;
     }
 
