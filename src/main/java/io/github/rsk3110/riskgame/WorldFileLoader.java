@@ -34,6 +34,13 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+/**
+ * Reads, parses, and constructs World object
+ * from XML input file.
+ *
+ * @author Mark Johnson
+ * @author Kaue Gomes e Sousa de Oliveira
+ */
 public final class WorldFileLoader implements WorldLoader {
     private static final String FILE_EXT = "xml";
 
@@ -43,6 +50,11 @@ public final class WorldFileLoader implements WorldLoader {
 
     private final Path levelDir;
 
+    /**
+     * Initializes a WorldFileLoader object.
+     *
+     * @param levelDir directory of level file
+     */
     public WorldFileLoader(final Path levelDir) {
         if (!Files.exists(levelDir)) throw new IllegalArgumentException(String.format("directory '%s' does not exist", levelDir));
         this.levelDir = levelDir;
@@ -52,6 +64,12 @@ public final class WorldFileLoader implements WorldLoader {
         this.xPathFactory = XPathFactory.newInstance();
     }
 
+    /**
+     * Creates a GraphMLImporter to parse out territory attributes.
+     *
+     * @param continents
+     * @return
+     */
     private static GraphImporter<Territory, TerritoryEdge> createGraphMLImporter(final List<Continent> continents) {
         final GraphMLImporter<Territory, TerritoryEdge> importer = new GraphMLImporter<>();
 
@@ -81,6 +99,11 @@ public final class WorldFileLoader implements WorldLoader {
         return importer;
     }
 
+    /**
+     * Creates XML Reader
+     *
+     * @return xml reader
+     */
     private static DocumentBuilder createXMLReader() {
         final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         try {
@@ -90,6 +113,11 @@ public final class WorldFileLoader implements WorldLoader {
         }
     }
 
+    /**
+     * Creates XML Transformer
+     *
+     * @return xml transformer
+     */
     private static Transformer createXMLTransformer() {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         try {
@@ -99,6 +127,12 @@ public final class WorldFileLoader implements WorldLoader {
         }
     }
 
+    /**
+     * Parses level data
+     *
+     * @param levelData level data to parse
+     * @return level data document
+     */
     private Document parseLevelData(final Reader levelData) {
         try {
             return levelParser.parse(new InputSource(levelData));
@@ -107,6 +141,12 @@ public final class WorldFileLoader implements WorldLoader {
         }
     }
 
+    /**
+     * Reads given level file
+     *
+     * @param name name of level file
+     * @return level file reader
+     */
     private Reader readLevelFile(final String name) {
         final Path levelPath = this.levelDir.resolve(String.format("%s.%s", name, FILE_EXT));
         try {
@@ -116,6 +156,15 @@ public final class WorldFileLoader implements WorldLoader {
         }
     }
 
+    /**
+     * Queries XML for an expression.
+     *
+     * @param expr expression to query for
+     * @param item input to query
+     * @param clazz class of query return
+     * @param <T> template type
+     * @return query result
+     */
     private <T> T queryXML(final String expr, final Object item, final Class<T> clazz) {
         QName returnType;
         if (clazz.equals(Number.class)) returnType = XPathConstants.NUMBER;
@@ -132,6 +181,12 @@ public final class WorldFileLoader implements WorldLoader {
         }
     }
 
+    /**
+     * Parses a Continent from a Node
+     *
+     * @param continentNode note to parse
+     * @return parsed continent
+     */
     private Continent parseContinentFromNode(final Node continentNode) {
         final String name = this.queryXML("name", continentNode, String.class);
         final String hexColor = this.queryXML("color", continentNode, String.class);
@@ -139,6 +194,12 @@ public final class WorldFileLoader implements WorldLoader {
         return new Continent(name, new Color(Integer.decode(hexColor)), armies.intValue());
     }
 
+    /**
+     * Parses all continents from level file
+     *
+     * @param levelDoc level file to parse
+     * @return list of parsed continents
+     */
     private List<Continent> parseLevelContinents(final Document levelDoc) {
         final NodeList continentNodes = this.queryXML("world/continents/continent", levelDoc, NodeList.class);
         return IntStream.range(0, continentNodes.getLength())
@@ -147,6 +208,12 @@ public final class WorldFileLoader implements WorldLoader {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Get InputStream for level layout
+     *
+     * @param levelDoc level file to query
+     * @return level layout input stream
+     */
     private InputStream getLevelLayoutInputStream(final Document levelDoc) {
         final Node graphmlNode = this.queryXML("world/layout/graphml", levelDoc, Node.class);
 
@@ -160,6 +227,13 @@ public final class WorldFileLoader implements WorldLoader {
         return new ByteArrayInputStream(outputStream.toByteArray());
     }
 
+    /**
+     * Parses the level file to obtain the world graph
+     *
+     * @param levelDoc level file to parse
+     * @param graphmlImporter configured graphml importer
+     * @return parsed graph of territories
+     */
     private Graph<Territory, TerritoryEdge> parseLevelLayout(
             final Document levelDoc,
             final GraphImporter<Territory, TerritoryEdge> graphmlImporter) {
@@ -182,6 +256,12 @@ public final class WorldFileLoader implements WorldLoader {
         return levelGraph;
     }
 
+    /**
+     * Loads level file from name.
+     *
+     * @param name name of level file to load
+     * @return parsed world
+     */
     @Override
     public World load(final String name) {
         final Document levelDoc = this.parseLevelData(this.readLevelFile(name));
