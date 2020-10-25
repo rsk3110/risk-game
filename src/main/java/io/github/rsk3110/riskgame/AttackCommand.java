@@ -137,10 +137,10 @@ public class AttackCommand implements Command {
     private boolean attack(Player player, Territory origin, Territory target){
         List<Integer> playerValues = getDiceValues(player, Math.min(3, origin.getArmies() - 1));
         List<Integer> targetValues = getDiceValues(target.getOccupant(), Math.min(2, target.getArmies()));
-        int minDie = Math.min(playerValues.size(), targetValues.size());
-        int attackerDieCount = playerValues.size();
+        int minDice = Math.min(playerValues.size(), targetValues.size()); // set minimum amount of dice to roll
+        int attackerDiceCount = playerValues.size();
         int lostCount = 0;
-        for(int i = minDie; i > 0; i--) {
+        for(int i = minDice; i > 0; i--) {
             Integer playerValue = Collections.max(playerValues);
             playerValues.remove(playerValue);
             Integer targetValue = Collections.max(targetValues);
@@ -157,7 +157,7 @@ public class AttackCommand implements Command {
                     Player tOccupant = target.getOccupant();
                     target.setOccupant(player);
                     System.out.println("Success! You won the battle.");
-                    origin.moveArmy(getNumArmyToMove(attackerDieCount - lostCount, origin.getArmies() - 1), target);
+                    origin.moveArmy(getNumArmyToMove(attackerDiceCount - lostCount, origin.getArmies() - 1), target);
                     System.out.println(player.getName() + " captured " + target.getName() + " and it now holds " + target.getArmies() + " armies.");
                     if(tOccupant.getTerritories().size() == 0) System.out.println(tOccupant.getName() + " was eliminated.");
                     return false;
