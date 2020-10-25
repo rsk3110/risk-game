@@ -2,17 +2,21 @@ package io.github.rsk3110.riskgame;
 
 import java.awt.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public final class Continent implements Serializable {
     private final String name;
     private final Color color;
     private final int bonusArmies;
+    private final Set<Territory> territories;
 
     public Continent(final String name, final Color color, final int bonusArmies) {
         this.name = name;
         this.color = color;
         this.bonusArmies = bonusArmies;
+        this.territories = new HashSet<Territory>();
     }
 
     public String getName() {
@@ -26,6 +30,10 @@ public final class Continent implements Serializable {
     public int getBonusArmies() {
         return this.bonusArmies;
     }
+
+    public Set<Territory> getTerritories() { return this.territories; }
+
+    public void addTerritory(Territory territory) { if(territory != null) territories.add(territory); }
 
     @Override
     public boolean equals(Object o) {
@@ -42,9 +50,12 @@ public final class Continent implements Serializable {
 
     @Override
     public String toString() {
-        return "Continent{" +
-                "name='" + name + '\'' +
-                ", bonusArmies=" + bonusArmies +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append(getName() + " (Bonus Armies:" + bonusArmies + ") {\n");
+        for(Territory territory : territories) {
+            sb.append("\t" + territory.toString());
+        }
+
+        return sb.toString();
     }
 }
