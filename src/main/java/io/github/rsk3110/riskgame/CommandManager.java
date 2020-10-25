@@ -27,7 +27,7 @@ public class CommandManager {
 
         if(!commandMap.containsKey(cmd)) System.out.println("Invalid command!");
         else if(inputList.size() == 1) return this.execute(player, cmd);
-        else return this.execute(player, cmd, inputList.subList(1, inputList.size() - 1));
+        else return this.execute(player, cmd, inputList.subList(1, inputList.size()));
 
         return false;
     }
