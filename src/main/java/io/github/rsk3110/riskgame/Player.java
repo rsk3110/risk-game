@@ -152,20 +152,5 @@ public class Player {
 
         return continentSet;
     }
-
-    /**
-     * Override toString to benefit MapCommand.
-     *
-     * @return String representation of continent
-     */
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder(this.name + ":\n");
-        for(Territory territory : territories) {
-            stringBuilder.append(territory.toString() + '\n');
-        }
-
-        return stringBuilder.toString();
-    };
 }
 
