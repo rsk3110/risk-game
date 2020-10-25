@@ -43,16 +43,30 @@ public class Game {
 
         System.out.println("Welcome to RISK! How many players will be playing? (2-6)");
         int numPlayers = getNumPlayers();
-        this.players = new ArrayList<Player>(){{
+        this.players = new ArrayList<Player>(){{ //init players
             for(int i = 0; i < numPlayers; i++) {
                 add(new Player(world, "player" + i, maxArmies.get(numPlayers)));
             }
         }};
 
         int index = 0;
-        for(Territory territory : territories) {
+        for(Territory territory : territories) { //assign territories
             territory.setOccupant(players.get(index));
+            territory.setArmies(1);
+            players.get(index).decrementArmies();
             index = (index + 1) % players.size();
+        }
+
+        for(Territory territory : territories) { //randomly assign armies
+            Player occupyingPlayer = territory.getOccupant();
+            if (occupyingPlayer.getArmies() > 0) {
+                final int minArmiesUsed = 1;
+                final int maxArmiesUsed = occupyingPlayer.getArmies();
+                final int armiesUsed = (int) Math.floor(minArmiesUsed + (maxArmiesUsed - minArmiesUsed) * Math.pow((new Random()).nextDouble(), 30));
+
+                occupyingPlayer.setArmies(occupyingPlayer.getArmies() - armiesUsed);
+                territory.setArmies(territory.getArmies() + armiesUsed);
+            }
         }
     }
 

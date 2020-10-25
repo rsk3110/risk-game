@@ -8,13 +8,13 @@ public class Player {
     private String name;
     private List<Territory> territories;
     private World world;
-    private int maxArmies;
+    private int unallocatedArmies;
 
     public Player(World world, String aName, int maxArmies) {
         this.name = aName;
         this.territories = new ArrayList<Territory>();
         this.world = world;
-        this.maxArmies = maxArmies;
+        this.unallocatedArmies = maxArmies;
     }
 
     public String getName() { return this.name; }
@@ -33,6 +33,18 @@ public class Player {
 
     public boolean isOccupying(Territory territory) {
         return territories.contains(territory);
+    }
+
+    public int getArmies() {
+        return this.unallocatedArmies;
+    }
+
+    public void setArmies(int num) {
+        this.unallocatedArmies = num;
+    }
+
+    public void decrementArmies() {
+        this.unallocatedArmies--;
     }
 
     public World getWorld() { return this.world; };
