@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package io.github.rsk3110.riskgame;
 
 import java.util.List;

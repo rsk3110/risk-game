@@ -13,12 +13,18 @@ public class Player {
         this.territories = new ArrayList<Territory>();
     }
 
+    public String getName() { return this.name; }
+
     public void addTerritory(Territory aTerritory) {
         this.territories.add(aTerritory);
     }
 
     public void removeTerritory(Territory aTerritory) {
         this.territories.remove(aTerritory);
+    }
+
+    public List<Territory> getTerritories() {
+        return territories;
     }
 
     @Override

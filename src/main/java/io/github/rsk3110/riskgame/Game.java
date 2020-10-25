@@ -18,6 +18,7 @@ public class Game {
     private Scanner scanner;
 
     static final private int  NUM_PLAYERS = 2;
+    static final private int  STARTING_ARMIES = 50;
 
     public static void main(String[] args) {
         Game game = new Game();
@@ -32,6 +33,7 @@ public class Game {
         this.commandManager.register("map", new MapCommand());
         this.commandManager.register("attack", new AttackCommand());
         this.commandManager.register("skip", new SkipCommand());
+        //this.commandManager.register("skip", new quitCommand());
 
         this.world = (new WorldFileLoader(Paths.get("").toAbsolutePath().resolve("worlds"))).load("default");
         this.continents = this.world.getContinents();
@@ -53,13 +55,43 @@ public class Game {
         }
     }
 
+    //Added an intro text which is basically the help section and win check after each play
     public void play() {
+        this.commandManager.handleInput(null, "help");//prints intro: all the rules and commands found in help
+
         for(;;) {
             for(Player player : this.players) {
                 boolean end = false;
-                while(!end)
+                while(!end){
                     end = this.commandManager.handleInput(player, this.scanner.nextLine());
+                    if(win() == true){
+                        this.commandManager.handleInput(null, "quit");
+                    }
+                }
             }
         }
+    }
+
+    //checking if players won or don't have enough armies to play
+    private boolean win(){
+        //checks if any player owns the whole continent
+        for (Player p: players){
+            if ((p.getTerritories()).size() == 42){
+                System.out.println(p.getName() + " wins.");
+                return true;
+            }
+        }
+        int sumOfArmies = 0;
+        //checks if all the armies on each territory equals 1 (because users can't move armies when there is only 1 army on each territory)
+        for(Territory t: territories){
+            sumOfArmies += t.getArmies();
+        }
+        if(sumOfArmies == 42){
+            //this assumes that none of the territories are neutral
+            //This still needs work to properly cover all edge cases
+            System.out.println("The match is a draw.");
+            return true;
+        }
+        return false;
     }
 }
