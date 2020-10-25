@@ -22,6 +22,7 @@ public class HelpCommand implements Command {
             put("help", "help | help <command> - tells you how to play the game. Optionally explains command if specified.");
             put("map", "map - Shows all continents' and territories' statuses.");
             put("attack", "attack <origin> <target> - Attacks target territory from origin territory. See 'help attack' for more.");
+            put("fortify", "fortify <origin> <target> <#armies> - Moves armies from origin to target if both are self-occupied and #armies is 1 less than origin army count.");
             put("skip", "skip - skips your turn and goes to the next player.");
             put("quit", "quit - quits the program.");
         }};
@@ -34,6 +35,7 @@ public class HelpCommand implements Command {
                     "Defender choose 1 - 2 dice, requiring the number of dice + 1 armies at target to select.\n" +
                     "Highest die are compared until territory is lost (target army hits 0), or a player uses up all their dice.\n" +
                     "If attack wins comparison, target loses 1 army. If defender wins or ties, origin loses 1 army.");
+            put("fortify", shortMessages.get("fortify"));
             put("skip", shortMessages.get("skip"));
             put("quit", shortMessages.get("quit"));
         }};

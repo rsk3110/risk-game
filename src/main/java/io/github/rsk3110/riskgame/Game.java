@@ -34,6 +34,7 @@ public class Game {
         this.commandManager.register("help", new HelpCommand());
         this.commandManager.register("map", new MapCommand());
         this.commandManager.register("attack", new AttackCommand());
+        this.commandManager.register("fortify", new FortifyCommand());
         this.commandManager.register("skip", new SkipCommand());
         this.commandManager.register("quit", new QuitCommand());
 
