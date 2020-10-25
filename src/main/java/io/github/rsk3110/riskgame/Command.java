@@ -3,7 +3,7 @@ package io.github.rsk3110.riskgame;
 import java.util.List;
 
 /**
- * Interface that implement execute as a common method in each command class
+ * Interface to define and use commands uniformly.
  *
  * @author Kaue Gomes e Sousa de Oliveira
  **/
