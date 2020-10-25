@@ -79,7 +79,7 @@ public class Game {
             Scanner scanner = new Scanner(System.in);
             int num;
             do {
-                System.out.println("> ");
+                System.out.print("> ");
                 num = scanner.nextInt();
                 if(!(num >= 2 && num <= 6)) System.out.println("Invalid number. Must be from 2 to 6.");
             } while(!(num >= 2 && num <= 6));
