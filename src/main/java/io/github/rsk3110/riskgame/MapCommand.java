@@ -5,9 +5,10 @@ import java.util.List;
 /**
  * Lists a map of the World in format:
  * ContinentName (Bonus Armies: #) {
- *     TerrytoryName: Occupied by PlayerName with # armies.
+ *     TerritoryName: Occupied by PlayerName with # armies.
  *     ...
  * }
+ * ...
  *
  * @author Kaue Gomes e Sousa de Oliveira
  */
@@ -17,7 +18,7 @@ public class MapCommand implements Command {
     }
 
     /**
-     * Simply outputs continent.toString() for all continents, recursively executing territory.toString().
+     * Prints all the continents and their territories to console.
      *
      * @param player player executing the command
      * @return whether to hand control to next player
