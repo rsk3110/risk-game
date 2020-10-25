@@ -9,6 +9,7 @@ import java.util.TreeMap;
  * Explains game set up.
  * All commands and their descriptions
  * Rules for attacking and winning.
+ *
  * @author Tooba Sheikh
  * @author Kaue Gomes e Sousa de Oliveira
  **/
@@ -17,6 +18,9 @@ public class HelpCommand implements Command {
     private Map<String, String> shortMessages;
     private Map<String, String> longMessages;
 
+    /**
+     * Initializes short and long(more detailed) messages in Tree with command name and description
+     */
     public HelpCommand(){
         this.shortMessages = new TreeMap<String, String>(){{
             put("help", "help | help <command> - tells you how to play the game. Optionally explains command if specified.");
@@ -41,6 +45,12 @@ public class HelpCommand implements Command {
         }};
     }
 
+    /**
+     * If help enetered with no arguments, then print basic rules
+     *
+     * @param player player executing the command
+     * @return whether to hand control to next player
+     */
     public boolean execute(Player player) {
         for(String cmd : shortMessages.keySet())
             System.out.println(shortMessages.get(cmd));
@@ -48,6 +58,14 @@ public class HelpCommand implements Command {
         return false;
     }
 
+    /**
+     * Checks what command player needs help with.
+     * Prints information of the chosen command
+     *
+     * @param player player executing the command
+     * @param args arguments of execution
+     * @return whether to hand control to next player
+     */
     public boolean execute(Player player, List<String> args) {
         if(args.size() != 1) {
             System.out.println("Invalid number of arguments. {help | help <command>}");

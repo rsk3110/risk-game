@@ -5,6 +5,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ *
+ *
+ * @author Tooba Sheikh
+ * @author Kaue Gomes e Sousa de Oliveira
+ * @author Mark Johnson
+ **/
+
 public class Player {
 
     private String name;
@@ -19,20 +27,46 @@ public class Player {
         this.unallocatedArmies = maxArmies;
     }
 
+    /**
+     * Get name of player
+     *
+     * @return the name of the player
+     */
     public String getName() { return this.name; }
 
+    /**
+     * Add territory to players occupying territory list
+     *
+     * @param aTerritory the territory to be added
+     */
     public void addTerritory(Territory aTerritory) {
         this.territories.add(aTerritory);
     }
 
+    /**
+     * Get name of continent
+     *
+     * @return the name of the continent
+     */
     public void removeTerritory(Territory aTerritory) {
         this.territories.remove(aTerritory);
     }
 
+    /**
+     * Get the players occupying territories
+     *
+     * @return list of occupied territories
+     */
     public List<Territory> getTerritories() {
         return this.territories;
     }
 
+    /**
+     * Checks if player is occupying territory
+     *
+     * @param territory territory to check
+     * @return true if player is occupying the territory
+     */
     public boolean isOccupying(Territory territory) {
         return territories.contains(territory);
     }
@@ -50,6 +84,11 @@ public class Player {
         territory.setArmies(territory.getArmies() + num);
     }
 
+    /**
+     * Get players world
+     *
+     * @return the players world
+     */
     public World getWorld() { return this.world; };
 
     public void updateArmies() {

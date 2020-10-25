@@ -4,7 +4,6 @@ import java.util.*;
 
 /**
  * Rules for Attack command.
- * If player attacks a friendly(their own) territory, the armies from territory 1 move to territory 2. // MOVING TO REINFORCE
  * If player attacks a opposing player territory, the user will decide how many dice they want to roll.
  * Territory must have (#dice + 1) armies to roll that amount of dice;
  * The territory that loses a confrontation will lose 1 army (#confrontations = minimum #dice of attacker and defender, defender wins on tie)
@@ -18,6 +17,16 @@ public class AttackCommand implements Command {
     public AttackCommand(){
     }
 
+    /**
+     * Executes the attack command.
+     * Checks for valid number of arguments entered {attack <origin> <target>}
+     * Checks if valid territories were selected, if not end turn
+     * If valid territories are entered, move on to (call method) attack.
+     *
+     * @param player player executing the command
+     * @param args stores arguments listed after the command attack
+     * @return whether to hand control to next player
+     */
     public boolean execute(Player player, List<String> args) {
         if(args.size() != 2) {
             System.out.println("Invalid number of arguments. {attack <origin> <target>}");
@@ -45,6 +54,13 @@ public class AttackCommand implements Command {
             return attack(player, origin, target);
     }
 
+    /**
+     * Asks the player for the number of dice to roll
+     * Checks if player entered a valid number by checking against the max allowed number of dice
+     *
+     * @param max valid maximum number of dice that can be rolled
+     * @return the number of dice that player chose to roll
+     */
     private int getNumDice(Player player, int max) {
         try {
             Scanner scanner = new Scanner(System.in);
@@ -61,6 +77,12 @@ public class AttackCommand implements Command {
         }
     }
 
+    /**
+     * Generates dice values between 1 and 6 and adds them to the list of dice value
+     *
+     * @param max valid maximum number of dice that can be rolled
+     * @return
+     */
     private List<Integer> getDiceValues(Player player, int max) {
         return new ArrayList<Integer>(){{
             Random random = new Random();
@@ -89,6 +111,16 @@ public class AttackCommand implements Command {
         }
     }
 
+    /**
+     * Rolls the dice for both origin and target territories, and compares the dice values.
+     * If dice are equal origin territory loses battle, then decrement army
+     * if origin dice < target dice, origin loses battle, then decrement army.
+     * if origin dice > target dice, target loses and player captures the target territory
+     *
+     * @param origin object of class Territory, to identify players starting(origin) Territory.
+     * @param target object of class Territory, to identify players target Territory.
+     * @return whether to hand control to next player
+     */
     private boolean attack(Player player, Territory origin, Territory target){
         List<Integer> playerValues = getDiceValues(player, Math.min(3, origin.getArmies() - 1));
         List<Integer> targetValues = getDiceValues(target.getOccupant(), Math.min(2, target.getArmies()));
@@ -108,7 +140,7 @@ public class AttackCommand implements Command {
             } else {
                 target.decrementArmies();
                 System.out.println("Success! Enemy lost an army. " + "{" + playerValue + " vs " + targetValue + "}");
-                if(target.getArmies() == 0) { //if defeated
+                if(target.getArmies() == 0) { //if target defeated
                     Player tOccupant = target.getOccupant();
                     target.setOccupant(player);
                     System.out.println("Success! You won the battle.");
@@ -123,6 +155,13 @@ public class AttackCommand implements Command {
         return false;
     }
 
+    /**
+     * Attack is a multiple argument command.
+     * Cannot be executed with no commands.
+     *
+     * @param player player executing the command
+     * @return whether to hand control to next player
+     */
     public boolean execute(Player player) {
         System.out.println("Invalid arguments. {attack <origin> <target>}");
         return false;

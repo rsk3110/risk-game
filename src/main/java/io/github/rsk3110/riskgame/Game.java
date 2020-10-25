@@ -3,6 +3,13 @@ package io.github.rsk3110.riskgame;
 import java.nio.file.Paths;
 import java.util.*;
 
+/**
+ * Runs the Game
+ *
+ * @author Tooba Sheikh
+ * @author Kaue Gomes e Sousa de Oliveira
+ * @author Mark Johnson
+ **/
 public class Game {
 
     private CommandManager commandManager;
@@ -23,6 +30,11 @@ public class Game {
         game.play();
     }
 
+    /**
+     * Creates Game. Creates all the commands, loads the world.
+     * Asks for the number of players, and depending on player input splits
+     * territories between number of player and distributes number of armies on each territory
+     */
     public Game() {
         this.scanner = new Scanner(System.in);
 
@@ -69,7 +81,9 @@ public class Game {
         }
     }
 
-    //Added an intro text which is basically the help section and win check after each play
+    /**
+     * Runs loop till user enters command quit or game ends by checking if player won after each turn
+     */
     public void play() {
         for(;;) { //loop forever
             for(Player player : this.players) {
@@ -139,7 +153,11 @@ public class Game {
         }
     }
 
-    //checking if players won or don't have enough armies to play
+    /**
+     * Checks if game draws or player won
+     *
+     * @return true if player won or game draws
+     */
     private boolean checkIfOver(){
         //checks if any player owns the whole world
         for (Player p: players){
