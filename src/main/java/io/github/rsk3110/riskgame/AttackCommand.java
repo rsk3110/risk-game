@@ -55,10 +55,12 @@ public class AttackCommand implements Command {
     }
 
     /**
-     * Asks the player for the number of dice to roll
-     * Checks if player entered a valid number by checking against the max allowed number of dice
+     * Asks the player for the number of dice to roll.
+     * Checks if player entered a valid number by checking against the max
+     * allowed number of dice.
      *
-     * @param max valid maximum number of dice that can be rolled
+     * @param player player executing the command
+     * @param max maximum number of dice that can be rolled
      * @return the number of dice that player chose to roll
      */
     private int getNumDice(Player player, int max) {
@@ -78,10 +80,11 @@ public class AttackCommand implements Command {
     }
 
     /**
-     * Generates dice values between 1 and 6 and adds them to the list of dice value
+     * Generates values between 1 and 6 and adds them to a list.
      *
+     * @param player player executing the command
      * @param max valid maximum number of dice that can be rolled
-     * @return
+     * @return the list of dice values
      */
     private List<Integer> getDiceValues(Player player, int max) {
         return new ArrayList<Integer>(){{
@@ -94,6 +97,14 @@ public class AttackCommand implements Command {
         }};
     }
 
+    /**
+     * Prompts the player for the number of armies to move from
+     * one territory to another.
+     *
+     * @param min minimum number of armies that can be moved
+     * @param max maximum number of armies that can be moved
+     * @return number of armies to move
+     */
     private int getNumArmyToMove(int min, int max) {
         try {
             Scanner scanner = new Scanner(System.in);
@@ -113,12 +124,14 @@ public class AttackCommand implements Command {
 
     /**
      * Rolls the dice for both origin and target territories, and compares the dice values.
-     * If dice are equal origin territory loses battle, then decrement army
-     * if origin dice < target dice, origin loses battle, then decrement army.
-     * if origin dice > target dice, target loses and player captures the target territory
+     * If dice are equal or target > origin, origin territory loses battle and 1 army
+     * If origin dice > target dice, target territory loses battle and 1 army.
+     * If target territory armies hit 0, player occupies target and is prompted
+     * for number of armies to move.
      *
-     * @param origin object of class Territory, to identify players starting(origin) Territory.
-     * @param target object of class Territory, to identify players target Territory.
+     * @param player player executing the command
+     * @param origin Territory formulating attack
+     * @param target Territory defending from attack
      * @return whether to hand control to next player
      */
     private boolean attack(Player player, Territory origin, Territory target){
