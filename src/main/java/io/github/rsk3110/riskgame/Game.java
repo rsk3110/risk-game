@@ -79,7 +79,7 @@ public class Game {
 
                 System.out.println("It is now " + player.getName() + "'s turn.");
                 while(!end){ //while no command terminates turn
-                    System.out.print("> ");
+                    System.out.print("{" + player.getName() + "} > ");
                     end = this.commandManager.handleInput(player, this.scanner.nextLine());
 //                    if(win() == true){
 //                        this.commandManager.handleInput(null, "quit");
