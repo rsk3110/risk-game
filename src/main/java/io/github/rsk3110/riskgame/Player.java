@@ -7,10 +7,12 @@ public class Player {
 
     private String name;
     private List<Territory> territories;
+    private World world;
 
-    public Player(String aName) {
+    public Player(World world, String aName) {
         this.name = aName;
         this.territories = new ArrayList<Territory>();
+        this.world = world;
     }
 
     public String getName() { return this.name; }
@@ -24,8 +26,14 @@ public class Player {
     }
 
     public List<Territory> getTerritories() {
-        return territories;
+        return this.territories;
     }
+
+    public boolean isOccupying(Territory territory) {
+        return territories.contains(territory);
+    }
+
+    public World getWorld() { return this.world; };
 
     @Override
     public String toString() {
