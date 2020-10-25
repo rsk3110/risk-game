@@ -13,6 +13,7 @@ public class SkipCommand implements Command {
     }
 
     public boolean execute(Player player, List<String> args) {
-        return true;
+        System.out.println("Invalid arguments. Skip does not take in any arguments. {skip}");
+        return false;
     }
 }
