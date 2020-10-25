@@ -25,13 +25,13 @@ public final class Territory implements Serializable {
         return this.name;
     }
 
+    //get the number of armies
+    public int getArmies(){ return this.armies; }
+
     //set the number of armies
     public void setArmies(int armies){
         this.armies = armies;
     }
-
-    //get the number of armies
-    public int getArmies(){ return this.armies; }
 
     public void moveArmy(int num, Territory target) {
         this.armies -= num;
