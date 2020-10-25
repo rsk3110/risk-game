@@ -4,7 +4,9 @@ import java.util.List;
 
 /**
  * Fortifies target territory by moving armies from origin.
- * Only works when origin borders target.
+ * Only works when both:
+ * - origin and target are occupied by player
+ * - origin borders target.
  *
  * @author Kaue Gomes e Sousa de Oliveira
  */
@@ -25,8 +27,8 @@ public class FortifyCommand implements Command {
     }
 
     /**
-     * Checks if player is targeting self-occupied territory with another self-occupied territory,
-     * moves armies from origin to target if numArmies is at least 1 less than the territories army count.
+     * Checks if player is targeting self-occupied territory with another self-occupied territory.
+     * Moves armies from origin to target if numArmies is at least 1 less than the territories army count.
      *
      * @param player player executing the command
      * @param args arguments of execution
