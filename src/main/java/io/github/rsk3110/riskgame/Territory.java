@@ -9,10 +9,12 @@ public final class Territory implements Serializable {
     private String name;
     private Continent continent;
     private int armies; // holds how many armies each team has
+    private Player occupant;
 
     public Territory(final int id) {
         this.id = id;
         this.armies = 0;
+        this.occupant = null;
     }
 
     public void setName(final String name) {
@@ -29,8 +31,15 @@ public final class Territory implements Serializable {
     }
 
     //get the number of armies
-    public int getArmies(){
-        return this.armies;
+    public int getArmies(){ return this.armies; }
+
+    public void moveArmy(int num, Territory target) {
+        this.armies -= num;
+        target.setArmies(target.getArmies() + num);
+    }
+
+    public void decrementArmies() {
+        if(this.armies > 0) armies--;
     }
 
     public void setContinent(final Continent continent) {
@@ -39,6 +48,35 @@ public final class Territory implements Serializable {
 
     public Continent getContinent() {
         return this.continent;
+    }
+
+    public void setOccupant(final Player occupant) {
+        if(occupant != null) {
+            removeOccupant();
+            occupant.addTerritory(this);
+        }
+
+        this.occupant = occupant;
+    }
+
+    public Player getOccupant() {
+        return this.occupant;
+    }
+
+    public boolean isOccupiedBy(Player player) {
+        return this.occupant.equals(player);
+    }
+
+    public void removeOccupant() {
+        if(occupant != null) {
+            occupant.removeTerritory(this);
+            setOccupant(null);
+        }
+    }
+
+    public boolean isNeighbor(World world, Territory territory) {
+        return world.getGraph().containsEdge(this, territory);
+
     }
 
     @Override
@@ -56,9 +94,6 @@ public final class Territory implements Serializable {
 
     @Override
     public String toString() {
-        return "Territory{" +
-                "name='" + name + '\'' +
-                ", continent=" + continent +
-                '}';
+        return getName() + ": Occupied by '" + occupant.getName() + "' with '" + armies + "' armies.\n";
     }
 }
