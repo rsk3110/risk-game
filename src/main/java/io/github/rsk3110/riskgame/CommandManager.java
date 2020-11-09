@@ -10,9 +10,18 @@ import java.util.*;
 public class CommandManager {
 
     private Map<String, Command> commandMap; // Mapping of command name to command object
+    private Game game;
 
-    public CommandManager() {
-        this.commandMap = new HashMap<String, Command>();
+    public CommandManager(Game game) {
+        this.commandMap = new HashMap<String, Command>() {{
+            put("help", new HelpCommand());
+            put("map", new MapCommand());
+            put("attack", new AttackCommand());
+            put("fortify", new FortifyCommand());
+            put("skip", new SkipCommand());
+            put("quit", new QuitCommand());
+        }};
+        this.game = game;
     }
 
     /**
@@ -28,41 +37,38 @@ public class CommandManager {
     /**
      * Call execute method of provided command.
      *
-     * @param player player executing the command
      * @param aName name of command to execute
      * @return whether to hand control to next player
      */
-    public boolean execute(Player player, String aName) {
-        return commandMap.get(aName).execute(player);
+    public boolean execute(String aName) {
+        return commandMap.get(aName).execute(game.getCurrPlayer());
     }
 
     /**
      * Calls execute method of provided command with provided arguments.
      *
-     * @param player player executing the command
      * @param aName name of command to execute
      * @param args arguments to pass into command execution
      * @return whether to hand control to next player
      */
-    public boolean execute(Player player, String aName, List<String> args) {
-        return commandMap.get(aName).execute(player, args);
+    public boolean execute(String aName, List<String> args) {
+        return commandMap.get(aName).execute(game.getCurrPlayer(), args);
     }
 
     /**
      * Splits input and calls relevant Command object execute method
      * if command name is found in commandMap
      *
-     * @param player the player executing the command
      * @param input the input to split and execute
      * @return whether to hand control to next player
      */
-    public boolean handleInput(Player player, String input) {
+    public boolean handleInput(String input) {
         List<String> inputList = new ArrayList<String>(Arrays.asList(input.toLowerCase().split(" ")));
         String cmd = inputList.get(0);
 
         if(!commandMap.containsKey(cmd)) System.out.println("Invalid command!");
-        else if(inputList.size() == 1) return this.execute(player, cmd);
-        else return this.execute(player, cmd, inputList.subList(1, inputList.size()));
+        else if(inputList.size() == 1) return this.execute(cmd);
+        else return this.execute(cmd, inputList.subList(1, inputList.size()));
 
         return false;
     }
