@@ -20,6 +20,9 @@ public class Game {
 
     private final World world;
     private final List<Player> players;
+    private final CommandManager commandManager;
+
+    private Player currPlayer;
 
     static final private Map<Integer, Integer> MAX_ARMIES; // defines default army sizes per player sizes
 
@@ -30,17 +33,23 @@ public class Game {
     }
 
     /**
-     * Creates Game. Creates all the commands and loads the world.
-     * Asks for the number of players, splits territories between players,
-     * and randomizes army allocation to each territory
+     * Creates a Game object with a given world and player count.
+     *
+     * @param world World to use to initialize game
+     * @param playerCount number of players
      */
     public Game(final World world, final int playerCount) {
         this.world = world;
         this.players = IntStream.range(0, playerCount)
                 .mapToObj(i -> new Player(world, String.format("Player %d", i), MAX_ARMIES.get(playerCount)))
                 .collect(Collectors.toList());
+        this.currPlayer = players.get(0);
+        this.commandManager = new CommandManager(this);
     }
 
+    /**
+     * Initialize territory occupants and armies
+     */
     private void startGame() {
         List<Territory> territories = new ArrayList<>(this.world.getGraph().vertexSet());
         Collections.shuffle(territories);
@@ -158,6 +167,10 @@ public class Game {
     public World getWorld() {
         return this.world;
     }
+
+    public Player getCurrPlayer() { return this.currPlayer; }
+
+    public CommandManager getCommandManager() { return this.commandManager; }
 
     static {
         MAX_ARMIES = new HashMap<>();
