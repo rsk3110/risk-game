@@ -1,7 +1,11 @@
 package io.github.rsk3110.riskgame;
 
+import io.github.rsk3110.riskgame.view.GameView;
+
+import java.awt.*;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.List;
 
 /**
  * Runs the Game
@@ -25,8 +29,8 @@ public class Game {
     }};
 
     public static void main(String[] args) {
-        Game game = new Game();
-        game.play();
+        final WorldLoader loader = new WorldFileLoader(Paths.get("").toAbsolutePath().resolve("worlds"));
+        EventQueue.invokeLater(() -> new GameView(loader));
     }
 
     /**
@@ -35,17 +39,6 @@ public class Game {
      * and randomizes army allocation to each territory
      */
     public Game() {
-        this.commandManager = new CommandManager();
-        this.commandManager.register("help", new HelpCommand());
-        this.commandManager.register("map", new MapCommand());
-        this.commandManager.register("attack", new AttackCommand());
-        this.commandManager.register("fortify", new FortifyCommand());
-        this.commandManager.register("skip", new SkipCommand());
-        this.commandManager.register("quit", new QuitCommand());
-
-        WorldFileLoader loader = new WorldFileLoader(Paths.get("").toAbsolutePath().resolve("worlds"));
-        this.world = loader.load("default"); // load in level data
-
         System.out.println("Welcome to RISK! How many players will be playing? (2-6)");
         System.out.print("> ");
         int numPlayers = getNumInRange(2, 6);
