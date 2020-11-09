@@ -21,4 +21,11 @@ Documentation can be found at 'index.html' in the documentation folder.
 A description can also be found in the document folder, under 'description.txt'
 
 ## Changelog
-- Implement initial text-based logic
+11.9.2020 - GUI Release
+10.25.2020 - Initial Text-Based Release
+
+## Roadmap
+1. Implement initial text-based logic (DONE)
+2. Implement GUI, and add Model JUnit tests (CURRENT)
+3. Add bonus troop placement, Troupe movement phase, and AI player(s)
+4. Implement Save/Load and custom maps
