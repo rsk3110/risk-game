@@ -4,8 +4,6 @@ import com.esotericsoftware.tablelayout.swing.Table;
 import io.github.rsk3110.riskgame.Game;
 import io.github.rsk3110.riskgame.World;
 import io.github.rsk3110.riskgame.WorldLoader;
-import io.github.rsk3110.riskgame.controller.EventManager;
-import io.github.rsk3110.riskgame.controller.SimpleEventManager;
 import io.github.rsk3110.riskgame.view.game.InGameScreen;
 
 import javax.swing.*;
@@ -62,8 +60,7 @@ public class GameConfigScreen extends JPanel {
 
     private void createGame(final String worldName, final Integer playerCount) {
         final World world = this.worldLoader.load(worldName);
-        final EventManager eventManager = new SimpleEventManager();
-        final Game game = new Game(world, playerCount, eventManager);
+        final Game game = new Game(world, playerCount);
 
         this.gameScreen.setScreen(new InGameScreen(game));
     }

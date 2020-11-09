@@ -1,7 +1,5 @@
 package io.github.rsk3110.riskgame;
 
-import io.github.rsk3110.riskgame.controller.EventManager;
-import io.github.rsk3110.riskgame.controller.events.GameStartEvent;
 import io.github.rsk3110.riskgame.view.GameView;
 
 import java.awt.*;
@@ -21,7 +19,6 @@ import java.util.stream.IntStream;
 public class Game {
 
     private final World world;
-    private final EventManager eventManager;
     private final List<Player> players;
 
     static final private Map<Integer, Integer> MAX_ARMIES; // defines default army sizes per player sizes
@@ -37,12 +34,11 @@ public class Game {
      * Asks for the number of players, splits territories between players,
      * and randomizes army allocation to each territory
      */
-    public Game(final World world, final int playerCount, final EventManager eventManager) {
+    public Game(final World world, final int playerCount) {
         this.world = world;
         this.players = IntStream.range(0, playerCount)
                 .mapToObj(i -> new Player(world, String.format("Player %d", i), MAX_ARMIES.get(playerCount)))
                 .collect(Collectors.toList());
-        this.eventManager = eventManager;
     }
 
     private void startGame() {

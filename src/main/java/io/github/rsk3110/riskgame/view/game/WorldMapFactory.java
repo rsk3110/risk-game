@@ -11,7 +11,6 @@ import com.mxgraph.view.mxStylesheet;
 import io.github.rsk3110.riskgame.Territory;
 import io.github.rsk3110.riskgame.TerritoryEdge;
 import io.github.rsk3110.riskgame.World;
-import io.github.rsk3110.riskgame.controller.events.TerritoryOccupiedEvent;
 import org.jgrapht.ext.JGraphXAdapter;
 
 import java.awt.*;
