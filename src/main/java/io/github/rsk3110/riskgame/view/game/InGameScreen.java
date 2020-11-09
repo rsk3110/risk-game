@@ -17,8 +17,12 @@ public class InGameScreen extends JPanel {
 
     private final mxGraphComponent graph;
 
+    private final JLabel notificationBox;
+
     public InGameScreen(final Game game) {
         this.setLayout(new BorderLayout());
+        this.notificationBox = new JLabel();
+        notificationBox.setFont(new Font("Arial", Font.PLAIN, 24));
 
         this.graph = WorldMapFactory.makeWorldMap(game.getWorld());
         this.configureScreenComponents();
@@ -53,6 +57,8 @@ public class InGameScreen extends JPanel {
         final Table table = new Table();
         table.addCell(graph).height(640).fill();
         table.addCell(optionsTable);
+        table.row();
+        table.addCell(this.notificationBox).height(30).colspan(2).center();
         this.add(table);
     }
 
@@ -61,6 +67,6 @@ public class InGameScreen extends JPanel {
         final mxCell cell = (mxCell) sm.getCell();
         if (cell == null || cell.isEdge()) return;
 
-        System.out.println("Clicked on " + ((Territory) cell.getValue()).getName());
+        this.notificationBox.setText("Clicked on " + ((Territory) cell.getValue()).getName());
     }
 }
