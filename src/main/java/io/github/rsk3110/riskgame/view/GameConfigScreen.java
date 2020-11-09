@@ -1,8 +1,12 @@
 package io.github.rsk3110.riskgame.view;
 
 import com.esotericsoftware.tablelayout.swing.Table;
+import io.github.rsk3110.riskgame.Game;
 import io.github.rsk3110.riskgame.World;
 import io.github.rsk3110.riskgame.WorldLoader;
+import io.github.rsk3110.riskgame.controller.EventManager;
+import io.github.rsk3110.riskgame.controller.SimpleEventManager;
+import io.github.rsk3110.riskgame.view.game.InGameScreen;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,7 +45,7 @@ public class GameConfigScreen extends JPanel {
             } else if (playersList.isSelectionEmpty()) {
                 JOptionPane.showMessageDialog(this, "No player count has been chosen yet!");
             } else {
-                this.loadWorld(worldsList.getSelectedValue(), playersList.getSelectedValue());
+                this.createGame(worldsList.getSelectedValue(), playersList.getSelectedValue());
             }
         });
 
@@ -56,9 +60,12 @@ public class GameConfigScreen extends JPanel {
         this.add(table, BorderLayout.CENTER);
     }
 
-    private void loadWorld(final String worldName, final Integer playerCount) {
+    private void createGame(final String worldName, final Integer playerCount) {
         final World world = this.worldLoader.load(worldName);
-        this.gameScreen.setScreen(new InGameScreen(world));
+        final EventManager eventManager = new SimpleEventManager();
+        final Game game = new Game(world, playerCount, eventManager);
+
+        this.gameScreen.setScreen(new InGameScreen(game));
     }
 
     private JList<String> makeWorldsList(final ListModel<String> worlds) {

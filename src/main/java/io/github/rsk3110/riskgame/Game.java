@@ -1,11 +1,15 @@
 package io.github.rsk3110.riskgame;
 
+import io.github.rsk3110.riskgame.controller.EventManager;
+import io.github.rsk3110.riskgame.controller.events.GameStartEvent;
 import io.github.rsk3110.riskgame.view.GameView;
 
 import java.awt.*;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Runs the Game
@@ -16,17 +20,12 @@ import java.util.List;
  **/
 public class Game {
 
-    private CommandManager commandManager;
-    private World world;
-    private List<Player> players;
+    private final World world;
+    private final EventManager eventManager;
+    private final List<Player> players;
 
-    static final private TreeMap<Integer, Integer> maxArmies = new TreeMap<Integer, Integer>(){{ // defines default army sizes per player sizes
-        put(2, 50);
-        put(3, 35);
-        put(4, 30);
-        put(5, 25);
-        put(6, 20);
-    }};
+    static final private Map<Integer, Integer> MAX_ARMIES; // defines default army sizes per player sizes
+
 
     public static void main(String[] args) {
         final WorldLoader loader = new WorldFileLoader(Paths.get("").toAbsolutePath().resolve("worlds"));
@@ -38,21 +37,20 @@ public class Game {
      * Asks for the number of players, splits territories between players,
      * and randomizes army allocation to each territory
      */
-    public Game() {
-        System.out.println("Welcome to RISK! How many players will be playing? (2-6)");
-        System.out.print("> ");
-        int numPlayers = getNumInRange(2, 6);
-        this.players = new ArrayList<Player>(){{ //init players
-            for(int i = 0; i < numPlayers; i++) {
-                add(new Player(world, "player" + i, maxArmies.get(numPlayers)));
-            }
-        }};
+    public Game(final World world, final int playerCount, final EventManager eventManager) {
+        this.world = world;
+        this.players = IntStream.range(0, playerCount)
+                .mapToObj(i -> new Player(world, String.format("Player %d", i), MAX_ARMIES.get(playerCount)))
+                .collect(Collectors.toList());
+        this.eventManager = eventManager;
+    }
 
-        List<Territory> territories = new ArrayList<>(world.getTerritoryMap().keySet());
+    private void startGame() {
+        List<Territory> territories = new ArrayList<>(this.world.getGraph().vertexSet());
         Collections.shuffle(territories);
 
         int index = 0;
-        for(Territory territory : territories) { //assign territories
+        for (Territory territory : territories) { //assign territories
             territory.setOccupant(players.get(index));
             players.get(index).allocateArmies(1, territory);
             index = (index + 1) % players.size();
@@ -67,27 +65,6 @@ public class Game {
 
                 occupyingPlayer.setArmies(occupyingPlayer.getArmies() - armiesUsed);
                 territory.setArmies(territory.getArmies() + armiesUsed);
-            }
-        }
-    }
-
-    /**
-     * Runs loop till game ends or player quits game.
-     */
-    public void play() {
-        for(;;) { //loop forever
-            for(Player player : this.players) {
-                if(player.getTerritories().size() == 0) continue; //skip turn if player eliminated.
-                boolean end = false;
-                player.updateArmies(); // Add rewarded armies
-                System.out.println("It is now " + player.getName() + "'s turn.");
-                runArmyAllocation(player); // Allow player to allocate free armies
-                while(!end){ //while no command terminates turn
-                    System.out.print("{" + player.getName() + "} > ");
-                    end = this.commandManager.handleInput(player, (new Scanner(System.in)).nextLine()); // get next command
-                    if(checkIfOver())
-                        commandManager.execute(player, "quit");
-                }
             }
         }
     }
@@ -180,5 +157,18 @@ public class Game {
         }
         System.out.println("Nobody can move, it's a draw.");
         return true;
+    }
+
+    public World getWorld() {
+        return this.world;
+    }
+
+    static {
+        MAX_ARMIES = new HashMap<>();
+        MAX_ARMIES.put(2, 50);
+        MAX_ARMIES.put(3, 35);
+        MAX_ARMIES.put(4, 30);
+        MAX_ARMIES.put(5, 25);
+        MAX_ARMIES.put(6, 20);
     }
 }
