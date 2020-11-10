@@ -40,8 +40,8 @@ public class FortifyCommand implements Command {
             return false;
         }
 
-        Territory origin = Territory.idToTerritory(player, args.get(0));
-        Territory target = Territory.idToTerritory(player, args.get(1));
+        Territory origin = Territory.nameToTerritory(player, args.get(0));
+        Territory target = Territory.nameToTerritory(player, args.get(1));
         int numArmies;
         try {
             numArmies = Integer.parseInt(args.get(2));
