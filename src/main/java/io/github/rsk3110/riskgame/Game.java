@@ -89,7 +89,7 @@ public class Game {
             return;
         }
 
-        Territory target = Territory.idToTerritory(player, args.get(0));
+        Territory target = Territory.nameToTerritory(player, args.get(0));
         int numArmies;
         try { // try-catch for if player does not input number
             numArmies = Integer.parseInt(args.get(1));

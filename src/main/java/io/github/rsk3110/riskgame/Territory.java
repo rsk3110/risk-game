@@ -186,16 +186,16 @@ public final class Territory implements Serializable {
     }
 
     /**
-     * Gets the territory associated with given id, or null
+     * Gets the territory associated with given name, or null
      * if no such territory exists.
      *
      * @param player player executing the command
-     * @param id id of the territory
+     * @param name name of the territory
      * @return territory with given id
      */
-    static public Territory idToTerritory(Player player, String id) {
+    static public Territory nameToTerritory(Player player, String name) {
         List<Object> territory = Arrays.asList(player.getWorld().getTerritoryMap().keySet().stream()
-                .filter(t -> String.valueOf(t.getId()).equals(id)).toArray());
+                .filter(t -> String.valueOf(t.getName()).equals(name)).toArray());
         return (territory.size() == 1) ? (Territory)territory.get(0) : null;
     }
 }
