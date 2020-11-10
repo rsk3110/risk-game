@@ -23,7 +23,7 @@ public class SimpleGameController implements GameController {
 
     @Override
     public void skipTurn() {
-
+        this.game.advanceTurn();
     }
 
     @Override

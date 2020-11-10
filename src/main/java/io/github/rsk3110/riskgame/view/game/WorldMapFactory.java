@@ -109,7 +109,7 @@ public class WorldMapFactory {
         final mxFastOrganicLayout layout = new mxFastOrganicLayout(graphAdapter);
         layout.setUseInputOrigin(false);
         layout.setInitialTemp(300.0);
-        layout.setForceConstant(60.0);
+        layout.setForceConstant(80.0);
         layout.execute(graphAdapter.getDefaultParent());
     }
 

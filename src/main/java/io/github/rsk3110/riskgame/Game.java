@@ -56,21 +56,29 @@ public class Game {
             index = (index + 1) % players.size();
         }
 
-        for(Territory territory : territories) { //randomly assign armies
-            Player occupyingPlayer = territory.getOccupant();
-            if (occupyingPlayer.getArmies() > 0) {
-                final int minArmiesUsed = 1;
-                final int maxArmiesUsed = occupyingPlayer.getArmies();
-                final int armiesUsed = (int) Math.floor(minArmiesUsed + (maxArmiesUsed - minArmiesUsed) * Math.pow((new Random()).nextDouble(), 30));
+        while (this.players.stream().mapToInt(Player::getArmies).sum() > 0) {
+            for(Territory territory : territories) { //randomly assign armies
+                Player occupyingPlayer = territory.getOccupant();
+                if (occupyingPlayer.getArmies() > 0) {
+                    final int minArmiesUsed = 1;
+                    final int maxArmiesUsed = occupyingPlayer.getArmies();
+                    final int armiesUsed = (int) Math.floor(minArmiesUsed + (maxArmiesUsed - minArmiesUsed) * Math.pow((new Random()).nextDouble(), 30));
 
-                occupyingPlayer.setArmies(occupyingPlayer.getArmies() - armiesUsed);
-                territory.setArmies(territory.getArmies() + armiesUsed);
+                    occupyingPlayer.setArmies(occupyingPlayer.getArmies() - armiesUsed);
+                    territory.setArmies(territory.getArmies() + armiesUsed);
+                }
             }
         }
+
+        this.notifyTurnListeners();
     }
 
-    public void skipTurn() {
+    public void advanceTurn() {
         this.currentPlayerIdx = (currentPlayerIdx + 1) % this.players.size();
+        this.notifyTurnListeners();
+    }
+
+    private void notifyTurnListeners() {
         this.turnStartListeners.forEach(l -> l.accept(this.players.get(this.currentPlayerIdx)));
     }
 

@@ -128,7 +128,7 @@ public class InGameScreen extends JPanel {
     }
 
     private void onTurnStart(final Player p) {
-
+        this.notificationBox.setText(String.format("%s's Turn!", p.getName()));
     }
 
     private void onTerritoryClick(final Object sender, final mxEventObject evt) {
