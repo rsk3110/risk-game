@@ -6,6 +6,7 @@ import java.awt.*;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -17,12 +18,13 @@ import java.util.stream.IntStream;
  * @author Mark Johnson
  **/
 public class Game {
+    private static final Map<Integer, Integer> MAX_ARMIES; // defines default army sizes per player sizes
+
+    private final transient List<Consumer<Player>> turnStartListeners;
 
     private final World world;
     private final List<Player> players;
-
-    static final private Map<Integer, Integer> MAX_ARMIES; // defines default army sizes per player sizes
-
+    private int currentPlayerIdx;
 
     public static void main(String[] args) {
         final WorldLoader loader = new WorldFileLoader(Paths.get("").toAbsolutePath().resolve("worlds"));
@@ -39,9 +41,11 @@ public class Game {
         this.players = IntStream.range(0, playerCount)
                 .mapToObj(i -> new Player(world, String.format("Player %d", i), MAX_ARMIES.get(playerCount)))
                 .collect(Collectors.toList());
+
+        this.turnStartListeners = new ArrayList<>();
     }
 
-    private void startGame() {
+    public void startGame() {
         List<Territory> territories = new ArrayList<>(this.world.getGraph().vertexSet());
         Collections.shuffle(territories);
 
@@ -63,6 +67,15 @@ public class Game {
                 territory.setArmies(territory.getArmies() + armiesUsed);
             }
         }
+    }
+
+    public void skipTurn() {
+        this.currentPlayerIdx = (currentPlayerIdx + 1) % this.players.size();
+        this.turnStartListeners.forEach(l -> l.accept(this.players.get(this.currentPlayerIdx)));
+    }
+
+    public void quitGame() {
+        System.exit(0);
     }
 
     /**
@@ -157,6 +170,14 @@ public class Game {
 
     public World getWorld() {
         return this.world;
+    }
+
+    public List<Player> getPlayers() {
+        return this.players;
+    }
+
+    public void addTurnStartListener(final Consumer<Player> listener) {
+        this.turnStartListeners.add(listener);
     }
 
     static {

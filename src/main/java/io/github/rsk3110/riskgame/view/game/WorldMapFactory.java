@@ -31,7 +31,8 @@ public class WorldMapFactory {
             public String getLabel(final Object rawCell) {
                 final mxCell cell = (mxCell) rawCell;
                 if (cell.isVertex()) {
-                    return ((Territory) cell.getValue()).getName();
+                    final Territory territory = ((Territory) cell.getValue());
+                    return territory.getName() + '\n' + territory.getArmies();
                 } else {
                     return "";
                 }
@@ -132,6 +133,7 @@ public class WorldMapFactory {
                     mxStyleUtils.setCellStyles(graphModel, territoryCells.toArray(), mxConstants.STYLE_STROKEWIDTH, "5");
                     mxStyleUtils.setCellStyles(graphModel, territoryCells.toArray(), mxConstants.STYLE_FONTSIZE, "12");
                     mxStyleUtils.setCellStyles(graphModel, territoryCells.toArray(), mxConstants.STYLE_FONTSTYLE, Integer.toString(Font.BOLD));
+                    mxStyleUtils.setCellStyles(graphModel, territoryCells.toArray(), mxConstants.STYLE_FONTCOLOR, "0x000000");
                 });
     }
 }

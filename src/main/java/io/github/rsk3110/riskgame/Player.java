@@ -1,5 +1,6 @@
 package io.github.rsk3110.riskgame;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -15,11 +16,11 @@ import java.util.Set;
  * @author Mark Johnson
  **/
 
-public class Player {
+public class Player implements Serializable {
 
     private String name;
     private List<Territory> territories;
-    private World world;
+    private transient World world;
     private int unallocatedArmies;
 
     /**

@@ -4,6 +4,7 @@ import com.esotericsoftware.tablelayout.swing.Table;
 import io.github.rsk3110.riskgame.Game;
 import io.github.rsk3110.riskgame.World;
 import io.github.rsk3110.riskgame.WorldLoader;
+import io.github.rsk3110.riskgame.controller.SimpleGameController;
 import io.github.rsk3110.riskgame.view.game.InGameScreen;
 
 import javax.swing.*;
@@ -11,11 +12,9 @@ import java.awt.*;
 
 public class GameConfigScreen extends JPanel {
     private final GameView gameScreen;
-    private final WorldLoader worldLoader;
 
     public GameConfigScreen(final GameView gameScreen, final WorldLoader worldLoader) {
         this.gameScreen = gameScreen;
-        this.worldLoader = worldLoader;
         this.setLayout(new BorderLayout());
 
         final JLabel header = new JLabel("Configure Your Game");
@@ -29,7 +28,7 @@ public class GameConfigScreen extends JPanel {
         final JLabel playerConfigLabel = new JLabel("Choose Players");
         playerConfigLabel.setFont(new Font("Arial", Font.PLAIN, 24));
 
-        final JList<String> worldsList = this.makeWorldsList(this.makeWorldsListModel());
+        final JList<String> worldsList = this.makeWorldsList(this.makeWorldsListModel(worldLoader));
         final JScrollPane worldsListPane = new JScrollPane(worldsList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         final JList<Integer> playersList = this.makePlayerCountsList(this.makePlayerCountsListModel());
@@ -43,7 +42,7 @@ public class GameConfigScreen extends JPanel {
             } else if (playersList.isSelectionEmpty()) {
                 JOptionPane.showMessageDialog(this, "No player count has been chosen yet!");
             } else {
-                this.createGame(worldsList.getSelectedValue(), playersList.getSelectedValue());
+                this.createGame(worldLoader, worldsList.getSelectedValue(), playersList.getSelectedValue());
             }
         });
 
@@ -58,11 +57,11 @@ public class GameConfigScreen extends JPanel {
         this.add(table, BorderLayout.CENTER);
     }
 
-    private void createGame(final String worldName, final Integer playerCount) {
-        final World world = this.worldLoader.load(worldName);
+    private void createGame(final WorldLoader worldLoader, final String worldName, final Integer playerCount) {
+        final World world = worldLoader.load(worldName);
         final Game game = new Game(world, playerCount);
 
-        this.gameScreen.setScreen(new InGameScreen(game));
+        this.gameScreen.setScreen(new InGameScreen(game, new SimpleGameController(game)));
     }
 
     private JList<String> makeWorldsList(final ListModel<String> worlds) {
@@ -75,9 +74,9 @@ public class GameConfigScreen extends JPanel {
         return worldsComponent;
     }
 
-    private ListModel<String> makeWorldsListModel() {
+    private ListModel<String> makeWorldsListModel(final WorldLoader worldLoader) {
         final DefaultListModel<String> worlds = new DefaultListModel<>();
-        for (final String world : this.worldLoader.getWorlds()) {
+        for (final String world : worldLoader.getWorlds()) {
             worlds.addElement(world);
         }
         return worlds;

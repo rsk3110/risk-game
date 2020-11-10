@@ -7,8 +7,7 @@ import java.awt.*;
 
 public class GameStartupScreen extends JPanel {
     private final GameView gameScreen;
-    private final WorldLoader worldLoader;
-    private JComponent currentGui;
+    private final transient WorldLoader worldLoader;
 
     public GameStartupScreen(final GameView gameScreen, final WorldLoader worldLoader) {
         this.gameScreen = gameScreen;
