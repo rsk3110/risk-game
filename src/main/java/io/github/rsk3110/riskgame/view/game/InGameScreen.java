@@ -25,7 +25,6 @@ public class InGameScreen extends JPanel {
     private ClickMode currMode;
 
     private final Game game;
-    private final mxGraphComponent graph;
     private final JLabel notificationBox;
     
     private final Map<Player, Color> playerColors;
@@ -40,8 +39,6 @@ public class InGameScreen extends JPanel {
         this.game = game;
         this.selectedCell = null;
         this.currMode = ClickMode.DEFAULT;
-
-        this.setLayout(new BorderLayout());
         this.map = WorldMapFactory.makeWorldMap(game.getWorld());
         this.notificationBox = new JLabel();
         {
@@ -49,8 +46,7 @@ public class InGameScreen extends JPanel {
         }
         this.playerColors = this.populatePlayerColors(game);
 
-        this.graph = WorldMapFactory.makeWorldMap(game.getWorld());
-        this.graph.getGraph().setCellsMovable(false);
+        this.setLayout(new BorderLayout());
         this.configureScreenComponents();
 
         map.getGraph().getSelectionModel().addListener(mxEvent.CHANGE, this::onTerritoryClick);
@@ -166,7 +162,7 @@ public class InGameScreen extends JPanel {
         final Table table = new Table();
         table.addCell(name);
         table.row();
-        table.addCell(graph).height(640).fill();
+        table.addCell(map).height(640).fill();
         table.addCell(optionsTable);
         table.row();
         table.addCell(this.notificationBox).height(30).colspan(2).center();
