@@ -30,25 +30,25 @@ public class AttackCommand implements Command {
      */
     public boolean execute(Player player, List<String> args) {
         if(args.size() != 2) {
-            System.out.println("Invalid number of arguments. {attack <origin> <target>}");
+            System.out.println("Invalid number of arguments.");
             return false;
         }
         Territory origin = Territory.nameToTerritory(player, args.get(0));
         Territory target = Territory.nameToTerritory(player, args.get(1));
 
         if (origin == null || !origin.isOccupiedBy(player)) {
-            JOptionPane.showMessageDialog(null, "origin not occupied by player or does not exist. {attack <origin> <target>}");
+            JOptionPane.showMessageDialog(null, "origin not occupied by player or does not exist.");
             return false;
         } else if (target == null || !origin.isNeighbor(player.getWorld(), target)) {
-            JOptionPane.showMessageDialog(null, "target is not bordering origin or does not exist. {attack <origin> <target>}");
+            JOptionPane.showMessageDialog(null, "target is not bordering origin or does not exist.");
             return false;
         } else if (origin.getArmies() <= 1 ) {
-            JOptionPane.showMessageDialog(null, "origin has insufficient armies. Must be greater than 1. {attack <origin> <target>}");
+            JOptionPane.showMessageDialog(null, "origin has insufficient armies. Must be greater than 1.");
             return false;
         }
 
         if(target.isOccupiedBy(player)) {
-            JOptionPane.showMessageDialog(null, "Can't attack own territory. Try fortify? {attack <origin> <target>}");
+            JOptionPane.showMessageDialog(null, "Can't attack own territory. Try fortify?");
             return false;
         }
         else
