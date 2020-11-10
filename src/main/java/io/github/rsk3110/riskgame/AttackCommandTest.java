@@ -35,8 +35,19 @@ public class AttackCommandTest {
         player2 = new Player (world, "Player2", 2);
 
         Territory t = Territory.nameToTerritory(player,"1");
-        Territory t1 = Territory.nameToTerritory(player2,"2");
-        Territory t2 = Territory.nameToTerritory(player,"3");
+        Territory t1 = Territory.nameToTerritory(player,"2");
+        Territory t2 = Territory.nameToTerritory(player2,"9");
+        Territory t3 = Territory.nameToTerritory(player2,"3");
+
+        t.setOccupant(player);
+        t1.setOccupant(player);
+        t2.setOccupant(player2);
+        t3.setOccupant(player2);
+
+        t.setArmies(1);
+        t1.setArmies(8);
+        t2.setArmies(8);
+        t3.setArmies(1);
     }
 
     @After
@@ -58,69 +69,30 @@ public class AttackCommandTest {
 
     @Test //if Player enters 2 arguments (correct amount)
     public void testExecuteCondition2() { //the args are invalid
-        args.add("A");
+        args.add("A"); //origin
+        args.add("B"); //target
+        assertFalse(a.execute(player, args));
+    }
+
+    @Test //If player enter the right number of arguments
+    public void testExecuteCondition3() { //Invalid origin
         args.add("B");
+        args.add("3");
         assertFalse(a.execute(player, args));
     }
 
     @Test //If player enter the right number of arguments
-    public void testExecuteCondition3() { //Wrong number of armies
-        //t.setOccupant(player);
-        args.add("A");
-        args.add("B");
+    public void testExecuteCondition4() {//invalid target
+        args.add("1");
+        args.add("9");
         assertFalse(a.execute(player, args));
     }
 
     @Test //If player enter the right number of arguments
-    public void testExecuteCondition4() {//correct number of armies but not existing target
-        t.setOccupant(player);
-        t1.setOccupant(player);
-        args.add("A");
-        args.add("1");
-        assertFalse(a.execute(player, args));
-    }
-
-    @Test //If player enter the right number of arguments
-    public void testExecuteCondition5() {//Correct armies and target but not neighbouring target
-        t.setOccupant(player);
-        args.add("8");
-        args.add("1"); //not neighboring territory
-        assertFalse(a.execute(player, args));
-    }
-
-    @Test //If player enter the right number of arguments
-    public void testExecuteCondition6() {//Correct origin and neighboring target but target not occupied by player
-        t.setOccupant(player);
-        t1.setOccupant(player2);
-        args.add("1");
-        args.add("1"); //target occupied by player 2
-        assertFalse(a.execute(player, args));
-    }
-
-    @Test //If player enter the right number of arguments
-    public void testExecuteCondition7() {//Correct origin and neighboring target and target occupied by player
-        t.setOccupant(player);
-        t1.setOccupant(player);
-        args.add("1");
-        args.add("1"); //target occupied by player 2
-        assertFalse(a.execute(player, args));
-    }
-
-    @Test //If all args correct
-    public void testExecuteCondition8() { //Player tries to move too many armies (have to leave at least one army at origin)
-        t.setOccupant(player);
-        t1.setOccupant(player);
+    public void testExecuteCondition5() {//valid target and valid origin but not enough armies at origin
         args.add("1");
         args.add("1");
         assertFalse(a.execute(player, args));
     }
 
-    @Test //If all args correct
-    public void testExecuteCondition9() {
-        t.setOccupant(player);
-        t1.setOccupant(player);
-        args.add("1");
-        args.add("1");
-        assertTrue(a.execute(player, args));
-    }
 }
