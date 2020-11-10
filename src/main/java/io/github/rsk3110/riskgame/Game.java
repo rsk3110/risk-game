@@ -45,12 +45,14 @@ public class Game {
                 .collect(Collectors.toList());
         this.currPlayer = players.get(0);
         this.commandManager = new CommandManager(this);
+
+        init();
     }
 
     /**
      * Initialize territory occupants and armies
      */
-    private void startGame() {
+    private void init() {
         List<Territory> territories = new ArrayList<>(this.world.getGraph().vertexSet());
         Collections.shuffle(territories);
 
@@ -171,6 +173,12 @@ public class Game {
     public Player getCurrPlayer() { return this.currPlayer; }
 
     public CommandManager getCommandManager() { return this.commandManager; }
+
+    public void nextTurn() {
+        int currIndex = players.indexOf(currPlayer);
+        Player nextPlayer = currIndex != players.size() - 1 ? players.get(currIndex + 1) : players.get(0);
+        this.currPlayer = nextPlayer;
+    }
 
     static {
         MAX_ARMIES = new HashMap<>();
