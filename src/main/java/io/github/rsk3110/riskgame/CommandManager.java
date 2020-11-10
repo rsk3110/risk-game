@@ -38,10 +38,9 @@ public class CommandManager {
      * Call execute method of provided command.
      *
      * @param aName name of command to execute
-     * @return whether to hand control to next player
      */
-    public boolean execute(String aName) {
-        return commandMap.get(aName).execute(game.getCurrPlayer());
+    public void execute(String aName) {
+        if(commandMap.get(aName).execute(game.getCurrPlayer())) game.nextTurn();
     }
 
     /**
@@ -49,10 +48,9 @@ public class CommandManager {
      *
      * @param aName name of command to execute
      * @param args arguments to pass into command execution
-     * @return whether to hand control to next player
      */
-    public boolean execute(String aName, List<String> args) {
-        return commandMap.get(aName).execute(game.getCurrPlayer(), args);
+    public void execute(String aName, List<String> args) {
+        if(commandMap.get(aName).execute(game.getCurrPlayer(), args)) game.nextTurn();
     }
 
     /**
@@ -60,16 +58,13 @@ public class CommandManager {
      * if command name is found in commandMap
      *
      * @param input the input to split and execute
-     * @return whether to hand control to next player
      */
-    public boolean handleInput(String input) {
+    public void handleInput(String input) {
         List<String> inputList = new ArrayList<String>(Arrays.asList(input.toLowerCase().split(" ")));
         String cmd = inputList.get(0);
 
         if(!commandMap.containsKey(cmd)) System.out.println("Invalid command!");
-        else if(inputList.size() == 1) return this.execute(cmd);
-        else return this.execute(cmd, inputList.subList(1, inputList.size()));
-
-        return false;
+        else if(inputList.size() == 1) execute(cmd);
+        else execute(cmd, inputList.subList(1, inputList.size()));
     }
 }
