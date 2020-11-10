@@ -31,12 +31,20 @@ public class FortifyCommandTest {
         this.world = loader.load("default"); // load in level data
         territories = new ArrayList<>(world.getTerritoryMap().keySet());
 
-        player = new Player (world, "Player", 2);
-        player2 = new Player (world, "Player2", 2);
+        player = new Player (world, "Player", 5);
+        player2 = new Player (world, "Player2", 5);
 
         Territory t = Territory.nameToTerritory(player,"1");
         Territory t1 = Territory.nameToTerritory(player,"2");
-        Territory t2 = Territory.nameToTerritory(player,"3");
+        Territory t2 = Territory.nameToTerritory(player2,"3");
+
+        t.setOccupant(player);
+        t1.setOccupant(player);
+        t2.setOccupant(player2);
+
+        t.setArmies(8);
+        t1.setArmies(8);
+        t2.setArmies(8);
 
         System.out.println(t.getName());
     }
@@ -84,7 +92,6 @@ public class FortifyCommandTest {
 
     @Test //If player enter the right number of arguments
     public void testExecuteCondition5() {//Correct armies and origin but not neighbouring target
-       // t.setOccupant(player);
         args.add("1");
         args.add("7"); //not neighboring territory
         args.add("1");
@@ -94,32 +101,24 @@ public class FortifyCommandTest {
     @Test //If player enter the right number of arguments
     public void testExecuteCondition6() {//Correct origin and neighboring target but target not occupied by player
         args.add("1");
-        args.add("2"); //target occupied by player 2
-        args.add("1");
-        assertFalse(f.execute(player, args));
-    }
-
-    @Test //If player enter the right number of arguments
-    public void testExecuteCondition7() {//Correct origin and neighboring target and target occupied by player
-        args.add("1");
-        args.add("2"); //target occupied by player 2
+        args.add("3"); //target occupied by player 2
         args.add("1");
         assertFalse(f.execute(player, args));
     }
 
     @Test //If all args correct
-    public void testExecuteCondition8() { //Player tries to move too many armies (have to leave at least one army at origin)
+    public void testExecuteCondition7() {//Correct origin and neighboring target and target occupied by player but player moving too many armies
         args.add("1");
         args.add("2");
-        args.add("2"); //player has only two armies but they are trying to move all of them
+        args.add("8"); //number of armies
         assertFalse(f.execute(player, args));
     }
 
     @Test //If all args correct
-    public void testExecuteCondition9() {
+    public void testExecuteCondition8() { //Correct origin and neighboring target and target occupied by player
         args.add("1");
         args.add("2");
-        args.add("1"); //player has only two armies but they are trying to move all of them
+        args.add("2");
         assertTrue(f.execute(player, args));
     }
 

@@ -35,7 +35,7 @@ public class AttackCommandTest {
         player2 = new Player (world, "Player2", 2);
 
         Territory t = Territory.nameToTerritory(player,"1");
-        Territory t1 = Territory.nameToTerritory(player,"2");
+        Territory t1 = Territory.nameToTerritory(player2,"2");
         Territory t2 = Territory.nameToTerritory(player,"3");
     }
 
@@ -57,7 +57,7 @@ public class AttackCommandTest {
     }
 
     @Test //if Player enters 2 arguments (correct amount)
-    public void testExecuteCondition2() { ;
+    public void testExecuteCondition2() { //the args are invalid
         args.add("A");
         args.add("B");
         assertFalse(a.execute(player, args));
@@ -65,7 +65,7 @@ public class AttackCommandTest {
 
     @Test //If player enter the right number of arguments
     public void testExecuteCondition3() { //Wrong number of armies
-        t.setOccupant(player);
+        //t.setOccupant(player);
         args.add("A");
         args.add("B");
         assertFalse(a.execute(player, args));
@@ -74,6 +74,7 @@ public class AttackCommandTest {
     @Test //If player enter the right number of arguments
     public void testExecuteCondition4() {//correct number of armies but not existing target
         t.setOccupant(player);
+        t1.setOccupant(player);
         args.add("A");
         args.add("1");
         assertFalse(a.execute(player, args));
