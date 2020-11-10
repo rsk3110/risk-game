@@ -128,7 +128,7 @@ public final class Territory implements Serializable {
      *
      * @param occupant player to occupy
      */
-    public void setOccupant(final Player occupant) {
+    public void setOccupant(Player occupant) {
         if(occupant != null) {
             removeOccupant();
             occupant.addTerritory(this);
