@@ -6,6 +6,7 @@ import java.awt.*;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -17,15 +18,15 @@ import java.util.stream.IntStream;
  * @author Mark Johnson
  **/
 public class Game {
+    private static final Map<Integer, Integer> MAX_ARMIES; // defines default army sizes per player sizes
+
+    private final transient List<Consumer<Player>> turnStartListeners;
 
     private final World world;
     private final List<Player> players;
     private final CommandManager commandManager;
 
     private Player currPlayer;
-
-    static final private Map<Integer, Integer> MAX_ARMIES; // defines default army sizes per player sizes
-
 
     public static void main(String[] args) {
         final WorldLoader loader = new WorldFileLoader(Paths.get("").toAbsolutePath().resolve("worlds"));
@@ -45,14 +46,13 @@ public class Game {
                 .collect(Collectors.toList());
         this.currPlayer = players.get(0);
         this.commandManager = new CommandManager(this);
-
-        init();
+        this.turnStartListeners = new ArrayList<>();
     }
 
     /**
      * Initialize territory occupants and armies
      */
-    private void init() {
+    public void init() {
         List<Territory> territories = new ArrayList<>(this.world.getGraph().vertexSet());
         Collections.shuffle(territories);
 
@@ -63,17 +63,29 @@ public class Game {
             index = (index + 1) % players.size();
         }
 
-        for(Territory territory : territories) { //randomly assign armies
-            Player occupyingPlayer = territory.getOccupant();
-            if (occupyingPlayer.getArmies() > 0) {
-                final int minArmiesUsed = 1;
-                final int maxArmiesUsed = occupyingPlayer.getArmies();
-                final int armiesUsed = (int) Math.floor(minArmiesUsed + (maxArmiesUsed - minArmiesUsed) * Math.pow((new Random()).nextDouble(), 30));
+        while (this.players.stream().mapToInt(Player::getArmies).sum() > 0) {
+            for(Territory territory : territories) { //randomly assign armies
+                Player occupyingPlayer = territory.getOccupant();
+                if (occupyingPlayer.getArmies() > 0) {
+                    final int minArmiesUsed = 1;
+                    final int maxArmiesUsed = occupyingPlayer.getArmies();
+                    final int armiesUsed = (int) Math.floor(minArmiesUsed + (maxArmiesUsed - minArmiesUsed) * Math.pow((new Random()).nextDouble(), 30));
 
-                occupyingPlayer.setArmies(occupyingPlayer.getArmies() - armiesUsed);
-                territory.setArmies(territory.getArmies() + armiesUsed);
+                    occupyingPlayer.setArmies(occupyingPlayer.getArmies() - armiesUsed);
+                    territory.setArmies(territory.getArmies() + armiesUsed);
+                }
             }
         }
+
+        this.notifyTurnListeners();
+    }
+
+    private void notifyTurnListeners() {
+        this.turnStartListeners.forEach(l -> l.accept(this.currPlayer));
+    }
+
+    public void quitGame() {
+        System.exit(0);
     }
 
     /**
@@ -178,6 +190,14 @@ public class Game {
         int currIndex = players.indexOf(currPlayer);
         Player nextPlayer = currIndex != players.size() - 1 ? players.get(currIndex + 1) : players.get(0);
         this.currPlayer = nextPlayer;
+    }
+    
+    public List<Player> getPlayers() {
+        return this.players;
+    }
+
+    public void addTurnStartListener(final Consumer<Player> listener) {
+        this.turnStartListeners.add(listener);
     }
 
     static {
