@@ -4,8 +4,8 @@ import io.github.rsk3110.riskgame.view.GameView;
 
 import java.awt.*;
 import java.nio.file.Paths;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 

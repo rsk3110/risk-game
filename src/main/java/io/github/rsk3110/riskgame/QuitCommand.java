@@ -20,7 +20,6 @@ public class QuitCommand implements Command {
      * @return whether to hand control to next player
      */
     public boolean execute(Player player) {
-        System.out.println("The game is over.");
         System.exit(0);
         return false;
     }

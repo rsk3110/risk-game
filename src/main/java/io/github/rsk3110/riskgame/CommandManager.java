@@ -1,5 +1,6 @@
 package io.github.rsk3110.riskgame;
 
+import javax.swing.*;
 import java.util.*;
 
 /**
@@ -39,8 +40,13 @@ public class CommandManager {
      *
      * @param aName name of command to execute
      */
-    public void execute(String aName) {
-        if(commandMap.get(aName).execute(game.getCurrPlayer())) game.nextTurn();
+    public boolean execute(String aName) {
+        if(commandMap.get(aName).execute(game.getCurrPlayer())) {
+            game.nextTurn();
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -49,8 +55,13 @@ public class CommandManager {
      * @param aName name of command to execute
      * @param args arguments to pass into command execution
      */
-    public void execute(String aName, List<String> args) {
-        if(commandMap.get(aName).execute(game.getCurrPlayer(), args)) game.nextTurn();
+    public boolean execute(String aName, List<String> args) {
+        if(commandMap.get(aName).execute(game.getCurrPlayer(), args)) {
+            game.nextTurn();
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -63,7 +74,7 @@ public class CommandManager {
         List<String> inputList = new ArrayList<String>(Arrays.asList(input.toLowerCase().split(" ")));
         String cmd = inputList.get(0);
 
-        if(!commandMap.containsKey(cmd)) System.out.println("Invalid command!");
+        if(!commandMap.containsKey(cmd)) JOptionPane.showMessageDialog(null, "Invalid command!");
         else if(inputList.size() == 1) execute(cmd);
         else execute(cmd, inputList.subList(1, inputList.size()));
     }

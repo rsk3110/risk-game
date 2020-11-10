@@ -1,5 +1,6 @@
 package io.github.rsk3110.riskgame;
 
+import javax.swing.*;
 import java.util.*;
 
 /**
@@ -36,18 +37,18 @@ public class AttackCommand implements Command {
         Territory target = Territory.nameToTerritory(player, args.get(1));
 
         if (origin == null || !origin.isOccupiedBy(player)) {
-            System.out.println("origin not occupied by player or does not exist. {attack <origin> <target>}");
+            JOptionPane.showMessageDialog(null, "origin not occupied by player or does not exist. {attack <origin> <target>}");
             return false;
         } else if (target == null || !origin.isNeighbor(player.getWorld(), target)) {
-            System.out.println("target is not bordering origin or does not exist. {attack <origin> <target>}");
+            JOptionPane.showMessageDialog(null, "target is not bordering origin or does not exist. {attack <origin> <target>}");
             return false;
         } else if (origin.getArmies() <= 1 ) {
-            System.out.println("origin has insufficient armies. Must be greater than 1. {attack <origin> <target>}");
+            JOptionPane.showMessageDialog(null, "origin has insufficient armies. Must be greater than 1. {attack <origin> <target>}");
             return false;
         }
 
         if(target.isOccupiedBy(player)) {
-            System.out.println("Can't attack own territory. Try fortify? {attack <origin> <target>}");
+            JOptionPane.showMessageDialog(null, "Can't attack own territory. Try fortify? {attack <origin> <target>}");
             return false;
         }
         else
@@ -66,7 +67,7 @@ public class AttackCommand implements Command {
     private int getNumDice(Player player, int max) {
         try {
             Scanner scanner = new Scanner(System.in);
-            System.out.println("Roll how many dice? (" + player.getName() + ") Must be " + ((max == 1) ? "1" : "1 to " + max + "."));
+            JOptionPane.showMessageDialog(null, "Roll how many dice? (" + player.getName() + ") Must be " + ((max == 1) ? "1" : "1 to " + max + "."));
             int num;
             do {
                 num = scanner.nextInt();
@@ -74,7 +75,7 @@ public class AttackCommand implements Command {
             } while(!(num > 0 && num <= max));
             return num;
         } catch (Exception e) {
-            System.out.println("Invalid Input. Try a new number of die.");
+            JOptionPane.showMessageDialog(null, "Invalid Input. Try a new number of die.");
             return getNumDice(player, max);
         }
     }
@@ -92,7 +93,7 @@ public class AttackCommand implements Command {
             for(int i = getNumDice(player, max); i > 0; i--) {
                 int num = random.nextInt(6) + 1;
                 add(num);
-                System.out.println("You rolled: " + num);
+                JOptionPane.showMessageDialog(null, "You rolled: " + num);
             }
         }};
     }
@@ -108,7 +109,7 @@ public class AttackCommand implements Command {
     private int getNumArmyToMove(int min, int max) {
         try {
             Scanner scanner = new Scanner(System.in);
-            System.out.println("Move how many armies? (" + min + " to " + max + ")");
+            JOptionPane.showMessageDialog(null, "Move how many armies? (" + min + " to " + max + ")");
             int num;
             do {
                 System.out.print("> ");
@@ -149,16 +150,16 @@ public class AttackCommand implements Command {
             if(playerValue < targetValue || playerValue.equals(targetValue)) {
                 origin.decrementArmies();
                 lostCount++;
-                System.out.println("Failure! You lost an army. " + "{" + playerValue + " vs " + targetValue + "}");
+                JOptionPane.showMessageDialog(null, "Failure! You lost an army. " + "{" + playerValue + " vs " + targetValue + "}");
             } else {
                 target.decrementArmies();
-                System.out.println("Success! Enemy lost an army. " + "{" + playerValue + " vs " + targetValue + "}");
+                JOptionPane.showMessageDialog(null, "Success! Enemy lost an army. " + "{" + playerValue + " vs " + targetValue + "}");
                 if(target.getArmies() == 0) { //if target defeated
                     Player tOccupant = target.getOccupant();
                     target.setOccupant(player);
-                    System.out.println("Success! You won the battle.");
+                    JOptionPane.showMessageDialog(null, "Success! You won the battle.");
                     origin.moveArmy(getNumArmyToMove(attackerDiceCount - lostCount, origin.getArmies() - 1), target);
-                    System.out.println(player.getName() + " captured " + target.getName() + " and it now holds " + target.getArmies() + " armies.");
+                    JOptionPane.showMessageDialog(null, player.getName() + " captured " + target.getName() + " and it now holds " + target.getArmies() + " armies.");
                     if(tOccupant.getTerritories().size() == 0) System.out.println(tOccupant.getName() + " was eliminated.");
                     return false;
                 }

@@ -130,6 +130,7 @@ public class InGameScreen extends JPanel {
                     add(origin.getName());
                     add(target.getName());
                 }});
+                currMode = ClickMode.DEFAULT;
 
                 break;
             }
@@ -139,6 +140,7 @@ public class InGameScreen extends JPanel {
                     add(target.getName());
                     add("5");
                 }});
+                currMode = ClickMode.DEFAULT;
 
                 break;
             }
