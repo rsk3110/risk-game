@@ -195,11 +195,12 @@ public class InGameScreen extends JPanel {
 
                 break;
             }
-            case FORTIFY: {this.notificationBox.setText("Fortifying " + target.getName() + "Using " +  origin.getName());
+            case FORTIFY: {
+                this.notificationBox.setText("Fortifying " + target.getName() + "Using " +  origin.getName());
                 game.getCommandManager().execute("fortify", new ArrayList<String>() {{ // get amount of armies
                     add(origin.getName());
                     add(target.getName());
-                    add("5");
+                    add(JOptionPane.showInputDialog("How many armies would you like to fortify with?"));
                 }});
                 currMode = ClickMode.DEFAULT;
 

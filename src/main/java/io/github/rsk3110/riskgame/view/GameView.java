@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GameView {
-    private static final Dimension DEFAULT_SIZE = new Dimension(1280, 720);
+    private static final Dimension DEFAULT_SIZE = new Dimension(1280, 800);
 
     private final JFrame root;
     private JPanel currentScreen;
