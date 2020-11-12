@@ -30,7 +30,7 @@ public class SkipCommand implements Command {
      * @return whether to hand control to next player
      */
     public boolean execute(Player player, List<String> args) {
-        System.out.println("Invalid arguments. Skip does not take in any arguments. {skip}");
+        System.out.println("Invalid arguments. Skip does not take in any arguments.");
         return false;
     }
 }

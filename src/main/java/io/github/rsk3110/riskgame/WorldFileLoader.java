@@ -27,12 +27,14 @@ import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.StreamSupport;
 
 /**
  * Reads, parses, and constructs World object
@@ -270,5 +272,20 @@ public final class WorldFileLoader implements WorldLoader {
         final Graph<Territory, TerritoryEdge> levelGraph = this.parseLevelLayout(levelDoc, createGraphMLImporter(levelContinents));
 
         return new World(levelGraph, levelContinents);
+    }
+
+    @Override
+    public List<String> getWorlds() {
+        final List<String> worldNames = new ArrayList<>();
+        try {
+            for (final Path worldPath : Files.newDirectoryStream(this.levelDir, "*." + FILE_EXT)) {
+                String worldFileName = worldPath.getFileName().toString();
+                worldFileName = worldFileName.substring(0, worldFileName.indexOf('.')); // remove file extension
+                worldNames.add(worldFileName);
+            }
+        } catch (final IOException e) {
+            throw new LevelLoadException(e);
+        }
+        return worldNames;
     }
 }

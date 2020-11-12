@@ -23,6 +23,9 @@ A description can also be found in the document folder, under 'description.txt'
 ## Changelog
 11.9.2020 - GUI Release
 10.25.2020 - Initial Text-Based Release
+11.09.2020 - First GUI-Based Version
+
+See CHANGELOG.md for more details.
 
 ## Roadmap
 1. Implement initial text-based logic (DONE)

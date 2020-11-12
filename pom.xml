@@ -17,6 +17,13 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>com.github.vlsi.mxgraph</groupId>
@@ -41,12 +48,36 @@
         </dependency>
 
         <dependency>
+            <groupId>com.github.EsotericSoftware.tablelayout</groupId>
+            <artifactId>tablelayout</artifactId>
+            <version>master-bd46ede341-1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.EsotericSoftware.tablelayout</groupId>
+            <artifactId>tablelayout-swing</artifactId>
+            <version>master-bd46ede341-1</version>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -64,4 +95,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

@@ -1,7 +1,14 @@
 package io.github.rsk3110.riskgame;
 
+import io.github.rsk3110.riskgame.view.GameView;
+
+import java.awt.*;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Runs the Game
@@ -11,92 +18,74 @@ import java.util.*;
  * @author Mark Johnson
  **/
 public class Game {
+    private static final Map<Integer, Integer> MAX_ARMIES; // defines default army sizes per player sizes
 
-    private CommandManager commandManager;
-    private World world;
-    private List<Player> players;
+    private final transient List<Consumer<Player>> turnStartListeners;
 
-    static final private TreeMap<Integer, Integer> maxArmies = new TreeMap<Integer, Integer>(){{ // defines default army sizes per player sizes
-        put(2, 50);
-        put(3, 35);
-        put(4, 30);
-        put(5, 25);
-        put(6, 20);
-    }};
+    private final World world;
+    private final List<Player> players;
+    private final CommandManager commandManager;
+
+    private Player currPlayer;
 
     public static void main(String[] args) {
-        Game game = new Game();
-        game.play();
+        final WorldLoader loader = new WorldFileLoader(Paths.get("").toAbsolutePath().resolve("worlds"));
+        EventQueue.invokeLater(() -> new GameView(loader));
     }
 
     /**
-     * Creates Game. Creates all the commands and loads the world.
-     * Asks for the number of players, splits territories between players,
-     * and randomizes army allocation to each territory
+     * Creates a Game object with a given world and player count.
+     *
+     * @param world World to use to initialize game
+     * @param playerCount number of players
      */
-    public Game() {
-        this.commandManager = new CommandManager();
-        this.commandManager.register("help", new HelpCommand());
-        this.commandManager.register("map", new MapCommand());
-        this.commandManager.register("attack", new AttackCommand());
-        this.commandManager.register("fortify", new FortifyCommand());
-        this.commandManager.register("skip", new SkipCommand());
-        this.commandManager.register("quit", new QuitCommand());
+    public Game(final World world, final int playerCount) {
+        this.world = world;
+        this.players = IntStream.range(0, playerCount)
+                .mapToObj(i -> new Player(world, String.format("Player %d", i), MAX_ARMIES.get(playerCount)))
+                .collect(Collectors.toList());
+        this.currPlayer = players.get(0);
+        this.commandManager = new CommandManager(this);
+        this.turnStartListeners = new ArrayList<>();
+    }
 
-        WorldFileLoader loader = new WorldFileLoader(Paths.get("").toAbsolutePath().resolve("worlds"));
-        this.world = loader.load("default"); // load in level data
-
-        System.out.println("Welcome to RISK! How many players will be playing? (2-6)");
-        System.out.print("> ");
-        int numPlayers = getNumInRange(2, 6);
-        this.players = new ArrayList<Player>(){{ //init players
-            for(int i = 0; i < numPlayers; i++) {
-                add(new Player(world, "player" + i, maxArmies.get(numPlayers)));
-            }
-        }};
-
-        List<Territory> territories = new ArrayList<>(world.getTerritoryMap().keySet());
+    /**
+     * Initialize territory occupants and armies
+     */
+    public void init() {
+        List<Territory> territories = new ArrayList<>(this.world.getGraph().vertexSet());
         Collections.shuffle(territories);
 
         int index = 0;
-        for(Territory territory : territories) { //assign territories
+        for (Territory territory : territories) { //assign territories
             territory.setOccupant(players.get(index));
             players.get(index).allocateArmies(1, territory);
             index = (index + 1) % players.size();
         }
 
-        for(Territory territory : territories) { //randomly assign armies
-            Player occupyingPlayer = territory.getOccupant();
-            if (occupyingPlayer.getArmies() > 0) {
-                final int minArmiesUsed = 1;
-                final int maxArmiesUsed = occupyingPlayer.getArmies();
-                final int armiesUsed = (int) Math.floor(minArmiesUsed + (maxArmiesUsed - minArmiesUsed) * Math.pow((new Random()).nextDouble(), 30));
+        while (this.players.stream().mapToInt(Player::getArmies).sum() > 0) {
+            for(Territory territory : territories) { //randomly assign armies
+                Player occupyingPlayer = territory.getOccupant();
+                if (occupyingPlayer.getArmies() > 0) {
+                    final int minArmiesUsed = 1;
+                    final int maxArmiesUsed = occupyingPlayer.getArmies();
+                    final int armiesUsed = (int) Math.floor(minArmiesUsed + (maxArmiesUsed - minArmiesUsed) * Math.pow((new Random()).nextDouble(), 30));
 
-                occupyingPlayer.setArmies(occupyingPlayer.getArmies() - armiesUsed);
-                territory.setArmies(territory.getArmies() + armiesUsed);
-            }
-        }
-    }
-
-    /**
-     * Runs loop till game ends or player quits game.
-     */
-    public void play() {
-        for(;;) { //loop forever
-            for(Player player : this.players) {
-                if(player.getTerritories().size() == 0) continue; //skip turn if player eliminated.
-                boolean end = false;
-                player.updateArmies(); // Add rewarded armies
-                System.out.println("It is now " + player.getName() + "'s turn.");
-                runArmyAllocation(player); // Allow player to allocate free armies
-                while(!end){ //while no command terminates turn
-                    System.out.print("{" + player.getName() + "} > ");
-                    end = this.commandManager.handleInput(player, (new Scanner(System.in)).nextLine()); // get next command
-                    if(checkIfOver())
-                        commandManager.execute(player, "quit");
+                    occupyingPlayer.setArmies(occupyingPlayer.getArmies() - armiesUsed);
+                    territory.setArmies(territory.getArmies() + armiesUsed);
                 }
             }
         }
+
+        this.notifyTurnListeners();
+    }
+
+    private void notifyTurnListeners() {
+        this.turnStartListeners.forEach(l -> l.accept(this.currPlayer));
+    }
+
+    public void quitGame() {
+        System.exit(0);
     }
 
     /**
@@ -112,7 +101,7 @@ public class Game {
             return;
         }
 
-        Territory target = Territory.idToTerritory(player, args.get(0));
+        Territory target = Territory.nameToTerritory(player, args.get(0));
         int numArmies;
         try { // try-catch for if player does not input number
             numArmies = Integer.parseInt(args.get(1));
@@ -187,5 +176,36 @@ public class Game {
         }
         System.out.println("Nobody can move, it's a draw.");
         return true;
+    }
+
+    public World getWorld() {
+        return this.world;
+    }
+
+    public Player getCurrPlayer() { return this.currPlayer; }
+
+    public CommandManager getCommandManager() { return this.commandManager; }
+
+    public void nextTurn() {
+        int currIndex = players.indexOf(currPlayer);
+        Player nextPlayer = currIndex != players.size() - 1 ? players.get(currIndex + 1) : players.get(0);
+        this.currPlayer = nextPlayer;
+    }
+    
+    public List<Player> getPlayers() {
+        return this.players;
+    }
+
+    public void addTurnStartListener(final Consumer<Player> listener) {
+        this.turnStartListeners.add(listener);
+    }
+
+    static {
+        MAX_ARMIES = new HashMap<>();
+        MAX_ARMIES.put(2, 50);
+        MAX_ARMIES.put(3, 35);
+        MAX_ARMIES.put(4, 30);
+        MAX_ARMIES.put(5, 25);
+        MAX_ARMIES.put(6, 20);
     }
 }

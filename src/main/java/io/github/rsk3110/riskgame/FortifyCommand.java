@@ -1,5 +1,6 @@
 package io.github.rsk3110.riskgame;
 
+import javax.swing.*;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ public class FortifyCommand implements Command {
      * @return whether to hand control to next player
      */
     public boolean execute(Player player) {
-        System.out.println("Invalid arguments. {fortify <origin> <target> <#armies>}");
+        System.out.println("Invalid arguments.");
         return false;
     }
 
@@ -36,31 +37,31 @@ public class FortifyCommand implements Command {
      */
     public boolean execute(Player player, List<String> args) {
         if(args.size() != 3) {
-            System.out.println("Invalid number of arguments. {fortify <origin> <target> <#armies>}");
+            System.out.println("Invalid number of arguments.");
             return false;
         }
 
-        Territory origin = Territory.idToTerritory(player, args.get(0));
-        Territory target = Territory.idToTerritory(player, args.get(1));
+        Territory origin = Territory.nameToTerritory(player, args.get(0));
+        Territory target = Territory.nameToTerritory(player, args.get(1));
         int numArmies;
         try {
             numArmies = Integer.parseInt(args.get(2));
         } catch (NumberFormatException e) {
-            System.out.println("Invalid number of armies, not a number. {fortify <origin> <target> <#armies>}");
+            JOptionPane.showMessageDialog(null, "Invalid number of armies, not a number.");
             return false;
         }
 
         if (origin == null || !origin.isOccupiedBy(player)) {
-            System.out.println("origin not owned by player or does not exist. {fortify <origin> <target> <#armies>}");
+            JOptionPane.showMessageDialog(null, "origin not owned by player or does not exist.");
             return false;
         } else if (target == null || !origin.isNeighbor(player.getWorld(), target)) {
-            System.out.println("target is not bordering origin or does not exist. {fortify <origin> <target> <#armies>}");
+            JOptionPane.showMessageDialog(null, "target is not bordering origin or does not exist.");
             return false;
         } else if(!target.isOccupiedBy(player)) {
-            System.out.println("target is not occupied by player. {fortify <origin> <target> <#armies>}\n" + target.toString());
+            JOptionPane.showMessageDialog(null, "target is not occupied by player.\n" + target.toString());
             return false;
         } else if(numArmies > origin.getArmies() - 1) {
-            System.out.println("Moving too many armies. You can move a max of '" + (origin.getArmies() - 1) + "' armies");
+            JOptionPane.showMessageDialog(null, "Moving too many armies. You can move a max of '" + (origin.getArmies() - 1) + "' armies");
             return false;
         }
 
