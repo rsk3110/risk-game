@@ -246,7 +246,7 @@ public class Game {
             commandManager.handleInput("skip");
         }
         if(temp.isOccupiedBy(currPlayer)){
-            commandManager.handleInput("fortify" + territoryAI.getId() + " " + temp.getId());
+            commandManager.handleInput("fortify" + territoryAI.getId() + " " + temp.getId() + " " + (territoryAI.getArmies() - 1));
         }
         else if(!temp.isOccupiedBy(currPlayer)){
             commandManager.handleInput("attack " + territoryAI.getId() + " " + temp.getId());
