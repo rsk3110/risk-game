@@ -2,6 +2,7 @@ package io.github.rsk3110.riskgame;
 
 import javax.swing.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Rules for Attack command.
@@ -56,74 +57,6 @@ public class AttackCommand implements Command {
     }
 
     /**
-     * Asks the player for the number of dice to roll.
-     * Checks if player entered a valid number by checking against the max
-     * allowed number of dice.
-     *
-     * @param player player executing the command
-     * @param max maximum number of dice that can be rolled
-     * @return the number of dice that player chose to roll
-     */
-    private int getNumDice(Player player, int max) {
-        try {
-            Scanner scanner = new Scanner(System.in);
-            JOptionPane.showMessageDialog(null, "Roll how many dice? (" + player.getName() + ") Must be " + ((max == 1) ? "1" : "1 to " + max + "."));
-            int num;
-            do {
-                num = scanner.nextInt();
-                if(!(num > 0 && num <= max)) System.out.println("Invalid number. Must be " + ((max == 1) ? "1" : "1 to " + max + "."));
-            } while(!(num > 0 && num <= max));
-            return num;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Invalid Input. Try a new number of die.");
-            return getNumDice(player, max);
-        }
-    }
-
-    /**
-     * Generates values between 1 and 6 and adds them to a list.
-     *
-     * @param player player executing the command
-     * @param max valid maximum number of dice that can be rolled
-     * @return the list of dice values
-     */
-    private List<Integer> getDiceValues(Player player, int max) {
-        return new ArrayList<Integer>(){{
-            Random random = new Random();
-            for(int i = getNumDice(player, max); i > 0; i--) {
-                int num = random.nextInt(6) + 1;
-                add(num);
-                JOptionPane.showMessageDialog(null, "You rolled: " + num);
-            }
-        }};
-    }
-
-    /**
-     * Prompts the player for the number of armies to move from
-     * one territory to another.
-     *
-     * @param min minimum number of armies that can be moved
-     * @param max maximum number of armies that can be moved
-     * @return number of armies to move
-     */
-    private int getNumArmyToMove(int min, int max) {
-        try {
-            Scanner scanner = new Scanner(System.in);
-            JOptionPane.showMessageDialog(null, "Move how many armies? (" + min + " to " + max + ")");
-            int num;
-            do {
-                System.out.print("> ");
-                num = scanner.nextInt();
-                if(!(num >= min && num <= max)) System.out.println("Invalid number. Must be " + ((max == min) ? min : min + " to " + max + "."));
-            } while(!(num >= min && num <= max));
-            return num;
-        } catch (Exception e) {
-            System.out.println("Invalid Input. Try a new number of armies.");
-            return getNumArmyToMove(min, max);
-        }
-    }
-
-    /**
      * Rolls the dice for both origin and target territories, and compares the dice values.
      * If dice are equal or target > origin, origin territory loses battle and 1 army
      * If origin dice > target dice, target territory loses battle and 1 army.
@@ -136,8 +69,11 @@ public class AttackCommand implements Command {
      * @return whether to hand control to next player
      */
     private boolean attack(Player player, Territory origin, Territory target){
-        List<Integer> playerValues = getDiceValues(player, Math.min(3, origin.getArmies() - 1));
-        List<Integer> targetValues = getDiceValues(target.getOccupant(), Math.min(2, target.getArmies()));
+        List<Integer> playerValues = getDiceValues(Math.min(3, origin.getArmies() - 1), "Roll how many dice?");
+        List<Integer> targetValues = getDiceValues(Math.min(2, target.getArmies()), "Roll how many dice? (" + target.getOccupant().getName() + ")");
+        JOptionPane.showMessageDialog(null,
+                player.getName() + " rolled: " + playerValues + "\n"
+                        + target.getOccupant().getName() + " rolled: " + targetValues);
         int minDice = Math.min(playerValues.size(), targetValues.size()); // set minimum amount of dice to roll
         int attackerDiceCount = playerValues.size();
         int lostCount = 0;
@@ -158,7 +94,8 @@ public class AttackCommand implements Command {
                     Player tOccupant = target.getOccupant();
                     target.setOccupant(player);
                     JOptionPane.showMessageDialog(null, "Success! You won the battle.");
-                    origin.moveArmy(getNumArmyToMove(attackerDiceCount - lostCount, origin.getArmies() - 1), target);
+                    int userInput = promptForIntegerValue(attackerDiceCount - lostCount,origin.getArmies() - 1, "Move how many armies?");
+                    origin.moveArmy(userInput, target);
                     JOptionPane.showMessageDialog(null, player.getName() + " captured " + target.getName() + " and it now holds " + target.getArmies() + " armies.");
                     if(tOccupant.getTerritories().size() == 0) System.out.println(tOccupant.getName() + " was eliminated.");
                     return false;
@@ -167,6 +104,47 @@ public class AttackCommand implements Command {
         }
 
         return false;
+    }
+
+    /**
+     * Generates values between 1 and 6 and adds them to a list.
+     *
+     * @param max valid maximum number of dice that can be rolled
+     * @param prompt message to prompt user with
+     * @return the list of dice values
+     */
+    private List<Integer> getDiceValues(int max, String prompt) {
+        return new ArrayList<Integer>(){{
+            Random random = new Random();
+            int numRolls = promptForIntegerValue(1, max, prompt);
+            for(int i = numRolls; i > 0; i--) {
+                int num = random.nextInt(6) + 1;
+                add(num);
+            }
+        }};
+    }
+
+    /**
+     * Prompts the player for a number within two specified values.
+     *
+     * @param min minimum number
+     * @param max maximum number
+     * @param prompt message to prompt player with
+     * @return number input by player
+     */
+    private int promptForIntegerValue(int min, int max, String prompt) {
+        Pattern pattern = Pattern.compile("\\d+");
+        String userInput = null;
+        int userNum;
+        do {
+            do {
+                if(userInput != null) JOptionPane.showMessageDialog(null, "Invalid input. Must be number " + ((max == min) ? min : "between" + min + " and " + max + "."), "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                userInput = JOptionPane.showInputDialog(null, prompt + " " + ((max == min) ? min : min) + " to " + max + ".");
+            } while(!pattern.matcher(userInput).matches());
+            userNum = Integer.parseInt(userInput);
+        } while(!(userNum >= min && userNum <= max));
+
+        return userNum;
     }
 
     /**
