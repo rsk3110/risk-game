@@ -44,7 +44,7 @@ public final class Territory implements Serializable {
      *
      * @return id of the territory
      */
-    private int getId() {
+    public int getId() {
         return this.id;
     }
 

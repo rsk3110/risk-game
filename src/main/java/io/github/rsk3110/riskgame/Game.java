@@ -26,6 +26,8 @@ public class Game {
     private final List<Player> players;
     private final CommandManager commandManager;
 
+    private List<Territory> territories;
+
     private Player currPlayer;
 
     public static void main(String[] args) {
@@ -61,7 +63,7 @@ public class Game {
      * Initialize territory occupants and armies
      */
     public void init() {
-        List<Territory> territories = new ArrayList<>(this.world.getGraph().vertexSet());
+        territories = new ArrayList<>(this.world.getGraph().vertexSet());
         Collections.shuffle(territories);
 
         int index = 0;
@@ -213,7 +215,46 @@ public class Game {
     }
 
     private void AI(){
-        System.out.println("AIIIIIIII");
+        int max = 0;
+        Territory territoryAI = null;
+        for(Territory t : currPlayer.getTerritories())
+        {
+            if(t.getArmies() > max) {
+                max = t.getArmies();
+                territoryAI = t; //highest army territory owned by AI player
+            }
+        }
+
+        ArrayList<Territory> neighborT = new ArrayList<>();
+
+        //finds neighbor
+        for(Territory t : territories){
+            if(territoryAI.isNeighbor(world, t)) {
+                neighborT.add(t);
+            }
+        }
+
+        Territory temp = territoryAI; //Just a to avoid setting it to null, if no neighboring territory has lower armies than AI's territory
+        for(Territory t : neighborT)
+        {
+            if(t.getArmies() < territoryAI.getArmies()) {
+                temp = t; //lowest army territory neighboring the AI players territory
+            }
+        }
+
+        if(temp == territoryAI){
+            commandManager.handleInput("skip");
+        }
+        if(temp.isOccupiedBy(currPlayer)){
+            commandManager.handleInput("fortify" + territoryAI.getId() + " " + temp.getId());
+        }
+        else if(!temp.isOccupiedBy(currPlayer)){
+            commandManager.handleInput("attack " + territoryAI.getId() + " " + temp.getId());
+        }
+        else{
+            commandManager.handleInput("skip");
+        }
+
     }
 
     static {
