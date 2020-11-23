@@ -38,6 +38,11 @@ public class Player implements Serializable {
     }
 
     /**
+     * Set name of player
+     */
+    public void setName(String name) {this.name = name; }
+
+    /**
      * Get name of player
      *
      * @return the name of the player

@@ -39,11 +39,19 @@ public class Game {
      * @param world World to use to initialize game
      * @param playerCount number of players
      */
-    public Game(final World world, final int playerCount) {
+    public Game(final World world, final int playerCount, final boolean AI) {
         this.world = world;
-        this.players = IntStream.range(0, playerCount)
-                .mapToObj(i -> new Player(world, String.format("Player %d", i), MAX_ARMIES.get(playerCount)))
+        if(AI == true){
+            this.players = IntStream.range(0, playerCount)
+                .mapToObj(i -> new Player(world, String.format("AI Player %d", i + 1), MAX_ARMIES.get(playerCount)))
                 .collect(Collectors.toList());
+            players.get(0).setName("Player 1");
+        }
+        else {
+            this.players = IntStream.range(0, playerCount)
+                    .mapToObj(i -> new Player(world, String.format("Player %d", i + 1), MAX_ARMIES.get(playerCount)))
+                    .collect(Collectors.toList());
+        }
         this.currPlayer = players.get(0);
         this.commandManager = new CommandManager(this);
         this.turnStartListeners = new ArrayList<>();
@@ -190,6 +198,10 @@ public class Game {
         int currIndex = players.indexOf(currPlayer);
         Player nextPlayer = currIndex != players.size() - 1 ? players.get(currIndex + 1) : players.get(0);
         this.currPlayer = nextPlayer;
+        if(this.currPlayer.getName().contains("AI")){
+            AI();
+            nextTurn();
+        }
     }
     
     public List<Player> getPlayers() {
@@ -198,6 +210,10 @@ public class Game {
 
     public void addTurnStartListener(final Consumer<Player> listener) {
         this.turnStartListeners.add(listener);
+    }
+
+    private void AI(){
+        System.out.println("AIIIIIIII");
     }
 
     static {
