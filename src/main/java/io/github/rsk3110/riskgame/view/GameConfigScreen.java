@@ -4,6 +4,7 @@ import com.esotericsoftware.tablelayout.swing.Table;
 import io.github.rsk3110.riskgame.Game;
 import io.github.rsk3110.riskgame.World;
 import io.github.rsk3110.riskgame.WorldLoader;
+import io.github.rsk3110.riskgame.controller.GameController;
 import io.github.rsk3110.riskgame.controller.SimpleGameController;
 import io.github.rsk3110.riskgame.view.game.InGameScreen;
 
@@ -36,7 +37,6 @@ public class GameConfigScreen extends JPanel {
 
         final JList<Integer> playersList = this.makePlayerCountsList(this.makePlayerCountsListModel());
         final JScrollPane playersListPane = new JScrollPane(playersList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
         final JList<Integer> playersAIList = this.makePlayerCountsList(this.makeAIPlayerCountsListModel());
         final JScrollPane playersAIListPane = new JScrollPane(playersAIList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
@@ -73,7 +73,7 @@ public class GameConfigScreen extends JPanel {
         final World world = worldLoader.load(worldName);
         final Game game = new Game(world, playerCount, AI);
 
-        this.gameScreen.setScreen(new InGameScreen(game));
+        this.gameScreen.setScreen(new InGameScreen(new SimpleGameController(game)));
     }
 
     private JList<String> makeWorldsList(final ListModel<String> worlds) {

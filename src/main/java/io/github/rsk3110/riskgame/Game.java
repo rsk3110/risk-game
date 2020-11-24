@@ -1,12 +1,15 @@
 package io.github.rsk3110.riskgame;
 
+import io.github.rsk3110.riskgame.controller.GameController;
 import io.github.rsk3110.riskgame.view.GameView;
 
+import javax.swing.*;
 import java.awt.*;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -24,11 +27,11 @@ public class Game {
 
     private final World world;
     private final List<Player> players;
-    private final CommandManager commandManager;
 
     private List<Territory> territories;
-
     private Player currPlayer;
+    private int currRound;
+    private GameController gameController;
 
     public static void main(String[] args) {
         final WorldLoader loader = new WorldFileLoader(Paths.get("").toAbsolutePath().resolve("worlds"));
@@ -43,7 +46,7 @@ public class Game {
      */
     public Game(final World world, final int playerCount, final boolean AI) {
         this.world = world;
-        if(AI == true){
+        if(AI){
             this.players = IntStream.range(0, playerCount)
                 .mapToObj(i -> new Player(world, String.format("AI Player %d", i + 1), MAX_ARMIES.get(playerCount)))
                 .collect(Collectors.toList());
@@ -55,8 +58,9 @@ public class Game {
                     .collect(Collectors.toList());
         }
         this.currPlayer = players.get(0);
-        this.commandManager = new CommandManager(this);
         this.turnStartListeners = new ArrayList<>();
+        this.currRound = 0;
+        this.gameController = null;
     }
 
     /**
@@ -98,108 +102,26 @@ public class Game {
         System.exit(0);
     }
 
-    /**
-     * Parses out player army allocation string and allocates armies to territory
-     * if valid.
-     *
-     * @param player player executing the command
-     * @param args input to parse
-     */
-    private void parseAndAllocate(Player player, List<String> args) {
-        if(args.size() != 2) {
-            System.out.println("Invalid number of arguments. {<target> <#armies>}");
-            return;
-        }
-
-        Territory target = Territory.nameToTerritory(player, args.get(0));
-        int numArmies;
-        try { // try-catch for if player does not input number
-            numArmies = Integer.parseInt(args.get(1));
-        } catch (IllegalArgumentException e) {
-            System.out.println("Invalid input. Try a new number of armies. {<target> <#armies>}");
-            return;
-        }
-
-        if(target == null || !target.isOccupiedBy(player)) {
-            System.out.println("target is not occupied by player or does not exist. {<target> <#armies>}");
-            return;
-        } else if(numArmies < 1 || numArmies > player.getArmies()) {
-            System.out.println("Not enough armies to move. (1 to " + player.getArmies() + ") {<target> <#armies>}");
-            return;
-        }
-
-        player.allocateArmies(numArmies, target);
-    }
-
-    /**
-     * Lists player territories and prompts user to allocate player armies
-     *
-     * @param player player executing the command
-     */
-    private void runArmyAllocation(Player player) {
-        player.getTerritories().forEach(System.out::print);
-
-        do {
-            System.out.println("You have " + player.getArmies() + " armies to allocate. {<target> <#armies>}");
-            System.out.print("{" + player.getName() + " allocating} > ");
-            parseAndAllocate(player, Arrays.asList((new Scanner(System.in)).nextLine().split(" ")));
-        } while(player.getArmies() > 0);
-    }
-
-    /**
-     * Prompt for input within specified range.
-     *
-     * @param min minimum value
-     * @param max maximum value
-     * @return resulting number
-     */
-    private int getNumInRange(int min, int max) {
-        try {
-            Scanner scanner = new Scanner(System.in);
-            int num;
-            do {
-                num = scanner.nextInt();
-                if(!(num >= min && num <= max)) System.out.println("Invalid number. Must be " + ((max == min) ? min : min + " to " + max + "."));
-            } while(!(num >= min && num <= max));
-            return num;
-        } catch (Exception e) {
-            System.out.println("Invalid Input. Try a new number.");
-            return getNumInRange(min, max);
-        }
-    }
-
-    /**
-     * Checks if game draws or player won
-     *
-     * @return whether game has ended
-     */
-    private boolean checkIfOver(){
-        for (Player p: players){
-            if ((p.getTerritories()).size() == world.getTerritoryMap().keySet().size()){ // player owns all territories
-                System.out.println(p.getName() + " wins.");
-                return true;
-            }
-        }
-
-        for(Territory t: world.getTerritoryMap().keySet()){
-            if(t.getArmies() != 1) return false; // At least 1 territory can be played
-        }
-        System.out.println("Nobody can move, it's a draw.");
-        return true;
-    }
-
     public World getWorld() {
         return this.world;
     }
 
     public Player getCurrPlayer() { return this.currPlayer; }
 
-    public CommandManager getCommandManager() { return this.commandManager; }
+    public void setGameController(GameController gameController) {
+        this.gameController = gameController;
+    }
 
     public void nextTurn() {
         int currIndex = players.indexOf(currPlayer);
-        Player nextPlayer = currIndex != players.size() - 1 ? players.get(currIndex + 1) : players.get(0);
-        this.currPlayer = nextPlayer;
+        Player nextPlayer;
+        if(currIndex == players.size() - 1) {
+            nextPlayer = players.get(0);
+            currRound++;
+        } else
+            nextPlayer = players.get(currIndex + 1);
+        currPlayer = nextPlayer;
+        if(currRound != 0) currPlayer.updateArmies();
         if(this.currPlayer.getName().contains("AI")){
             AI();
             nextTurn();
@@ -212,6 +134,75 @@ public class Game {
 
     public void addTurnStartListener(final Consumer<Player> listener) {
         this.turnStartListeners.add(listener);
+    }
+
+    public void allocateBonusArmies(Territory target) {
+        currPlayer.updateArmies();
+    }
+
+    private void AI(){
+        int max = 0;
+        Territory territoryAI = null;
+        for(Territory t : currPlayer.getTerritories())
+        {
+            if(t.getArmies() > max) {
+                max = t.getArmies();
+                territoryAI = t; //highest army territory owned by AI player
+            }
+        }
+
+        ArrayList<Territory> neighborT = new ArrayList<>();
+
+        //finds neighbor
+        for(Territory t : territories){
+            if(territoryAI.isNeighbor(world, t)) {
+                neighborT.add(t);
+            }
+        }
+
+        Territory temp = territoryAI; //Just a to avoid setting it to null, if no neighboring territory has lower armies than AI's territory
+        for(Territory t : neighborT)
+        {
+            if(t.getArmies() < territoryAI.getArmies()) {
+                temp = t; //lowest army territory neighboring the AI players territory
+            }
+        }
+
+        if(temp == territoryAI){
+            gameController.skipTurn();
+        }
+        if(temp.isOccupiedBy(currPlayer)){
+            gameController.fortify(territoryAI, temp, (territoryAI.getArmies() - 1));
+        }
+        else if(!temp.isOccupiedBy(currPlayer)){
+            gameController.attack(territoryAI, temp, 1, promptForIntegerValue(1, temp.getArmies(), temp.getOccupant().getName() + ": How many dice would you like to roll?"));
+        }
+        else{
+            gameController.skipTurn();
+        }
+    }
+  
+    /**
+     * Prompts the player for a number within two specified values.
+     *
+     * @param min minimum number
+     * @param max maximum number
+     * @param prompt message to prompt player with
+     * @return player's input
+     */
+    private static int promptForIntegerValue(int min, int max, String prompt) {
+        Pattern pattern = Pattern.compile("\\d+");
+        String userInput = null;
+        int userNum;
+        do {
+            do {
+                if(userInput != null) JOptionPane.showMessageDialog(null, "Invalid input. Must be number " + ((max == min) ? min : "between" + min + " and " + max + "."), "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                userInput = JOptionPane.showInputDialog(null, prompt + " " + ((max == min) ? min : min) + " to " + max + ".");
+            } while(!pattern.matcher(userInput).matches());
+            userNum = Integer.parseInt(userInput);
+        } while(!(userNum >= min && userNum <= max));
+
+        return userNum;
     }
 
     private void AI(){

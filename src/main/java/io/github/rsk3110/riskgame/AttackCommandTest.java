@@ -1,6 +1,5 @@
 package io.github.rsk3110.riskgame;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,12 +17,10 @@ public class AttackCommandTest {
     private Player player;
     private Player player2;
 
-    Territory t;
     Territory t1;
     Territory t2;
-
-    private AttackCommand a = new AttackCommand();
-    private List<String> args = new ArrayList<String>();
+    Territory t3;
+    Territory t4;
 
     @Before
     public void setUp() throws Exception {
@@ -34,65 +31,39 @@ public class AttackCommandTest {
         player = new Player (world, "Player", 2);
         player2 = new Player (world, "Player2", 2);
 
-        Territory t = Territory.nameToTerritory(player,"1");
-        Territory t1 = Territory.nameToTerritory(player,"2");
-        Territory t2 = Territory.nameToTerritory(player2,"9");
-        Territory t3 = Territory.nameToTerritory(player2,"3");
+        Territory t1 = Territory.nameToTerritory(player,"Alberta");
+        Territory t2 = Territory.nameToTerritory(player,"Ontario");
+        Territory t3 = Territory.nameToTerritory(player2,"Alaska");
+        Territory t4 = Territory.nameToTerritory(player2,"Northwest Territory");
 
-        t.setOccupant(player);
         t1.setOccupant(player);
         t2.setOccupant(player2);
         t3.setOccupant(player2);
+        t4.setOccupant(player2);
 
-        t.setArmies(1);
         t1.setArmies(8);
         t2.setArmies(8);
-        t3.setArmies(1);
-    }
-
-    @After
-    public void tearDown() throws Exception {
+        t3.setArmies(8);
+        t2.setArmies(1);
     }
 
     @Test
-    public void execute() {
-        assertFalse(a.execute(player));
+    public void testValidAttack() {
+        assertTrue(AttackCommand.execute(player, t1, t2, 1,1));
     }
 
     @Test
-    public void testExecuteCondition1() { //if Player enters 3 arguments
-        args.add("A");
-        args.add("B");
-        args.add("C");
-        assertFalse(a.execute(player, args));
+    public void testInvalidArmySize() {
+        assertFalse(AttackCommand.execute(player2, t4, t1, 1,1));
     }
 
-    @Test //if Player enters 2 arguments (correct amount)
-    public void testExecuteCondition2() { //the args are invalid
-        args.add("A"); //origin
-        args.add("B"); //target
-        assertFalse(a.execute(player, args));
+    @Test
+    public void testNotNeighbor() {
+        assertFalse(AttackCommand.execute(player, t1, t3, 1,1));
     }
 
-    @Test //If player enter the right number of arguments
-    public void testExecuteCondition3() { //Invalid origin
-        args.add("B");
-        args.add("3");
-        assertFalse(a.execute(player, args));
+    @Test
+    public void testNotOccupant() {
+        assertTrue(AttackCommand.execute(player, t2, t1, 1,1));
     }
-
-    @Test //If player enter the right number of arguments
-    public void testExecuteCondition4() {//invalid target
-        args.add("1");
-        args.add("9");
-        assertFalse(a.execute(player, args));
-    }
-
-    @Test //If player enter the right number of arguments
-    public void testExecuteCondition5() {//valid target and valid origin but not enough armies at origin
-        args.add("1");
-        args.add("1");
-        assertFalse(a.execute(player, args));
-    }
-
 }

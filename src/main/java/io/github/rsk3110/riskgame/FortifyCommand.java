@@ -1,7 +1,6 @@
 package io.github.rsk3110.riskgame;
 
 import javax.swing.*;
-import java.util.List;
 
 /**
  * Fortifies target territory by moving armies from origin.
@@ -13,44 +12,18 @@ import java.util.List;
  */
 public class FortifyCommand implements Command {
 
-    public FortifyCommand() {
-    }
+    public FortifyCommand() {}
 
     /**
-     * Fortify cannot be executed without any arguments.
-     *
+     * Executes the attack command.
+     * If valid territories are entered, move count armies from origin to target.
      * @param player player executing the command
-     * @return whether to hand control to next player
+     * @param origin Territory to fortify with
+     * @param target Territory to fortify
+     * @param count number of armies to fortify with
+     * @return whether the command was successful
      */
-    public boolean execute(Player player) {
-        System.out.println("Invalid arguments.");
-        return false;
-    }
-
-    /**
-     * Checks if player is targeting self-occupied territory with another self-occupied territory.
-     * Moves armies from origin to target if numArmies is at least 1 less than the territories army count.
-     *
-     * @param player player executing the command
-     * @param args arguments of execution
-     * @return whether to hand control to next player
-     */
-    public boolean execute(Player player, List<String> args) {
-        if(args.size() != 3) {
-            System.out.println("Invalid number of arguments.");
-            return false;
-        }
-
-        Territory origin = Territory.nameToTerritory(player, args.get(0));
-        Territory target = Territory.nameToTerritory(player, args.get(1));
-        int numArmies;
-        try {
-            numArmies = Integer.parseInt(args.get(2));
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Invalid number of armies, not a number.");
-            return false;
-        }
-
+    public static boolean execute(Player player, Territory origin, Territory target, int count) {
         if (origin == null || !origin.isOccupiedBy(player)) {
             JOptionPane.showMessageDialog(null, "origin not owned by player or does not exist.");
             return false;
@@ -60,12 +33,12 @@ public class FortifyCommand implements Command {
         } else if(!target.isOccupiedBy(player)) {
             JOptionPane.showMessageDialog(null, "target is not occupied by player.\n" + target.toString());
             return false;
-        } else if(numArmies > origin.getArmies() - 1) {
+        } else if(count > origin.getArmies() - 1) {
             JOptionPane.showMessageDialog(null, "Moving too many armies. You can move a max of '" + (origin.getArmies() - 1) + "' armies");
             return false;
         }
 
-        origin.moveArmy(numArmies, target);
+        origin.moveArmy(count, target);
         return true;
     }
 }
