@@ -39,11 +39,19 @@ public class Game {
      * @param world World to use to initialize game
      * @param playerCount number of players
      */
-    public Game(final World world, final int playerCount) {
+    public Game(final World world, final int playerCount, final boolean AI) {
         this.world = world;
-        this.players = IntStream.range(0, playerCount)
-                .mapToObj(i -> new Player(world, String.format("Player %d", i), MAX_ARMIES.get(playerCount)))
+        if(AI == true){
+            this.players = IntStream.range(0, playerCount)
+                .mapToObj(i -> new Player(world, String.format("AI Player %d", i + 1), MAX_ARMIES.get(playerCount)))
                 .collect(Collectors.toList());
+            players.get(0).setName("Player 1");
+        }
+        else {
+            this.players = IntStream.range(0, playerCount)
+                    .mapToObj(i -> new Player(world, String.format("Player %d", i + 1), MAX_ARMIES.get(playerCount)))
+                    .collect(Collectors.toList());
+        }
         this.currPlayer = players.get(0);
         this.turnStartListeners = new ArrayList<>();
         this.currRound = 0;
@@ -194,6 +202,10 @@ public class Game {
             nextPlayer = players.get(currIndex + 1);
         currPlayer = nextPlayer;
         if(currRound != 0) currPlayer.updateArmies();
+        if(this.currPlayer.getName().contains("AI")){
+            AI();
+            nextTurn();
+        }
     }
     
     public List<Player> getPlayers() {
@@ -205,6 +217,11 @@ public class Game {
     }
 
     public void allocateBonusArmies(Territory target) {
+        currPlayer.updateArmies();
+    }
+
+    private void AI() {
+        System.out.println("AIIIIIIII");
     }
 
     static {
