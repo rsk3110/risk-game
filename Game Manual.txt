@@ -2,6 +2,7 @@ This game follows the original RISK game rule in general with some minor changes
 
 Map:		This game will share the map with the original RISK game. The Board is divided into 6 different continents, each
 		continent has different bonus of armies. Under each continents there will be various numbers of territories.
+
  
 Continents:	There are 6 different continents on the map and they will provide different bonus on armies each round.
 		The bonus armies only works when you occupy every territories in the Continent.
@@ -11,6 +12,7 @@ Continents:	There are 6 different continents on the map and they will provide di
 		Europe:		Contains 7 territories and has an armies bonus of 5.
 		Africa:		Contains 6 territories and has an armies bonus of 3.
 		Australia:	Contains 4 territories and has an armies bonus of 2.
+
 
 Territories:	Territories are blocks on the map where players deploy thier armies on. On the territories, it will show
 		who is currently occupying this territory and how many armies are on this territories.
@@ -62,17 +64,36 @@ Territories:	Territories are blocks on the map where players deploy thier armies
 			AU2:	Indonesia
 			AU3:	New Guinea
 			AU4:	Western Australia
+
+
 Players:	This game will support 2 ~ 6 players. Initial armies for each players will vary depending on how many
 		players is playing this game. Sequence of actions each round will be decided by number of players, for
-		example: Player 1 will be the first one to take action, Player 2 will take actions after him.
+		example: Player 1 will be the first one to take action, Player 2 will take actions after him. At the beginning
+		of each round, the player will receive reinforcement armies proportional to the number of countries he/she
+		is holding, the number of total occupied territories divided by 3 will be his/her reinforcement armies. If he/
+		she is holding a whole continent, he/she will receive a bonus armies reinforcement, the number of bonus armies
+		will follow the property of the continent.
+
 		Number of players:	Initial Armies for each players:
 		2			50
 		3			35
 		4			30
 		5			25
 		6			20
-Attack:		Player are allowed to attack territories that is next to their occupied territories. The unoccupied ones will
+
+
+AI Players:	Players could select to fill up the game with AI players with a number up to 5. AI players will perform basic
+		actions of attacking, moving troupes and defending respects to the number of armies they are holding in each 
+		territories occupied by them.
+		
+		
+Attack:		Players are allowed to attack territories that is next to their occupied territories. The unoccupied ones will
 		be occupied by whoever reaches it first. To occupy the territories player who started the attack must finish
 		all the armies left on the target territory. Armies with number of 1 on a territory cannot be moved.
+
+Move Troupe:	Players can move their troupe after they attack. This will allow players to
+		reallocate their armies in their occupied territories and enable them to fortify better.
+		
+		
 Defend:		Player is granted with a chance to fortify thier holding territories. Just move your armies to where you think
 		is risky.
