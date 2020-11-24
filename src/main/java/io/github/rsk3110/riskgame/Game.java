@@ -24,7 +24,6 @@ public class Game {
 
     private final World world;
     private final List<Player> players;
-    private final CommandManager commandManager;
 
     private Player currPlayer;
     private int currRound;
@@ -46,7 +45,6 @@ public class Game {
                 .mapToObj(i -> new Player(world, String.format("Player %d", i), MAX_ARMIES.get(playerCount)))
                 .collect(Collectors.toList());
         this.currPlayer = players.get(0);
-        this.commandManager = new CommandManager(this);
         this.turnStartListeners = new ArrayList<>();
         this.currRound = 0;
     }
@@ -186,8 +184,6 @@ public class Game {
 
     public Player getCurrPlayer() { return this.currPlayer; }
 
-    public CommandManager getCommandManager() { return this.commandManager; }
-
     public void nextTurn() {
         int currIndex = players.indexOf(currPlayer);
         Player nextPlayer;
@@ -206,6 +202,9 @@ public class Game {
 
     public void addTurnStartListener(final Consumer<Player> listener) {
         this.turnStartListeners.add(listener);
+    }
+
+    public void allocateBonusArmies(Territory target) {
     }
 
     static {

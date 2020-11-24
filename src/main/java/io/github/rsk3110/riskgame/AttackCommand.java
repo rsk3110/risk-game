@@ -16,27 +16,19 @@ import java.util.regex.Pattern;
  **/
 public class AttackCommand implements Command {
 
-    public AttackCommand(){
-    }
+    public AttackCommand() {}
 
     /**
      * Executes the attack command.
-     * Checks for valid number of arguments entered {attack origin target}
-     * Checks if valid territories were selected, if not end turn
      * If valid territories are entered, move on to (call method) attack.
      *
      * @param player player executing the command
-     * @param args stores arguments listed after the command attack
-     * @return whether to hand control to next player
+     * @param origin Territory attacking territory
+     * @param target Territory attacked territory
+     * @param attackingArmies int number of attacking armies
+     * @param defendingArmies int number of defending armies
      */
-    public boolean execute(Player player, List<String> args) {
-        if(args.size() != 2) {
-            System.out.println("Invalid number of arguments.");
-            return false;
-        }
-        Territory origin = Territory.nameToTerritory(player, args.get(0));
-        Territory target = Territory.nameToTerritory(player, args.get(1));
-
+    public static boolean execute(Player player, Territory origin, Territory target, int attackingArmies, int defendingArmies) {
         if (origin == null || !origin.isOccupiedBy(player)) {
             JOptionPane.showMessageDialog(null, "origin not occupied by player or does not exist.");
             return false;
@@ -52,8 +44,9 @@ public class AttackCommand implements Command {
             JOptionPane.showMessageDialog(null, "Can't attack own territory. Try fortify?");
             return false;
         }
-        else
-            return attack(player, origin, target);
+
+        attack(player, origin, target, attackingArmies, defendingArmies);
+        return true;
     }
 
     /**
@@ -68,9 +61,9 @@ public class AttackCommand implements Command {
      * @param target Territory defending from attack
      * @return whether to hand control to next player
      */
-    private boolean attack(Player player, Territory origin, Territory target){
-        List<Integer> playerValues = getDiceValues(Math.min(3, origin.getArmies() - 1), "Roll how many dice?");
-        List<Integer> targetValues = getDiceValues(Math.min(2, target.getArmies()), "Roll how many dice? (" + target.getOccupant().getName() + ")");
+    private static void attack(Player player, Territory origin, Territory target, int attackingArmies, int defendingArmies){
+        List<Integer> playerValues = getDiceValues(Math.min(3, origin.getArmies() - 1), attackingArmies);
+        List<Integer> targetValues = getDiceValues(Math.min(2, target.getArmies()), defendingArmies);
         JOptionPane.showMessageDialog(null,
                 player.getName() + " rolled: " + playerValues + "\n"
                         + target.getOccupant().getName() + " rolled: " + targetValues);
@@ -98,25 +91,22 @@ public class AttackCommand implements Command {
                     origin.moveArmy(userInput, target);
                     JOptionPane.showMessageDialog(null, player.getName() + " captured " + target.getName() + " and it now holds " + target.getArmies() + " armies.");
                     if(tOccupant.getTerritories().size() == 0) System.out.println(tOccupant.getName() + " was eliminated.");
-                    return false;
+                    return;
                 }
             }
         }
-
-        return false;
     }
 
     /**
      * Generates values between 1 and 6 and adds them to a list.
      *
-     * @param max valid maximum number of dice that can be rolled
-     * @param prompt message to prompt user with
+     * @param max int maximum number of dice that can be rolled
+     * @param numRolls int number of rolls
      * @return the list of dice values
      */
-    private List<Integer> getDiceValues(int max, String prompt) {
+    private static List<Integer> getDiceValues(int max, int numRolls) {
         return new ArrayList<Integer>(){{
             Random random = new Random();
-            int numRolls = promptForIntegerValue(1, max, prompt);
             for(int i = numRolls; i > 0; i--) {
                 int num = random.nextInt(6) + 1;
                 add(num);
@@ -127,12 +117,12 @@ public class AttackCommand implements Command {
     /**
      * Prompts the player for a number within two specified values.
      *
-     * @param min minimum number
-     * @param max maximum number
+     * @param min int minimum number
+     * @param max int maximum number
      * @param prompt message to prompt player with
      * @return number input by player
      */
-    private int promptForIntegerValue(int min, int max, String prompt) {
+    private static int promptForIntegerValue(int min, int max, String prompt) {
         Pattern pattern = Pattern.compile("\\d+");
         String userInput = null;
         int userNum;
@@ -145,17 +135,5 @@ public class AttackCommand implements Command {
         } while(!(userNum >= min && userNum <= max));
 
         return userNum;
-    }
-
-    /**
-     * Attack is a multiple argument command.
-     * Cannot be executed with no commands.
-     *
-     * @param player player executing the command
-     * @return whether to hand control to next player
-     */
-    public boolean execute(Player player) {
-        System.out.println("Invalid arguments. {attack <origin> <target>}");
-        return false;
     }
 }

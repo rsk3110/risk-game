@@ -13,18 +13,18 @@ public class SimpleGameController implements GameController {
     }
 
     @Override
-    public void attack(Territory from, Territory to, int attackingArmies, int defendingArmies) {
-
+    public boolean attack(Territory from, Territory to, int attackingArmies, int defendingArmies) {
+        return AttackCommand.execute(getCurrPlayer(), from, to, attackingArmies, defendingArmies);
     }
 
     @Override
-    public void fortify(Territory from, Territory to, int armies) {
-
+    public boolean fortify(Territory from, Territory to, int armies) {
+        return FortifyCommand.execute(getCurrPlayer(), from, to, armies);
     }
 
     @Override
     public void skipTurn() {
-        this.game.nextTurn();
+        game.nextTurn();
     }
 
     @Override
@@ -34,31 +34,31 @@ public class SimpleGameController implements GameController {
 
     @Override
     public void init() {
-        this.game.init();
+        game.init();
     }
 
     @Override
     public void addTurnStartListener(Consumer<Player> onTurnStart) {
-        this.game.addTurnStartListener(onTurnStart);
+        game.addTurnStartListener(onTurnStart);
+    }
+
+    @Override
+    public void allocateBonusArmies(Territory target) {
+        game.allocateBonusArmies(target);
     }
 
     @Override
     public Player getCurrPlayer() {
-        return this.game.getCurrPlayer();
-    }
-
-    @Override
-    public CommandManager getCommandManager() {
-        return this.game.getCommandManager();
+        return game.getCurrPlayer();
     }
 
     @Override
     public Game getGame() {
-        return this.game;
+        return game;
     }
 
     @Override
     public World getWorld() {
-        return this.game.getWorld();
+        return game.getWorld();
     }
 }
