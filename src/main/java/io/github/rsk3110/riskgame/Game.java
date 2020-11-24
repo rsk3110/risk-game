@@ -27,6 +27,7 @@ public class Game {
     private final CommandManager commandManager;
 
     private Player currPlayer;
+    private int currRound;
 
     public static void main(String[] args) {
         final WorldLoader loader = new WorldFileLoader(Paths.get("").toAbsolutePath().resolve("worlds"));
@@ -47,6 +48,7 @@ public class Game {
         this.currPlayer = players.get(0);
         this.commandManager = new CommandManager(this);
         this.turnStartListeners = new ArrayList<>();
+        this.currRound = 0;
     }
 
     /**
@@ -188,8 +190,14 @@ public class Game {
 
     public void nextTurn() {
         int currIndex = players.indexOf(currPlayer);
-        Player nextPlayer = currIndex != players.size() - 1 ? players.get(currIndex + 1) : players.get(0);
-        this.currPlayer = nextPlayer;
+        Player nextPlayer;
+        if(currIndex == players.size() - 1) {
+            nextPlayer = players.get(0);
+            currRound++;
+        } else
+            nextPlayer = players.get(currIndex + 1);
+        currPlayer = nextPlayer;
+        if(currRound != 0) currPlayer.updateArmies();
     }
     
     public List<Player> getPlayers() {
