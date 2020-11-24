@@ -1,7 +1,8 @@
 package io.github.rsk3110.riskgame.controller;
 
-import io.github.rsk3110.riskgame.Game;
-import io.github.rsk3110.riskgame.Territory;
+import io.github.rsk3110.riskgame.*;
+
+import java.util.function.Consumer;
 
 public class SimpleGameController implements GameController {
 
@@ -29,5 +30,35 @@ public class SimpleGameController implements GameController {
     @Override
     public void quitGame() {
         this.game.quitGame();
+    }
+
+    @Override
+    public void init() {
+        this.game.init();
+    }
+
+    @Override
+    public void addTurnStartListener(Consumer<Player> onTurnStart) {
+        this.game.addTurnStartListener(onTurnStart);
+    }
+
+    @Override
+    public Player getCurrPlayer() {
+        return this.game.getCurrPlayer();
+    }
+
+    @Override
+    public CommandManager getCommandManager() {
+        return this.game.getCommandManager();
+    }
+
+    @Override
+    public Game getGame() {
+        return this.game;
+    }
+
+    @Override
+    public World getWorld() {
+        return this.game.getWorld();
     }
 }
