@@ -181,7 +181,7 @@ public class Game {
             gameController.skipTurn();
         }
     }
-
+  
     /**
      * Prompts the player for a number within two specified values.
      *
@@ -203,6 +203,49 @@ public class Game {
         } while(!(userNum >= min && userNum <= max));
 
         return userNum;
+    }
+
+    private void AI(){
+        int max = 0;
+        Territory territoryAI = null;
+        for(Territory t : currPlayer.getTerritories())
+        {
+            if(t.getArmies() > max) {
+                max = t.getArmies();
+                territoryAI = t; //highest army territory owned by AI player
+            }
+        }
+
+        ArrayList<Territory> neighborT = new ArrayList<>();
+
+        //finds neighbor
+        for(Territory t : territories){
+            if(territoryAI.isNeighbor(world, t)) {
+                neighborT.add(t);
+            }
+        }
+
+        Territory temp = territoryAI; //Just a to avoid setting it to null, if no neighboring territory has lower armies than AI's territory
+        for(Territory t : neighborT)
+        {
+            if(t.getArmies() < territoryAI.getArmies()) {
+                temp = t; //lowest army territory neighboring the AI players territory
+            }
+        }
+
+        if(temp == territoryAI){
+            commandManager.handleInput("skip");
+        }
+        if(temp.isOccupiedBy(currPlayer)){
+            commandManager.handleInput("fortify" + territoryAI.getId() + " " + temp.getId() + " " + (territoryAI.getArmies() - 1));
+        }
+        else if(!temp.isOccupiedBy(currPlayer)){
+            commandManager.handleInput("attack " + territoryAI.getId() + " " + temp.getId());
+        }
+        else{
+            commandManager.handleInput("skip");
+        }
+
     }
 
     static {
