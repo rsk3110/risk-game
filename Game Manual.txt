@@ -83,16 +83,19 @@ Players:	This game will support 2 ~ 6 players. Initial armies for each players w
 
 
 AI Players:	Players could select to fill up the game with AI players with a number up to 5. AI players will perform basic
-		actions of moving troupe, attacking and defending respects to the number of armies they are holding in each 
+		actions of attacking, moving troupes and defending respects to the number of armies they are holding in each 
 		territories occupied by them.
+		
+		
 Attack:		Players are allowed to attack territories that is next to their occupied territories. The unoccupied ones will
 		be occupied by whoever reaches it first. To occupy the territories player who started the attack must finish
 		all the armies left on the target territory. Armies with number of 1 on a territory cannot be moved.
 
-
+Move Troupe:	Players can move their troupe after they attack. This will allow players to
+		reallocate their armies in their occupied territories and enable them to fortify better.
+		
+		
 Defend:		Player is granted with a chance to fortify thier holding territories. Just move your armies to where you think
 		is risky.
 
 
-Move Troupe:	Players can move their troupe before they attack at the beginning of each round. This will allow players to
-		reallocate their armies in their occupied territories and enable them to attack or fortify better.
