@@ -27,6 +27,7 @@ public class AttackCommand implements Command {
      * @param target Territory attacked territory
      * @param attackingArmies int number of attacking armies
      * @param defendingArmies int number of defending armies
+     * @return whether the command was successful
      */
     public static boolean execute(Player player, Territory origin, Territory target, int attackingArmies, int defendingArmies) {
         if (origin == null || !origin.isOccupiedBy(player)) {
@@ -57,9 +58,8 @@ public class AttackCommand implements Command {
      * for number of armies to move.
      *
      * @param player player executing the command
-     * @param origin Territory formulating attack
-     * @param target Territory defending from attack
-     * @return whether to hand control to next player
+     * @param origin formulating attack
+     * @param target defending from attack
      */
     private static void attack(Player player, Territory origin, Territory target, int attackingArmies, int defendingArmies){
         List<Integer> playerValues = getDiceValues(Math.min(3, origin.getArmies() - 1), attackingArmies);
@@ -100,8 +100,8 @@ public class AttackCommand implements Command {
     /**
      * Generates values between 1 and 6 and adds them to a list.
      *
-     * @param max int maximum number of dice that can be rolled
-     * @param numRolls int number of rolls
+     * @param max maximum number of dice that can be rolled
+     * @param numRolls number of rolls
      * @return the list of dice values
      */
     private static List<Integer> getDiceValues(int max, int numRolls) {
@@ -117,10 +117,10 @@ public class AttackCommand implements Command {
     /**
      * Prompts the player for a number within two specified values.
      *
-     * @param min int minimum number
-     * @param max int maximum number
+     * @param min minimum number
+     * @param max maximum number
      * @param prompt message to prompt player with
-     * @return number input by player
+     * @return player's input
      */
     private static int promptForIntegerValue(int min, int max, String prompt) {
         Pattern pattern = Pattern.compile("\\d+");

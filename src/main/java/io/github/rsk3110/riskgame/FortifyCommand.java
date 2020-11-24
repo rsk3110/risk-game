@@ -14,6 +14,15 @@ public class FortifyCommand implements Command {
 
     public FortifyCommand() {}
 
+    /**
+     * Executes the attack command.
+     * If valid territories are entered, move count armies from origin to target.
+     * @param player player executing the command
+     * @param origin Territory to fortify with
+     * @param target Territory to fortify
+     * @param count number of armies to fortify with
+     * @return whether the command was successful
+     */
     public static boolean execute(Player player, Territory origin, Territory target, int count) {
         if (origin == null || !origin.isOccupiedBy(player)) {
             JOptionPane.showMessageDialog(null, "origin not owned by player or does not exist.");

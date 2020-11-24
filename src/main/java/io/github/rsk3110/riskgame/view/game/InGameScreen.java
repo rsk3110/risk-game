@@ -111,10 +111,17 @@ public class InGameScreen extends JPanel {
         }
     }
 
+    /**
+     * Updates current player name
+     * @param name current player name
+     */
     private void updateName(JLabel name) {
         name.setText("Current Player: " + gameController.getCurrPlayer().getName());
     }
 
+    /**
+     * Configures view components
+     */
     private void configureScreenComponents() {
         JLabel name = new JLabel("a");
         name.setFont(new Font("Arial", Font.PLAIN, 24));
@@ -185,10 +192,14 @@ public class InGameScreen extends JPanel {
 
     private void onTurnStart(final Player p) {
         this.notificationBox.setText(String.format("%s's Turn!", p.getName()));
-        doBonusArmies(p);
+        setBonusArmiesPhase(p);
     }
 
-    private void doBonusArmies(Player p) {
+    /**
+     * Sets bonus army status and prompts player
+     * @param p current player
+     */
+    private void setBonusArmiesPhase(Player p) {
         String prompt = "By controlling " + p.getTerritories().size() + " territories" +
                 "\nand the continents" + p.getOccupiedContinents() +
                 "\nyou now hold" + p.getArmies() + " to allocate." +
@@ -220,6 +231,11 @@ public class InGameScreen extends JPanel {
         return userNum;
     }
 
+    /**
+     * Callback function for clicking on territories.
+     * @param sender event sender
+     * @param evt event
+     */
     private void onTerritoryClick(final Object sender, final mxEventObject evt) {
         final mxGraphSelectionModel sm = (mxGraphSelectionModel) sender;
         final mxCell cell = (mxCell) sm.getCell();
