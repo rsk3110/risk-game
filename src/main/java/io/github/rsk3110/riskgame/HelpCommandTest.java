@@ -7,6 +7,11 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * Test help class
+ *
+ * @author Tooba Sheikh
+ **/
 public class HelpCommandTest {
 
     private HelpCommand h = new HelpCommand();

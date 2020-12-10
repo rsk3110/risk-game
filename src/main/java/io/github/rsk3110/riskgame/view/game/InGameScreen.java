@@ -37,7 +37,7 @@ public class InGameScreen extends JPanel {
         DEFAULT,
         ATTACK,
         FORTIFY,
-        BONUS;
+        BONUS,
     };
 
     public InGameScreen(final GameController gameController) {
@@ -138,6 +138,7 @@ public class InGameScreen extends JPanel {
                 attack.setText("Attacking...");
             }
         });
+
         final JButton fortify = new JButton("Fortify");
         fortify.setFont(new Font("Arial", Font.PLAIN, 18));
         fortify.addActionListener(new ActionListener() {
@@ -148,6 +149,21 @@ public class InGameScreen extends JPanel {
                 updateName(name);
             }
         });
+
+        final JButton save = new JButton("Save");
+        save.setFont(new Font("Arial", Font.PLAIN, 18));
+        save.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(!(currMode == ClickMode.DEFAULT)) return;
+                try {
+                    gameController.save();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+                updateName(name);
+            }
+        });
+
         final JButton skip = new JButton("Skip");
         skip.setFont(new Font("Arial", Font.PLAIN, 18));
         skip.addActionListener(new ActionListener() {
@@ -157,6 +173,7 @@ public class InGameScreen extends JPanel {
                 updateName(name);
             }
         });
+
         final JButton quit = new JButton("Quit");
         quit.setFont(new Font("Arial", Font.PLAIN, 18));
         quit.addActionListener(new ActionListener() {

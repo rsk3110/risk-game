@@ -8,6 +8,11 @@ import java.util.Set;
 
 import static org.junit.Assert.*;
 
+/**
+ * Test continent class
+ *
+ * @author Tooba Sheikh
+ **/
 public class ContinentTest {
 
     private Continent c = new Continent("A", null, 2);

@@ -6,6 +6,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ * Test Territory class
+ *
+ * @author Tooba Sheikh
+ **/
 public class TerritoryTest {
 
     private World world;

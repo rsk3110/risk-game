@@ -73,7 +73,7 @@ public class GameConfigScreen extends JPanel {
 
     private void createGame(final WorldLoader worldLoader, final String worldName, final int playerCount, final int AI) {
         final World world = worldLoader.load(worldName);
-        final Game game = new Game(world, playerCount, AI);
+        final Game game = new Game(world, playerCount, AI, false);
 
         this.gameScreen.setScreen(new InGameScreen(new SimpleGameController(game)));
     }

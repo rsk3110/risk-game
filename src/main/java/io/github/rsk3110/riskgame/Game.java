@@ -5,6 +5,7 @@ import io.github.rsk3110.riskgame.view.GameView;
 import javafx.util.Pair;
 
 import java.awt.*;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.*;
@@ -24,8 +25,8 @@ public class Game {
 
     private final transient List<Consumer<Pair<Player, Integer>>> turnStartListeners;
 
-    private final World world;
-    private final List<Player> players;
+    private World world;
+    private List<Player> players;
 
     private List<Territory> territories;
     private Player currPlayer;
@@ -43,19 +44,22 @@ public class Game {
      * @param world World to use to initialize game
      * @param playerCount number of players
      */
-    public Game(final World world, final int playerCount, int AI) {
-        this.world = world;
-        this.players = IntStream.range(0, playerCount - AI)
-                .mapToObj(i -> new Player(world, String.format("Player %d", i + 1), MAX_ARMIES.get(playerCount)))
-                .collect(Collectors.toList());
-        for(; AI > 0 ; AI--) {
-            players.add(new AI(world, String.format("AI Player %d", AI), MAX_ARMIES.get(playerCount)));
+    public Game(final World world, final int playerCount,int AI, boolean load) {
+
+        if(load){
+            loadState();
+        } else {
+            this.world = world;
+            this.players = IntStream.range(0, playerCount - AI)
+                    .mapToObj(i -> new Player(world, String.format("Player %d", i + 1), MAX_ARMIES.get(playerCount)))
+                    .collect(Collectors.toList());
+            for(; AI > 0 ; AI--) {
+                players.add(new AI(world, String.format("AI Player %d", AI), MAX_ARMIES.get(playerCount)));
+            }
+            this.territories = new ArrayList<Territory>();
+            this.currPlayer = players.get(0);
         }
-        this.territories = new ArrayList<Territory>();
-        this.currPlayer = players.get(0);
         this.turnStartListeners = new ArrayList<>();
-        this.currRound = 0;
-        this.gameController = null;
     }
 
     /**
@@ -143,6 +147,30 @@ public class Game {
      */
     public void allocateBonusArmies(Territory target, int count) {
         currPlayer.allocateArmies(count, target);
+    }
+
+    public Map<String, Object> getCurrentState(){
+        HashMap<String, Object> gameState = new HashMap<>();
+
+        gameState.put("world", world);
+        gameState.put("players", players);
+        gameState.put("territories", territories);
+        gameState.put("currPlayer", currPlayer);
+        gameState.put("currRound", currRound);
+        gameState.put("gameController", gameController);
+
+        return gameState;
+    }
+
+    public void loadState() {
+        Map<String, Object> gameState = Load.loadGame("savedGame");
+
+        this.world = (World) gameState.get("world");
+        this.players = (ArrayList<Player>) gameState.get("players");
+        this.territories = (ArrayList<Territory>) gameState.get("territories");
+        this.currPlayer = (Player) gameState.get("currPlayer");
+        this.currRound = (int) gameState.get("currRound");
+        this.gameController = (GameController) gameState.get("gameController");
     }
 
     /**

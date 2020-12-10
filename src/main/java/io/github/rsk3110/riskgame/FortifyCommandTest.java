@@ -9,6 +9,11 @@ import java.util.List;
 
 import static org.junit.Assert.assertFalse;
 
+/**
+ * Test fortify class
+ *
+ * @author Tooba Sheikh
+ **/
 public class FortifyCommandTest {
 
     private World world;
