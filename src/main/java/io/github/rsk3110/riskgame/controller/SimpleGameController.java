@@ -1,6 +1,7 @@
 package io.github.rsk3110.riskgame.controller;
 
 import io.github.rsk3110.riskgame.*;
+import javafx.util.Pair;
 
 import java.util.function.Consumer;
 
@@ -20,6 +21,7 @@ public class SimpleGameController implements GameController {
      */
     public SimpleGameController(final Game game) {
         this.game = game;
+        game.setGameController(this);
     }
 
     /**
@@ -76,7 +78,7 @@ public class SimpleGameController implements GameController {
      * @param onTurnStart game listener
      */
     @Override
-    public void addTurnStartListener(Consumer<Player> onTurnStart) {
+    public void addTurnStartListener(Consumer<Pair<Player, Integer>> onTurnStart) {
         game.addTurnStartListener(onTurnStart);
     }
 
@@ -85,8 +87,8 @@ public class SimpleGameController implements GameController {
      * @param target territory to allocate to
      */
     @Override
-    public void allocateBonusArmies(Territory target) {
-        game.allocateBonusArmies(target);
+    public void allocateBonusArmies(Territory target, int count) {
+        game.allocateBonusArmies(target, count);
     }
 
     /**

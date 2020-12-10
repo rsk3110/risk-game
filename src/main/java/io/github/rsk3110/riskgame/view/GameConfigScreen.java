@@ -4,15 +4,20 @@ import com.esotericsoftware.tablelayout.swing.Table;
 import io.github.rsk3110.riskgame.Game;
 import io.github.rsk3110.riskgame.World;
 import io.github.rsk3110.riskgame.WorldLoader;
-import io.github.rsk3110.riskgame.controller.GameController;
 import io.github.rsk3110.riskgame.controller.SimpleGameController;
 import io.github.rsk3110.riskgame.view.game.InGameScreen;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
 public class GameConfigScreen extends JPanel {
     private final GameView gameScreen;
+    private Table table;
+    private JList<Integer> playersList;
+    private JList<Integer> aiList;
+    private JScrollPane aiPane;
 
     public GameConfigScreen(final GameView gameScreen, final WorldLoader worldLoader) {
         this.gameScreen = gameScreen;
@@ -35,41 +40,38 @@ public class GameConfigScreen extends JPanel {
         final JList<String> worldsList = this.makeWorldsList(this.makeWorldsListModel(worldLoader));
         final JScrollPane worldsListPane = new JScrollPane(worldsList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-        final JList<Integer> playersList = this.makePlayerCountsList(this.makePlayerCountsListModel());
-        final JScrollPane playersListPane = new JScrollPane(playersList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        final JList<Integer> playersAIList = this.makePlayerCountsList(this.makeAIPlayerCountsListModel());
-        final JScrollPane playersAIListPane = new JScrollPane(playersAIList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        playersList = this.makePlayerCountsList(this.makePlayerCountsListModel(2, 6));
+        final JScrollPane playersListPane = new JScrollPane(this.playersList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+        this.aiList = this.makeAIPlayerCountsList(this.makePlayerCountsListModel(1, 0));
+        this.aiPane = new JScrollPane(this.aiList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         final JButton doneButton = new JButton("Select World");
         doneButton.setFont(new Font("Arial", Font.PLAIN, 24));
         doneButton.addActionListener(e -> {
             if (worldsList.isSelectionEmpty()) {
                 JOptionPane.showMessageDialog(this, "No world has been chosen yet!");
-            } else if (playersList.isSelectionEmpty() && playersAIList.isSelectionEmpty()) {
+            } else if (this.playersList.isSelectionEmpty()) {
                 JOptionPane.showMessageDialog(this, "No player count has been chosen yet!");
-            } else if(playersList.isSelectionEmpty() && !(playersAIList.isSelectionEmpty())){
-                this.createGame(worldLoader, worldsList.getSelectedValue(), playersAIList.getSelectedValue(), true);
-            } else if(!(playersList.isSelectionEmpty()) && !(playersAIList.isSelectionEmpty())){
-                JOptionPane.showMessageDialog(this, "Cannot choose both AI and not AI players!");
             } else {
-                this.createGame(worldLoader, worldsList.getSelectedValue(), playersList.getSelectedValue(), false);
+                this.createGame(worldLoader, worldsList.getSelectedValue(), this.playersList.getSelectedValue(), (aiList.isSelectionEmpty()) ? 0 : aiList.getSelectedValue());
             }
         });
 
-        final Table table = new Table();
+        table = new Table();
         table.addCell(worldSelectLabel).pad(10);
         table.addCell(playerConfigLabel).pad(10);
         table.addCell(playerAIConfigLabel).pad(10);
         table.row();
         table.addCell(worldsListPane).fillX().pad(10);
         table.addCell(playersListPane).fillX().top().pad(10);
-        table.addCell(playersAIListPane).fillX().top().pad(10);
+        table.addCell(aiPane).fillX().top().pad(10);
         table.row();
-        table.addCell(doneButton).colspan(2);
+        table.addCell(doneButton).colspan(3);
         this.add(table, BorderLayout.CENTER);
     }
 
-    private void createGame(final WorldLoader worldLoader, final String worldName, final Integer playerCount, final boolean AI) {
+    private void createGame(final WorldLoader worldLoader, final String worldName, final int playerCount, final int AI) {
         final World world = worldLoader.load(worldName);
         final Game game = new Game(world, playerCount, AI);
 
@@ -101,6 +103,23 @@ public class GameConfigScreen extends JPanel {
         countsComponent.setFixedCellHeight(35);
         countsComponent.setFont(new Font("Arial", Font.PLAIN, 24));
         countsComponent.setBackground(Color.decode("0xd2dae2"));
+        countsComponent.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if(!e.getValueIsAdjusting()) {
+                    int v = playersList.getSelectedValue();
+                    aiList.setModel(makePlayerCountsListModel(1, v - 1));
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            RepaintManager repaintManager = RepaintManager.currentManager(aiPane);
+                            repaintManager.markCompletelyDirty(aiPane);
+                            repaintManager.paintDirtyRegions();
+                        }
+                    });
+                }
+            }
+        });
         return countsComponent;
     }
 
@@ -111,18 +130,13 @@ public class GameConfigScreen extends JPanel {
         countsComponent.setFixedCellHeight(35);
         countsComponent.setFont(new Font("Arial", Font.PLAIN, 24));
         countsComponent.setBackground(Color.decode("0xd2dae2"));
+
         return countsComponent;
     }
 
-    private ListModel<Integer> makePlayerCountsListModel() {
+    private ListModel<Integer> makePlayerCountsListModel(int min, int max) {
         final DefaultListModel<Integer> counts = new DefaultListModel<>();
-        for (int i = 2; i <= 6; ++i) counts.addElement(i);
-        return counts;
-    }
-
-    private ListModel<Integer> makeAIPlayerCountsListModel() {
-        final DefaultListModel<Integer> counts = new DefaultListModel<>();
-        for (int i = 2; i <= 6; ++i) counts.addElement(i);
+        for (int i = min; i <= max; ++i) counts.addElement(i);
         return counts;
     }
 }

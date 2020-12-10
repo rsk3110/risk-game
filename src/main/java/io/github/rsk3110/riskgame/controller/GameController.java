@@ -1,6 +1,10 @@
 package io.github.rsk3110.riskgame.controller;
 
-import io.github.rsk3110.riskgame.*;
+import io.github.rsk3110.riskgame.Game;
+import io.github.rsk3110.riskgame.Player;
+import io.github.rsk3110.riskgame.Territory;
+import io.github.rsk3110.riskgame.World;
+import javafx.util.Pair;
 
 import java.util.function.Consumer;
 
@@ -16,8 +20,8 @@ public interface GameController {
     void skipTurn();
     void quitGame();
     void init();
-    void addTurnStartListener(Consumer<Player> onTurnStart);
-    void allocateBonusArmies(Territory target);
+    void addTurnStartListener(Consumer<Pair<Player, Integer>> onTurnStart);
+    void allocateBonusArmies(Territory target, int count);
     Player getCurrPlayer();
     Game getGame();
     World getWorld();
