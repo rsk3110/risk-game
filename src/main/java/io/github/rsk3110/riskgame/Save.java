@@ -1,6 +1,11 @@
 package io.github.rsk3110.riskgame;
-import java.io.*;
-import java.util.ArrayList;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Saves game
@@ -9,10 +14,10 @@ import java.util.ArrayList;
  **/
 public class Save{
 
-    private static ArrayList gameS;
+    private static Map<String, Object> gameS;
 
     public Save(){
-        gameS = new ArrayList<>();
+        gameS = new HashMap<>();
     }
 
     /**
@@ -21,7 +26,7 @@ public class Save{
      * @param game current game
      * @return returns false so that game does not go to next turn
      */
-    public static boolean execute(Game game) throws Exception {
+    public static boolean execute(Game game) {
         gameS = game.getCurrentState();
         saveGame(gameS,"savedGame");
         return false; // returns false so that game does not go to next turn
@@ -33,10 +38,13 @@ public class Save{
      * @param gameState an object that holds every serializable object
      * @param fileName is the name of the file that we want to save as
      */
-    public static void saveGame(Serializable gameState, String fileName) throws Exception {
-        ObjectOutput output = new ObjectOutputStream(new FileOutputStream(fileName));
-        output.writeObject(gameState);
-        output.close();
+    public static void saveGame(Map<String, Object> gameState, String fileName) {
+        try {
+            ObjectOutput output = new ObjectOutputStream(new FileOutputStream(fileName));
+            output.writeObject(gameState);
+            output.close();
+        } catch (IOException e) {
+        }
     }
 
 }

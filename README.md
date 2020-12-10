@@ -21,13 +21,14 @@ Documentation can be found at 'index.html' in the documentation folder.
 A description can also be found in the document folder, under 'description.txt'
 
 ## Changelog
-11.9.2020 - GUI Release
 
 10.25.2020 - Initial Text-Based Release
 
 11.09.2020 - First GUI-Based Version
 
 11.23.2020 - Add Bonus Armies, Troupe Movement Phase, and AI players.
+
+12.09.2020 - Add save/load and support for any map.
 
 See CHANGELOG.md for more details.
 
