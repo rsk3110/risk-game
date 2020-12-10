@@ -1,5 +1,6 @@
 package io.github.rsk3110.riskgame;
 
+import javax.swing.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import java.util.Set;
 
 public class Player implements Serializable {
 
-    private String name;
-    private List<Territory> territories;
-    private transient World world;
-    private int unallocatedArmies;
+    protected String name;
+    protected List<Territory> territories;
+    protected transient World world;
+    protected int unallocatedArmies;
 
     /**
      * Initializes a Player object.
@@ -111,8 +112,12 @@ public class Player implements Serializable {
      * @param territory territory to move armies to
      */
     public void allocateArmies(int num, Territory territory) {
-        setArmies(getArmies() - num);
-        territory.setArmies(territory.getArmies() + num);
+        if(getTerritories().contains(territory)) {
+            setArmies(getArmies() - num);
+            territory.setArmies(territory.getArmies() + num);
+        } else {
+            JOptionPane.showMessageDialog(null,  "You are not occupying " + territory.getName());
+        }
     }
 
     /**
