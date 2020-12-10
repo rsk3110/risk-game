@@ -1,5 +1,6 @@
 package io.github.rsk3110.riskgame;
 
+import javax.swing.*;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
@@ -17,7 +18,7 @@ public class Save{
     private static Map<String, Object> gameS;
 
     public Save(){
-        gameS = new HashMap<>();
+        //gameS = new HashMap<>();
     }
 
     /**
@@ -44,6 +45,8 @@ public class Save{
             output.writeObject(gameState);
             output.close();
         } catch (IOException e) {
+            System.out.print(e);
+            JOptionPane.showMessageDialog(null, "Did not save.");
         }
     }
 

@@ -2,6 +2,7 @@ package io.github.rsk3110.riskgame.view;
 
 import com.esotericsoftware.tablelayout.swing.Table;
 import io.github.rsk3110.riskgame.Game;
+import io.github.rsk3110.riskgame.World;
 import io.github.rsk3110.riskgame.WorldLoader;
 import io.github.rsk3110.riskgame.controller.SimpleGameController;
 import io.github.rsk3110.riskgame.view.game.InGameScreen;
@@ -35,7 +36,9 @@ public class GameStartupScreen extends JPanel {
         final JButton loadButton = new JButton("Load");
         loadButton.setFont(new Font("Arial", Font.PLAIN, 24));
         loadButton.addActionListener(e -> {
-            Game game = new Game(null,0, 0, true);
+            System.out.println("a");
+            World world = worldLoader.load("default");
+            Game game = new Game(world, 0, 0, true);
             this.gameScreen.setScreen(new InGameScreen(new SimpleGameController(game)));
         });
 

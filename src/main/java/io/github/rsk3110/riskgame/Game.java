@@ -48,7 +48,7 @@ public class Game {
         if(load){
             loadState();
         } else {
-            this.world = world;
+
             this.players = IntStream.range(0, playerCount - AI)
                     .mapToObj(i -> new Player(world, String.format("Player %d", i + 1), MAX_ARMIES.get(playerCount)))
                     .collect(Collectors.toList());
@@ -58,6 +58,7 @@ public class Game {
             this.territories = new ArrayList<Territory>();
             this.currPlayer = players.get(0);
         }
+        this.world = world;
         this.turnStartListeners = new ArrayList<>();
     }
 
@@ -151,12 +152,10 @@ public class Game {
     public Map<String, Object> getCurrentState(){
         HashMap<String, Object> gameState = new HashMap<>();
 
-        gameState.put("world", world);
         gameState.put("players", players);
         gameState.put("territories", territories);
         gameState.put("currPlayer", currPlayer);
         gameState.put("currRound", currRound);
-        gameState.put("gameController", gameController);
 
         return gameState;
     }
@@ -164,12 +163,6 @@ public class Game {
     public void loadState() {
         Map<String, Object> gameState = Load.loadGame("savedGame");
 
-        Object worldBlob = gameState.get("world");
-        if(worldBlob instanceof World) {
-            this.world = (World) worldBlob;
-        } else {
-            return;
-        }
         Object playersBlob = gameState.get("players");
         if(playersBlob instanceof ArrayList) {
             this.players = (ArrayList<Player>) playersBlob;
@@ -191,12 +184,6 @@ public class Game {
         Object currRoundBlob = gameState.get("currRound");
         if(currRoundBlob instanceof Integer) {
             this.currRound = (int) currRoundBlob;
-        } else {
-            return;
-        }
-        Object gameControllerBlob = gameState.get("gameController");
-        if(gameControllerBlob instanceof GameController) {
-            this.gameController = (GameController) gameControllerBlob;
         } else {
             return;
         }

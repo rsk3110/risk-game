@@ -23,13 +23,11 @@ public class Load {
      * @return the object holding game state
      */
     public static Map<String, Object> loadGame(String fileName) {
-        HashMap<String, Object> gameState = new HashMap<String, Object>() {{
-            put("world", new Object());
+        HashMap<String, Object> gameState = new HashMap<String, Object>(){{
             put("players", new Object());
             put("territories", new Object());
             put("currPlayers", 0);
             put("currRound", 0);
-            put("gameController", new Object());
         }};
         try {
             File file = new File(fileName);
