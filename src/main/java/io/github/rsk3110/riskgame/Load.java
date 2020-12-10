@@ -15,15 +15,13 @@ public class Load {
      * Loads game state by deserializing the saved file
      *
      * @param fileName file to deserialize
-     * @return the obj holding game state
+     * @return the object holding game state
      */
     public static Object loadGame(String fileName) throws Exception {
         File file = new File(fileName);
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
-
-        // Deserialize the object
-        Object gameState = in.readObject();
-        in.close();
+        ObjectInputStream input = new ObjectInputStream(new FileInputStream(file));
+        Object gameState = input.readObject();
+        input.close();
 
         return gameState;
     }

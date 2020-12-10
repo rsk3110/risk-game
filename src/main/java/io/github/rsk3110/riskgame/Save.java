@@ -34,9 +34,9 @@ public class Save{
      * @param fileName is the name of the file that we want to save as
      */
     public static void saveGame(Serializable gameState, String fileName) throws Exception {
-        ObjectOutput out = new ObjectOutputStream(new FileOutputStream(fileName));
-        out.writeObject(gameState);
-        out.close();
+        ObjectOutput output = new ObjectOutputStream(new FileOutputStream(fileName));
+        output.writeObject(gameState);
+        output.close();
     }
 
 }
