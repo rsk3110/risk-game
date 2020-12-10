@@ -25,8 +25,8 @@ public class Game {
 
     private final transient List<Consumer<Player>> turnStartListeners;
 
-    private final World world;
-    private final List<Player> players;
+    private World world;
+    private List<Player> players;
 
     private List<Territory> territories;
     private Player currPlayer;
@@ -44,23 +44,20 @@ public class Game {
      * @param world World to use to initialize game
      * @param playerCount number of players
      */
-    public Game(final World world, final int playerCount, final boolean AI) {
-        this.world = world;
-        if(AI){
+    public Game(final World world, final int playerCount, final int playerCountAI, boolean load) throws Exception {
+        if(load){
+            loadState();
+        } else {
+            this.world = world;
             this.players = IntStream.range(0, playerCount)
-                .mapToObj(i -> new Player(world, String.format("AI Player %d", i + 1), MAX_ARMIES.get(playerCount)))
-                .collect(Collectors.toList());
-            players.get(0).setName("Player 1");
-        }
-        else {
-            this.players = IntStream.range(0, playerCount)
-                    .mapToObj(i -> new Player(world, String.format("Player %d", i + 1), MAX_ARMIES.get(playerCount)))
+                    .mapToObj(i -> new Player(world, String.format("Player AI %d", i + 1), MAX_ARMIES.get(playerCount)))
                     .collect(Collectors.toList());
+
+            this.currPlayer = players.get(0);
+            this.currRound = 0;
+            this.gameController = null;
         }
-        this.currPlayer = players.get(0);
         this.turnStartListeners = new ArrayList<>();
-        this.currRound = 0;
-        this.gameController = null;
     }
 
     /**
@@ -205,47 +202,30 @@ public class Game {
         return userNum;
     }
 
-    private void AI(){
-        int max = 0;
-        Territory territoryAI = null;
-        for(Territory t : currPlayer.getTerritories())
-        {
-            if(t.getArmies() > max) {
-                max = t.getArmies();
-                territoryAI = t; //highest army territory owned by AI player
-            }
-        }
+    public ArrayList getCurrentState(){
+        ArrayList<Object> gameState = new ArrayList<>();
 
-        ArrayList<Territory> neighborT = new ArrayList<>();
+        gameState.add(world);
+        gameState.add(players);
+        gameState.add(territories);
+        gameState.add(currPlayer);
+        gameState.add(currRound);
+        gameState.add(gameController);
 
-        //finds neighbor
-        for(Territory t : territories){
-            if(territoryAI.isNeighbor(world, t)) {
-                neighborT.add(t);
-            }
-        }
+        return gameState;
+    }
 
-        Territory temp = territoryAI; //Just a to avoid setting it to null, if no neighboring territory has lower armies than AI's territory
-        for(Territory t : neighborT)
-        {
-            if(t.getArmies() < territoryAI.getArmies()) {
-                temp = t; //lowest army territory neighboring the AI players territory
-            }
-        }
+    public void loadState() throws Exception {
+        Load l = new Load();
+        ArrayList<Object> gameState = new ArrayList<>();
+        gameState = (ArrayList<Object>) l.loadGame("savedGame");
 
-        if(temp == territoryAI){
-            commandManager.handleInput("skip");
-        }
-        if(temp.isOccupiedBy(currPlayer)){
-            commandManager.handleInput("fortify" + territoryAI.getId() + " " + temp.getId() + " " + (territoryAI.getArmies() - 1));
-        }
-        else if(!temp.isOccupiedBy(currPlayer)){
-            commandManager.handleInput("attack " + territoryAI.getId() + " " + temp.getId());
-        }
-        else{
-            commandManager.handleInput("skip");
-        }
-
+        this.world = (World) gameState.get(0);
+        this.players = (ArrayList) gameState.get(1);
+        this.territories = (ArrayList) gameState.get(2);
+        this.currPlayer = (Player) gameState.get(3);
+        this.currRound = (int) gameState.get(4);
+        this.gameController = (GameController) gameState.get(5);
     }
 
     static {

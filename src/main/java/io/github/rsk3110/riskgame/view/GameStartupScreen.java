@@ -1,7 +1,10 @@
 package io.github.rsk3110.riskgame.view;
 
 import com.esotericsoftware.tablelayout.swing.Table;
+import io.github.rsk3110.riskgame.Game;
 import io.github.rsk3110.riskgame.WorldLoader;
+import io.github.rsk3110.riskgame.controller.SimpleGameController;
+import io.github.rsk3110.riskgame.view.game.InGameScreen;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,6 +30,18 @@ public class GameStartupScreen extends JPanel {
         startButton.setFont(new Font("Arial", Font.PLAIN, 24));
         startButton.addActionListener(e -> {
             this.gameScreen.setScreen(new GameConfigScreen(this.gameScreen, this.worldLoader));
+        });
+
+        final JButton loadButton = new JButton("Start");
+        loadButton.setFont(new Font("Arial", Font.PLAIN, 24));
+        loadButton.addActionListener(e -> {
+            Game game = null;
+            try {
+                game = new Game(null,0, 0, true);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+            this.gameScreen.setScreen(new InGameScreen(new SimpleGameController(game)));
         });
 
         final List<JLabel> tipList = Arrays.asList(

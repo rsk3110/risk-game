@@ -9,6 +9,11 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * Test Attack Command
+ *
+ * @author Tooba Sheikh
+ **/
 public class AttackCommandTest {
 
     private World world;

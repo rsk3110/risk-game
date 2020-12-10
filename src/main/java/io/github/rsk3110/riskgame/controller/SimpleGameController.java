@@ -48,6 +48,14 @@ public class SimpleGameController implements GameController {
     }
 
     /**
+     * Saves game
+     */
+    @Override
+    public boolean save() throws Exception {
+        return Save.execute(getGame());
+    }
+
+    /**
      * Skips to next turn
      */
     @Override

@@ -47,12 +47,12 @@ public class GameConfigScreen extends JPanel {
                 JOptionPane.showMessageDialog(this, "No world has been chosen yet!");
             } else if (playersList.isSelectionEmpty() && playersAIList.isSelectionEmpty()) {
                 JOptionPane.showMessageDialog(this, "No player count has been chosen yet!");
-            } else if(playersList.isSelectionEmpty() && !(playersAIList.isSelectionEmpty())){
-                this.createGame(worldLoader, worldsList.getSelectedValue(), playersAIList.getSelectedValue(), true);
-            } else if(!(playersList.isSelectionEmpty()) && !(playersAIList.isSelectionEmpty())){
-                JOptionPane.showMessageDialog(this, "Cannot choose both AI and not AI players!");
             } else {
-                this.createGame(worldLoader, worldsList.getSelectedValue(), playersList.getSelectedValue(), false);
+                try {
+                    this.createGame(worldLoader, worldsList.getSelectedValue(), playersList.getSelectedValue(), playersAIList.getSelectedValue());
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
             }
         });
 
@@ -69,9 +69,9 @@ public class GameConfigScreen extends JPanel {
         this.add(table, BorderLayout.CENTER);
     }
 
-    private void createGame(final WorldLoader worldLoader, final String worldName, final Integer playerCount, final boolean AI) {
+    private void createGame(final WorldLoader worldLoader, final String worldName, final Integer playerCount, final Integer playerCountAI) throws Exception {
         final World world = worldLoader.load(worldName);
-        final Game game = new Game(world, playerCount, AI);
+        final Game game = new Game(world, playerCount, playerCountAI, false);
 
         this.gameScreen.setScreen(new InGameScreen(new SimpleGameController(game)));
     }

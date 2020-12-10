@@ -13,6 +13,7 @@ import java.util.function.Consumer;
 public interface GameController {
     boolean attack(Territory from, Territory to, int attackingArmies, int defendingArmies);
     boolean fortify(Territory from, Territory to, int armies);
+    boolean save() throws Exception;
     void skipTurn();
     void quitGame();
     void init();
