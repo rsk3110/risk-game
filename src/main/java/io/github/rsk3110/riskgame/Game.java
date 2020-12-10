@@ -152,6 +152,10 @@ public class Game {
     public Map<String, Object> getCurrentState(){
         HashMap<String, Object> gameState = new HashMap<>();
 
+        for(Player p : players){
+            p.setWorld(null);
+        }
+
         gameState.put("players", players);
         gameState.put("territories", territories);
         gameState.put("currPlayer", currPlayer);
@@ -166,6 +170,11 @@ public class Game {
         Object playersBlob = gameState.get("players");
         if(playersBlob instanceof ArrayList) {
             this.players = (ArrayList<Player>) playersBlob;
+
+            for(Player p : players){
+                p.setWorld(this.world);
+            }
+
         } else {
             return;
         }

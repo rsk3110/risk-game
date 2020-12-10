@@ -30,6 +30,9 @@ public class Save{
     public static boolean execute(Game game) {
         gameS = game.getCurrentState();
         saveGame(gameS,"savedGame");
+        for(Player p : game.getPlayers()){
+            p.setWorld(game.getWorld());
+        }
         return false; // returns false so that game does not go to next turn
     }
 

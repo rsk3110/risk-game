@@ -131,6 +131,15 @@ public class Player implements Serializable {
         }
     }
 
+    /**
+     * Get players world
+     *
+     * @return the player's world
+     */
+    public void setWorld(World world) {
+        this.world = world;
+    }
+
 
     /**
      * Get players world
