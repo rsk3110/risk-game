@@ -95,12 +95,6 @@ public final class Continent implements Serializable {
      */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getName() + " (Bonus Armies:" + bonusArmies + ") {\n");
-        for(Territory territory : territories) {
-            sb.append("\t" + territory.toString());
-        }
-
-        return sb.toString();
+        return getName();
     }
 }
