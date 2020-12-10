@@ -203,11 +203,7 @@ public final class Territory implements Serializable {
 
     @Override
     public String toString() {
-        String acc = "[" + id + "] " + getName();
-        if (this.occupant != null) {
-            acc += ": Occupied by '" + occupant.getName() + "' with '" + armies + "' armies.\n";
-        }
-        return acc;
+        return getName();
     }
 
     /**

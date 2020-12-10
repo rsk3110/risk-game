@@ -1,7 +1,11 @@
 package io.github.rsk3110.riskgame.view;
 
 import com.esotericsoftware.tablelayout.swing.Table;
+import io.github.rsk3110.riskgame.Game;
+import io.github.rsk3110.riskgame.World;
 import io.github.rsk3110.riskgame.WorldLoader;
+import io.github.rsk3110.riskgame.controller.SimpleGameController;
+import io.github.rsk3110.riskgame.view.game.InGameScreen;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,10 +33,19 @@ public class GameStartupScreen extends JPanel {
             this.gameScreen.setScreen(new GameConfigScreen(this.gameScreen, this.worldLoader));
         });
 
+        final JButton loadButton = new JButton("Load");
+        loadButton.setFont(new Font("Arial", Font.PLAIN, 24));
+        loadButton.addActionListener(e -> {
+            System.out.println("a");
+            World world = worldLoader.load("default");
+            Game game = new Game(world, 0, 0, true);
+            this.gameScreen.setScreen(new InGameScreen(new SimpleGameController(game)));
+        });
+
         final List<JLabel> tipList = Arrays.asList(
                 new JLabel("Tip: Click on territories to select them"),
                 new JLabel("Tip: Hold CTRL and rotate the scrollwheel to zoom in and out"),
-                new JLabel("Tip: Hold CTRL to pan without without the scrollbars")
+                new JLabel("Tip: Hold CTRL to pan without the scrollbars")
         );
         for (final JLabel tip : tipList) {
             tip.setFont(new Font("Arial", Font.ITALIC, 20));
@@ -43,6 +56,7 @@ public class GameStartupScreen extends JPanel {
         table.addCell(gameLabel).center();
         table.row();
         table.addCell(startButton).center().padBottom(75);
+        table.addCell(loadButton).center().padBottom(75);
         for (final JLabel tip : tipList) {
             table.row();
             table.addCell(tip);

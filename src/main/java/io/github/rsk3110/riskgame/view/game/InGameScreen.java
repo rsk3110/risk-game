@@ -9,10 +9,9 @@ import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxStyleUtils;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxGraphSelectionModel;
-import io.github.rsk3110.riskgame.Game;
-import io.github.rsk3110.riskgame.Player;
-import io.github.rsk3110.riskgame.Territory;
+import io.github.rsk3110.riskgame.*;
 import io.github.rsk3110.riskgame.controller.GameController;
+import javafx.util.Pair;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +19,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
@@ -39,7 +37,7 @@ public class InGameScreen extends JPanel {
         DEFAULT,
         ATTACK,
         FORTIFY,
-        BONUS;
+        BONUS,
     };
 
     public InGameScreen(final GameController gameController) {
@@ -48,9 +46,8 @@ public class InGameScreen extends JPanel {
         this.currMode = ClickMode.DEFAULT;
         this.map = WorldMapFactory.makeWorldMap(gameController.getWorld());
         this.notificationBox = new JLabel();
-        {
-            notificationBox.setFont(new Font("Arial", Font.PLAIN, 24));
-        }
+        notificationBox.setFont(new Font("Arial", Font.PLAIN, 24));
+
         this.playerColors = this.populatePlayerColors(gameController.getGame());
 
         this.setLayout(new BorderLayout());
@@ -88,8 +85,8 @@ public class InGameScreen extends JPanel {
 
         for (final Player p : game.getPlayers()) {
             do {
-                color = random.nextInt();
-            } while(!colors.contains(color));
+                color = Math.abs(random.nextInt());
+            } while(colors.contains(color));
             colors.add(color);
             final float hue = color;
             final float saturation = (random.nextInt(2000) + 1000) / 10000f;
@@ -141,6 +138,7 @@ public class InGameScreen extends JPanel {
                 attack.setText("Attacking...");
             }
         });
+
         final JButton fortify = new JButton("Fortify");
         fortify.setFont(new Font("Arial", Font.PLAIN, 18));
         fortify.addActionListener(new ActionListener() {
@@ -151,6 +149,17 @@ public class InGameScreen extends JPanel {
                 updateName(name);
             }
         });
+
+        final JButton save = new JButton("Save");
+        save.setFont(new Font("Arial", Font.PLAIN, 18));
+        save.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(!(currMode == ClickMode.DEFAULT)) return;
+                gameController.save();
+                updateName(name);
+            }
+        });
+
         final JButton skip = new JButton("Skip");
         skip.setFont(new Font("Arial", Font.PLAIN, 18));
         skip.addActionListener(new ActionListener() {
@@ -160,6 +169,7 @@ public class InGameScreen extends JPanel {
                 updateName(name);
             }
         });
+
         final JButton quit = new JButton("Quit");
         quit.setFont(new Font("Arial", Font.PLAIN, 18));
         quit.addActionListener(new ActionListener() {
@@ -178,6 +188,8 @@ public class InGameScreen extends JPanel {
         optionsTable.row();
         optionsTable.addCell(skip).top().pad(5);
         optionsTable.row();
+        optionsTable.addCell(save).top().pad(5);
+        optionsTable.row();
         optionsTable.addCell(quit).top().pad(5);
 
         final Table table = new Table();
@@ -190,9 +202,18 @@ public class InGameScreen extends JPanel {
         this.add(table);
     }
 
-    private void onTurnStart(final Player p) {
-        this.notificationBox.setText(String.format("%s's Turn!", p.getName()));
-        setBonusArmiesPhase(p);
+    private void onTurnStart(final Pair<Player, Integer> turnPair) {
+        Player player = turnPair.getKey();
+        int currRound = turnPair.getValue();
+
+        this.notificationBox.setText(String.format("%s's Turn!", player.getName()));
+        if(currRound > 0) {
+            if(player.getClass() != AI.class) {
+                setBonusArmiesPhase(player);
+            } else {
+                setBonusArmiesAI((AI)player);
+            }
+        }
     }
 
     /**
@@ -200,35 +221,28 @@ public class InGameScreen extends JPanel {
      * @param p current player
      */
     private void setBonusArmiesPhase(Player p) {
+        Set<Continent> occupied = p.getOccupiedContinents();
+        StringBuilder occupiedString = new StringBuilder("");
+        for(Continent c : occupied) {
+            occupiedString.append(c + ", ");
+        }
         String prompt = "By controlling " + p.getTerritories().size() + " territories" +
-                "\nand the continents" + p.getOccupiedContinents() +
-                "\nyou now hold" + p.getArmies() + " to allocate." +
+                ((p.getOccupiedContinents().size() != 0) ? ("\nand the continents " + occupiedString.substring(0, occupiedString.length() - 3)) : "") +
+                "\nyou now hold " + p.getArmies() + " armies to allocate." +
                 "\nPick where to move them.";
         JOptionPane.showMessageDialog(null, prompt);
+        notificationBox.setText("Allocating " + p.getArmies() + " armies.");
         currMode = ClickMode.BONUS;
     }
 
     /**
-     * Prompts the player for a number within two specified values.
-     *
-     * @param min minimum number
-     * @param max maximum number
-     * @param prompt message to prompt player with
-     * @return number input by player
+     * Assigns bonus armies to AI territory
+     * @param ai current ai
      */
-    private int promptForIntegerValue(int min, int max, String prompt) {
-        Pattern pattern = Pattern.compile("\\d+");
-        String userInput = null;
-        int userNum;
-        do {
-            do {
-                if(userInput != null) JOptionPane.showMessageDialog(null, "Invalid input. Must be number " + ((max == min) ? min : "between" + min + " and " + max + "."), "Invalid Input", JOptionPane.ERROR_MESSAGE);
-                userInput = JOptionPane.showInputDialog(null, prompt + " " + ((max == min) ? min : min) + " to " + max + ".");
-            } while(!pattern.matcher(userInput).matches());
-            userNum = Integer.parseInt(userInput);
-        } while(!(userNum >= min && userNum <= max));
-
-        return userNum;
+    private void setBonusArmiesAI(AI ai) {
+        List<Territory> occupied = ai.getTerritories();
+        Collections.shuffle(occupied);
+        gameController.allocateBonusArmies(occupied.get(0), ai.getArmies());
     }
 
     /**
@@ -248,14 +262,14 @@ public class InGameScreen extends JPanel {
             case ATTACK: {
                 notificationBox.setText("Attacking " + target.getName() + "From " +  origin.getName());
                 gameController.attack(origin, target,
-                        promptForIntegerValue(
+                        Helper.promptForIntegerValue(
                             1,
                             Math.min(3, origin.getArmies()),
                             "How many dice would you like to roll?"),
-                        promptForIntegerValue(
+                        Helper.promptForIntegerValue(
                             1,
                             Math.min(2, target.getArmies()),
-                            "How many armies would you like to fortify with?"));
+                            target.getOccupant().getName() + ": How many dice would you like to roll?"));
                 currMode = ClickMode.DEFAULT;
                 selectedCell = null;
 
@@ -263,7 +277,7 @@ public class InGameScreen extends JPanel {
             }
             case FORTIFY: {
                 notificationBox.setText("Fortifying " + target.getName() + "Using " +  origin.getName());
-                if(gameController.fortify(origin, target, promptForIntegerValue(
+                if(gameController.fortify(origin, target, Helper.promptForIntegerValue(
                         1,
                         gameController.getGame().getCurrPlayer().getArmies(),
                         "How many armies would you like to fortify with?"))) gameController.skipTurn();
@@ -274,8 +288,12 @@ public class InGameScreen extends JPanel {
             }
             case BONUS: {
                 int playerArmyCount = gameController.getCurrPlayer().getArmies();
+                gameController.allocateBonusArmies(target, Helper.promptForIntegerValue(
+                        1,
+                        playerArmyCount,
+                        "How many armies would you like to allocate?"));
+                playerArmyCount = gameController.getCurrPlayer().getArmies();
                 notificationBox.setText("Allocating " + playerArmyCount + " armies.");
-                gameController.allocateBonusArmies(target);
                 if(playerArmyCount == 0) currMode = ClickMode.DEFAULT;
                 this.selectedCell = null;
 

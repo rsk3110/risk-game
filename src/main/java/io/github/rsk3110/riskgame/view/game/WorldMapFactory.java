@@ -64,6 +64,7 @@ public class WorldMapFactory {
         graphComponent.getGraph().setAllowDanglingEdges(false);
         graphComponent.getGraph().setCellsResizable(false);
         graphComponent.getGraph().setConnectableEdges(false);
+        graphComponent.getGraph().setCellsMovable(false);
         graphComponent.getGraphHandler().setCloneEnabled(false);
 
         graphComponent.setCenterZoom(true);
