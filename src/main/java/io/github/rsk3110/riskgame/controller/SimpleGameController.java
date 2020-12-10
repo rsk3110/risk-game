@@ -53,7 +53,7 @@ public class SimpleGameController implements GameController {
      * Saves game
      */
     @Override
-    public boolean save() throws Exception {
+    public boolean save() {
         return Save.execute(getGame());
     }
 

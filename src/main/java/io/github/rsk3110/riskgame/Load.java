@@ -1,6 +1,11 @@
 package io.github.rsk3110.riskgame;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Loads game
@@ -17,11 +22,22 @@ public class Load {
      * @param fileName file to deserialize
      * @return the object holding game state
      */
-    public static Object loadGame(String fileName) throws Exception {
-        File file = new File(fileName);
-        ObjectInputStream input = new ObjectInputStream(new FileInputStream(file));
-        Object gameState = input.readObject();
-        input.close();
+    public static Map<String, Object> loadGame(String fileName) {
+        HashMap<String, Object> gameState = new HashMap<String, Object>() {{
+            put("world", new Object());
+            put("players", new Object());
+            put("territories", new Object());
+            put("currPlayers", 0);
+            put("currRound", 0);
+            put("gameController", new Object());
+        }};
+        try {
+            File file = new File(fileName);
+            ObjectInputStream input = new ObjectInputStream(new FileInputStream(file));
+            gameState = (HashMap<String, Object>) input.readObject();
+            input.close();
+        } catch (IOException | ClassNotFoundException e) {
+        }
 
         return gameState;
     }

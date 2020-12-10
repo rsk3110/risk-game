@@ -5,7 +5,6 @@ import io.github.rsk3110.riskgame.view.GameView;
 import javafx.util.Pair;
 
 import java.awt.*;
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.*;
@@ -165,12 +164,42 @@ public class Game {
     public void loadState() {
         Map<String, Object> gameState = Load.loadGame("savedGame");
 
-        this.world = (World) gameState.get("world");
-        this.players = (ArrayList<Player>) gameState.get("players");
-        this.territories = (ArrayList<Territory>) gameState.get("territories");
-        this.currPlayer = (Player) gameState.get("currPlayer");
-        this.currRound = (int) gameState.get("currRound");
-        this.gameController = (GameController) gameState.get("gameController");
+        Object worldBlob = gameState.get("world");
+        if(worldBlob instanceof World) {
+            this.world = (World) worldBlob;
+        } else {
+            return;
+        }
+        Object playersBlob = gameState.get("players");
+        if(playersBlob instanceof ArrayList) {
+            this.players = (ArrayList<Player>) playersBlob;
+        } else {
+            return;
+        }
+        Object territoriesBlob = gameState.get("territories");
+        if(territoriesBlob instanceof ArrayList) {
+            this.territories = (ArrayList<Territory>) territoriesBlob;
+        } else {
+            return;
+        }
+        Object currPlayerBlob = gameState.get("currPlayer");
+        if(currPlayerBlob instanceof Player) {
+            this.currPlayer = (Player) currPlayerBlob;
+        } else {
+            return;
+        }
+        Object currRoundBlob = gameState.get("currRound");
+        if(currRoundBlob instanceof Integer) {
+            this.currRound = (int) currRoundBlob;
+        } else {
+            return;
+        }
+        Object gameControllerBlob = gameState.get("gameController");
+        if(gameControllerBlob instanceof GameController) {
+            this.gameController = (GameController) gameControllerBlob;
+        } else {
+            return;
+        }
     }
 
     /**

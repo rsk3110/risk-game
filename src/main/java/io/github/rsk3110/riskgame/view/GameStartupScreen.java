@@ -32,15 +32,10 @@ public class GameStartupScreen extends JPanel {
             this.gameScreen.setScreen(new GameConfigScreen(this.gameScreen, this.worldLoader));
         });
 
-        final JButton loadButton = new JButton("Start");
+        final JButton loadButton = new JButton("Load");
         loadButton.setFont(new Font("Arial", Font.PLAIN, 24));
         loadButton.addActionListener(e -> {
-            Game game = null;
-            try {
-                game = new Game(null,0, 0, true);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
+            Game game = new Game(null,0, 0, true);
             this.gameScreen.setScreen(new InGameScreen(new SimpleGameController(game)));
         });
 
@@ -58,6 +53,7 @@ public class GameStartupScreen extends JPanel {
         table.addCell(gameLabel).center();
         table.row();
         table.addCell(startButton).center().padBottom(75);
+        table.addCell(loadButton).center().padBottom(75);
         for (final JLabel tip : tipList) {
             table.row();
             table.addCell(tip);

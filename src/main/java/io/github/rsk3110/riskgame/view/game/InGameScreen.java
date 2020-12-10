@@ -155,11 +155,7 @@ public class InGameScreen extends JPanel {
         save.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(!(currMode == ClickMode.DEFAULT)) return;
-                try {
-                    gameController.save();
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
+                gameController.save();
                 updateName(name);
             }
         });
@@ -191,6 +187,8 @@ public class InGameScreen extends JPanel {
         optionsTable.addCell(fortify).top().pad(5);
         optionsTable.row();
         optionsTable.addCell(skip).top().pad(5);
+        optionsTable.row();
+        optionsTable.addCell(save).top().pad(5);
         optionsTable.row();
         optionsTable.addCell(quit).top().pad(5);
 
