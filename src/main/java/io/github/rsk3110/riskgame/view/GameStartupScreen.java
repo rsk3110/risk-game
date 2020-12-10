@@ -32,7 +32,7 @@ public class GameStartupScreen extends JPanel {
         final List<JLabel> tipList = Arrays.asList(
                 new JLabel("Tip: Click on territories to select them"),
                 new JLabel("Tip: Hold CTRL and rotate the scrollwheel to zoom in and out"),
-                new JLabel("Tip: Hold CTRL to pan without without the scrollbars")
+                new JLabel("Tip: Hold CTRL to pan without the scrollbars")
         );
         for (final JLabel tip : tipList) {
             tip.setFont(new Font("Arial", Font.ITALIC, 20));
